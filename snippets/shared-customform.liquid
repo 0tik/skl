@@ -1,0 +1,165 @@
+<form-builder class="contact spaced-section" data-send="{{ destination }}"{% if redirect %}  data-redirect="{{ redirect_url }}"{% endif %}>
+  <div id="thanks" class="thanks hidden">
+    <div class="form-status form-status-list form__message" tabindex="-1" autofocus>
+      {% render 'icon-success' %}
+      {%- if thanks != blank or thanks_content != blank -%}
+        {%- if thanks != blank -%}<h2>{{ thanks }}</h2>{%- endif -%}
+        {%- if thanks_content != blank -%}{{ thanks_content }}{%- endif -%}
+      {%- else -%}
+        {{ 'templates.contact.form.post_success' | t }}
+      {%- endif -%}
+    </div>
+  </div>
+  {%- if blocks.size > 1 -%}
+    <form id="form-{{ section.id }}" class="contact-form row">
+      <input type="hidden" name="form_type" value="{%- if type != blank -%}{{ type }}{%- else -%}{{ page.title | escape }}{%- endif -%}">
+      <input type="hidden" name="utf8" value="✓">
+      <div class="col-60">
+        <div class="field field--textinput field_type--email">
+          <input
+                 type="{%- if type == 'Pro Application' -%}email{%- else -%}hidden{%- endif -%}"
+                 name="customer[email]"
+                 class="field__input"
+                 id="applicant-email"
+                 value="{{ customer.email }}"
+                 {% if type == 'Pro Application' %} required{% endif %} />
+          <label class="field__label{% unless type == 'Pro Application' %} hidden{% endunless %}" for="RegisterForm-email">
+            {{ 'customer.register.email' | t }}
+            <span>*</span>
+          </label>
+        </div>
+      </div>
+      {%- if type == 'Pro Application' -%}
+        <div class="col-md-30">
+          <div class="field field--textinput{% if customer %} hidden{% endif %}">
+            <input type="text" name="customer[first name]"class="field__input" id="proform-first_name" value="{{ customer.first_name }}" required />
+            <label class="field__label" for="proform-first_name">
+              {{ 'customer.addresses.first_name' | t }}
+              <span>*</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-md-30">
+          <div class="field field--textinput{% if customer %} hidden{% endif %}">
+            <input type="text" name="customer[last name]"class="field__input" id="proform-last_name" value="{{ customer.last_name }}" required />
+            <label class="field__label" for="proform-last_name">
+              {{ 'customer.addresses.last_name' | t }}
+              <span>*</span>
+            </label>
+          </div>
+        </div>
+      {%- endif -%}
+      {%- assign label_skip = 'heading,option_picker' | split: ',' -%}
+      {%- for block in blocks -%}
+        {%- assign input_name = block.settings.title -%}
+        {%- if input_name != blank -%}
+          <div class="col-md-{{ block.settings.field_width | default: 'full' }}" {{ block.shopify_attributes }}>
+            <div class="field field--{{ block.type }}{% if block.settings.input_type != blank %} field_type--{{ block.settings.input_type }}{% endif %}">
+              {%- case block.type -%}
+                {%- when 'heading' -%}
+                  <h5 class="h6">{{ input_name }}</h5>
+                {%- when 'textinput' -%}
+                  <input
+                    {% if block.settings.field_autocomplete != 'none' %}autocomplete="{{ block.settings.field_autocomplete }}"{% endif %}
+                    class="field__input{% if block.settings.input_type == 'file' %} field__input-file{% endif %}"
+                    id="formbuilder-{{ input_name | handleize }}"
+                    name="{{ input_name }}"
+                    type="{%- if block.settings.field_autocomplete == 'email' or block.settings.field_autocomplete == 'tel' -%}{{ block.settings.field_autocomplete }}{%- else -%}{{ block.settings.input_type }}{%- endif -%}"
+                    value="{% if customer %}{{ customer[block.settings.field_autocomplete] }}{% endif %}"
+                    {% if block.settings.input_type == 'file' %}min="0"{% endif %}
+                    {% if block.settings.input_required %} required{% endif %}
+                    {% if block.settings.input_type == 'file' %}
+                      accept="image/png, image/jpeg"
+                      data-service="{{ file_upload_type }}"
+                      data-connection="{{ file_upload }}"
+                    {% endif %}
+                  />
+                  {%- if block.settings.input_type == 'file' -%}
+                    <input
+                      id="{{ input_name | handleize }}-file_link"
+                      type="hidden"
+                      name="{{ input_name }} - Link"
+                      value=""
+                      {% if block.settings.input_required %} required{% endif %}
+                    />
+                    <label for="{{ input_name }}-file_link" class="visually-hidden">File Link</label>
+                  {%- endif -%}
+                {%- when 'textarea' -%}
+                  <textarea
+                    rows="4"
+                    class="field__input"
+                    id="formbuilder-{{ input_name | handleize }}"
+                    name="{{ input_name }}"
+                    {% if block.settings.input_required != blank %} required {% endif %}
+                  ></textarea>
+                {%- when 'option_picker' -%}
+                  {%- assign choices = block.settings.choices | newline_to_br | strip_newlines | split: '<br />' -%}
+                  {%- if block.settings.input_type == 'radio' -%}
+                    <fieldset>
+                      <legend class="field__label">
+                        {{ input_name }}
+                        {% if block.settings.input_required %}<span>*</span>{% endif %}
+                      </legend>
+                      {%- for choice in choices -%}
+                        <label for="formbuilder-{{ input_name | handleize }}-{{ forloop.index }}">
+                      		<input
+                            type="radio"
+                            name="{{ input_name }}"
+                            id="formbuilder-{{ input_name | handleize }}-{{ forloop.index }}"
+                            value="{{ choice }}"
+                            {% if block.settings.default_choice == choice %}checked{% endif %}
+                          /><span>{{ choice }}</span></label>
+                      {%- endfor -%}
+                    </fieldset>
+                  {%- else -%}
+                    <select
+                      name="{{ input_name }}"
+                      class="field__input"
+                      id="formbuilder-{{ input_name | handleize }}"
+                    >
+                      {%- for choice in choices -%}
+                        <option
+                          value="{{ choice }}"
+                          {% if block.settings.default_choice == choice %}selected{% endif %}
+                        >{{ choice }}</option>
+                      {%- endfor -%}
+                    </select>
+                    <label class="field__label" for="formbuilder-{{ input_name | handleize }}">
+                      {{ input_name }}
+                      {% if block.settings.input_required %}<span>*</span>{% endif %}
+                    </label>
+                  {%- endif -%}
+                {%- when 'checkbox' -%}
+                  <input
+                    type="checkbox"
+                    class="field__input"
+                    id="formbuilder-{{ input_name | handleize }}"
+                    name="{{ input_name }}"
+                    {% if block.settings.input_required != blank %} required {% endif %}
+                    {% if block.settings.default_choice == 'true' %} checked {% endif %}
+                  />
+              {%- endcase -%}
+              {%- unless label_skip contains block.type -%}
+                <label class="field__label" for="formbuilder-{{ input_name | handleize }}">
+                  {{ input_name }}
+                  {% if block.settings.input_required %}<span>*</span>{% endif %}
+                </label>
+              {%- endunless -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+      <div class="contact__button">
+        <button id="custom-form-submit" type="submit" class="button" data-source="{{ page.title | escape }}">
+          <span class="button__text">
+            {%- if submit != blank -%}
+              {{ submit }}
+            {%- else -%}
+              {{ 'templates.custom_form.submit' | t }}
+            {%- endif -%}
+          </span>
+        </button>
+      </div>
+    </form>
+  {%- endif -%}
+</form-builder>

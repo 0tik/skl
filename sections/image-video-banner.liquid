@@ -1,0 +1,677 @@
+
+{% if section.settings.video != blank or section.settings.image != blank %}
+
+<style>
+    .section-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+        }
+    .image-video-banner-container {
+    position:relative;
+    }
+    .section-{{ section.id }} .image-video-banner-container video, .section-{{ section.id }} .image-video-banner-container img{
+    width:100%;
+    object-fit:cover;
+    object-position:center;
+    height:{{  section.settings.dp_height }}px;
+    display:block;
+    }
+    .section-{{ section.id }} .video-banner-content{
+        position: absolute;
+        top: {{section.settings.position_top}}%;
+        left: {{  section.settings.position_left}}%;
+        transform:translate(-{{  section.settings.position_left}}%, -{{section.settings.position_top}}%);
+        width: 100%;
+        max-width: 600px;
+        {% if section.settings.text_align == 'center' %}
+        text-align: center;
+        {% elsif section.settings.text_align == 'right'  %}
+        text-align: right;
+        {% endif %}
+        padding:30px;
+        z-index:1;
+    }
+    .section-{{ section.id }} .video-banner-subheading p{
+    margin:0;
+    font-size:10px;
+    text-transform:uppercase;
+    color:{{ section.settings.text_color }};
+    }
+    .section-{{ section.id }} .video-banner-heading h1{
+    margin:0;
+    color:{{ section.settings.text_color }};
+    }
+    .section-{{ section.id }} .video-banner-Content p{
+        margin:0;
+        font-size:1.6rem;
+        line-height:2.1rem;
+        color:{{ section.settings.text_color }};
+    }
+    .section-{{ section.id }} .image-video-banner-container:after {
+        top: 0;
+        left: 0;
+        content: '';
+        width: 100%;
+        height: 100%;
+        background: {{section.settings.overlay_color}};
+        position: absolute;
+        opacity: {{ section.settings.overlay_opacity | divided_by:10.0}};
+        z-index: 0;
+    }
+    .section-{{ section.id }}  .video-banner-btn{
+    padding-top:30px;
+    display: flex;
+    align-items: center;
+    {% if section.settings.text_align == 'center' %}
+      justify-content: center;
+      {% elsif section.settings.text_align == 'right'  %}
+      justify-content: right;
+   {% endif %}
+    gap: 15px;
+    width: 100%;
+    }
+    .video-banner-btn a{
+    text-decoration:none;
+    padding:14px 10px;
+    font-size:1.4rem;
+    line-height:1.9rem;
+    width:50%;
+    display:inline-block;
+    border-radius:8px;
+    text-align:center;
+    font-weight:normal;
+    }
+    .section-{{ section.id }} .image-video-banner-container video.video-banner-mobile, .section-{{ section.id }} .image-video-banner-container img.image-banner-mobile{
+    display:none;
+    }
+    .desktop-pause-btn, .mobile-pause-btn{
+    position:absolute;
+    bottom:20px;
+    right:20px;
+    transform:translate(-20px, -20px);
+    background:transparent;
+    border:none;
+    z-index:2;
+    cursor:pointer;
+    }
+    .desktop-pause-btn svg, .mobile-pause-btn svg{
+    width:35px;
+    height:48px;
+    transition:opacity 0.3s ease;
+    }
+    .section-{{ section.id }} .mobile-pause-btn{
+    display:none;
+    }
+    .desktop-pause-btn svg.video-play-svg{
+    width:45px;
+    height:45px;
+    opacity:0.275;
+    fill:#fff;
+    }
+    .desktop-pause-btn:hover svg g, .mobile-pause-btn:hover svg, .desktop-pause-btn:hover svg{
+    fill:#fff;
+    opacity:1;
+    }
+    .video-banner-subheading p{
+      padding-bottom:10px;
+     }
+
+
+  
+    @media screen and (max-width:768px){
+      .section-{{ section.id }} .image-video-banner-container, #section-{{ section.id }} .image-video-banner-container{height:80vh;}
+        .section-{{ section.id }} .video-banner-content{
+            position: absolute;
+            top: {{section.settings.position_top_mb}}%;
+            left: {{  section.settings.position_left_mb}}%;
+            transform:translate(-{{  section.settings.position_left_mb}}%, -{{section.settings.position_top_mb}}%);
+            width: 100%;
+padding:20px;
+{% if section.settings.text_align_mb == 'center' %}
+  text-align: center;
+  {% elsif section.settings.text_align_mb == 'right'  %}
+  text-align: right;
+  {% endif %}
+        }
+        .section-{{ section.id }} .image-video-banner-container video, .section-{{ section.id }} .image-video-banner-container img{
+            height:100%;
+            object-fit: cover;
+    object-position: center;
+            }
+            .video-banner-btn{
+            flex-wrap:wrap;
+            {% if section.settings.text_align_mb == 'center' %}
+              justify-content: center;
+              {% elsif section.settings.text_align_mb == 'right'  %}
+              justify-content: right;
+           {% endif %}
+            }
+            .video-banner-heading h1{
+            font-size:3.6rem;
+            line-height:4.1rem;
+            padding-bottom:10px;
+            }
+            .video-banner-Content p{
+            font-size:1.6rem;
+            line-height:2.1rem;
+            }
+            .video-banner-subheading p{
+             padding-bottom:10px;
+            }
+            {% if section.settings.video_mb != blank  %}
+              .section-{{ section.id }} .video-banner-desktop{
+                display:none !important;
+               }
+              .section-{{ section.id }} .video-banner-mobile{
+                display:block !important;
+                }
+            {% endif %}
+            {% if section.settings.image_mb != blank  %}
+                .section-{{ section.id }} .image-banner-dekstop{
+                display:none !important;
+                }
+               .section-{{ section.id }} .image-banner-mobile{
+                display:block !important;
+                }
+                .section-{{ section.id }} .desktop-pause-btn{
+                  display:none;
+                  }
+                  .section-{{ section.id }} .mobile-pause-btn{
+                  display:block;
+                  }
+            {% endif %}
+            .video-banner-btn a{
+            width:100%;
+            }
+            .desktop-pause-btn svg, .mobile-pause-btn svg{
+              width:27px;
+              height:37px;
+              }
+              .desktop-pause-btn svg.video-play-svg{
+                width:35px;
+                height:35px;
+              }
+              {% if section.settings.text_color_mb != 'transparent' %}
+              .section-{{ section.id }} .video-banner-subheading p{
+                color:{{ section.settings.text_color_mb }};
+                }
+                .section-{{ section.id }} .video-banner-heading h1{
+                color:{{ section.settings.text_color_mb }};
+                }
+                .section-{{ section.id }} .video-banner-Content p{
+                    color:{{ section.settings.text_color_mb }};
+                }
+              {% endif %}
+    }
+
+
+      @media screen and (min-width:768px){
+.video-banner-btn a {
+    width: 60%;
+    display: inline-block;
+    margin: 7px 0px;
+    font-family: 'Archivo';
+    letter-spacing: normal;
+    font-weight: bold;
+}
+{% unless section.settings.btn_inline %}
+  .section-{{ section.id }} .video-banner-btn {
+    display: block;
+}
+{% endunless %}
+  .video-banner-heading h1 {
+    letter-spacing: -0.06em;
+    line-height: 4.9rem !important;
+}
+
+.video-banner-Content p {
+    margin: 20px 0 10px;
+}
+      }
+
+    @media screen and (max-width:768px){
+.video-banner-heading h1  {
+    letter-spacing: -.03em;
+    font-family: 'Archivo Black';
+}
+
+      .video-banner-btn {
+    gap: 0px;
+}
+      .video-banner-btn a {
+    display: inline-block;
+    margin: 7px 0px;
+    font-family: 'Archivo';
+    font-weight: bold;
+    letter-spacing: normal;
+    font-size: 1.6rem;
+}
+{% unless section.settings.postion_mb %}
+  .section-{{ section.id }} .video-banner-btn {
+    flex-wrap: wrap;
+    bottom: 20px;
+    align-content: end;
+    align-items: end;
+    position: absolute;
+    bottom: 27px;
+    left: 5%;
+    width: 90%;
+}
+.section-{{ section.id }} .video-banner-content {
+  height:100%;
+}
+{% endunless %}
+      
+}
+</style>
+
+<div class="video-banner section-{{ section.id }}" id="section-{{ section.id }}">
+    <div class="image-video-banner-container">
+        {% if section.settings.video != blank %}
+        <video  autoplay loop muted playsinline preload="none" poster="{{ section.settings.video | img_url: '1500x' }}" class="video-banner-desktop">
+            <source id="mp4" src="{{section.settings.video.sources[1].url}}" data-src="{{section.settings.video}}" type="video/mp4">
+            <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+            <p>Your user agent does not support the HTML5 Video element.</p>
+          </video>
+          <button class="desktop-pause-btn" aria-label="pause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 48">
+            <g data-name="Group 3482" transform="translate(6625 19047.896)" opacity="0.275">
+              <rect  data-name="Rectangle 2591" width="13" height="48" transform="translate(-6625 -19047.896)" fill="#fff"/>
+              <rect  data-name="Rectangle 2592" width="13" height="48" transform="translate(-6603 -19047.896)" fill="#fff"/>
+            </g>
+          </svg> </button>
+          {% if section.settings.video_mb != blank %}
+            <video  autoplay loop muted playsinline preload="none" poster="{{ section.settings.video_mb | img_url: '1500x' }}" class="video-banner-mobile">
+              <source id="mp4" src="{{section.settings.video_mb.sources[1].url}}" data-src="{{section.settings.video_mb}}" type="video/mp4">
+              <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+              <p>Your user agent does not support the HTML5 Video element.</p>
+            </video>
+            <button class="mobile-pause-btn" aria-label="pause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 37">
+              <g data-name="Group 3482" transform="translate(6625 19047.896)" opacity="0.275">
+                <rect  data-name="Rectangle 2591" width="13" height="48" transform="translate(-6625 -19047.896)" fill="#fff"/>
+                <rect  data-name="Rectangle 2592" width="13" height="48" transform="translate(-6603 -19047.896)" fill="#fff"/>
+              </g>
+            </svg> </button>
+          {% endif %}
+          {% elsif section.settings.image != blank %}
+           {% render 'image', image:section.settings.image, class:"image-banner-dekstop", index: section.index %}
+           {% if section.settings.image_mb != blank  %}
+            {% render 'image', image:section.settings.image_mb, class:"image-banner-mobile", index: section.index, dev:true %}
+           {% endif %}
+        {% endif %}
+          {% if section.blocks.size != 0 or section.settings.video != blank or section.settings.image != blank %}
+          <div class="page-width">
+            <div class="video-banner-content">
+            {% for block in section.blocks %}
+                {%  case block.type %}
+                    {% when 'subheading' %}
+                {% if block.settings.subheading != blank %}
+                <div class="video-banner-subheading">
+                  <p>{{ block.settings.subheading }}</p>
+                </div>
+            {% endif %}
+        {% when 'heading' %}
+            {% if block.settings.heading != blank %}
+              <style>
+                #section-{{ section.id }} .heading-{{ block.id }} h1{
+                font-size:{{ block.settings.font_size | divided_by:10.0 }}rem;
+                line-height:{{ block.settings.font_size | divided_by:10.0 | plus:0.4 }}rem;
+                }
+                @media screen and (max-width:768px){
+                  #section-{{ section.id }} .heading-{{ block.id }} h1{
+                    font-size:{{ block.settings.font_size_mb | divided_by:10.0 }}rem;
+                    line-height:{{ block.settings.font_size_mb | divided_by:10.0 | minus:0.6 }}rem;
+                    }
+                }
+                </style>
+                <div class="video-banner-heading heading-{{ block.id }}">
+                    <h1>{{ block.settings.heading }}</h1>
+                </div>
+            {% endif %}
+            {% when 'info' %}
+            {% if block.settings.info != blank %}
+                <div class="video-banner-Content">
+                    <p>{{ block.settings.info }}</p>
+                </div>
+                {% endif %}
+                {% when 'button' %}
+                  <style>
+                  #section-{{ section.id }} .video-first-btn:hover {background-color:{{block.settings.bghover_first}} !important;}
+                  #section-{{ section.id }} .video-second-btn:hover {background-color:{{block.settings.bghover_second}} !important;}
+                  </style>
+                {% if block.settings.button_label != blank or block.settings.button_label_1 != blank %}
+                <div class="video-banner-btn">
+                    {% if block.settings.button_label != blank %}
+                    <a href="{{ block.settings.button_link }}" class="video-first-btn" style="background:{{ block.settings.bg_first }};color:{{ block.settings.txt_first }}">{{ block.settings.button_label }}</a>
+                    {% endif %}
+                    {% if block.settings.button_label_1 != blank %}
+                    <a href="{{ block.settings.button_link_1 }}" class="video-second-btn" style="background:{{ block.settings.bg_second }};color:{{ block.settings.txt_second }}">{{ block.settings.button_label_1 }}</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endcase %}
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Image Video Banner",
+    "settings": [
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_top",
+            "default": 36
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_bottom",
+            "default": 36
+          },
+          {
+            "type": "color",
+            "label" : "Overlay Color",
+            "id" : "overlay_color",
+            "default":"#000"
+        },
+          {
+            "type": "range",
+            "id": "overlay_opacity",
+            "min": 0,
+            "max": 10,
+            "step": 1,
+            "label": "Overlay Opacity",
+            "default": 3
+          },
+          {
+           "type" : "video",
+           "id" : "video",
+           "label" : "Desktop Video"
+          },
+          {
+            "type" : "video",
+            "id" : "video_mb",
+            "label" : "Mobile video"
+           },
+          {
+            "type" : "image_picker",
+            "id" : "image",
+            "label" : "Desktop Image"
+           },
+           {
+            "type" : "image_picker",
+            "id" : "image_mb",
+            "label" : "Mobile Image"
+           },
+            {
+            "type": "range",
+            "id": "dp_height",
+            "min": 250,
+            "max": 1000,
+            "step": 10,
+            "unit": "px",
+            "label": "Desktop Height",
+            "default": 700
+          },
+          {
+            "type": "color",
+            "label" : "Text Color",
+            "id" : "text_color",
+            "default":"#fff"
+        },
+        {
+            "type": "header",
+            "content": "Desktop"
+            },
+            {
+              "type": "select",
+              "id": "text_align",
+              "options": [
+                {
+                  "value": "left",
+                  "label": "Left"
+                },
+                {
+                  "value": "center",
+                  "label": "Center"
+                },
+                {
+                  "value": "right",
+                  "label": "Right"
+                }
+              ],
+              "default": "left",
+              "label": "Text alignment"
+            },
+        {
+            "type": "range",
+            "id": "position_top",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Content Position Top",
+            "default": 50
+          },
+          {
+            "type": "range",
+            "id": "position_left",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "label": "Content Position Left",
+            "default":50
+          },
+          {
+            "type": "header",
+            "content": "Mobile"
+            },
+            {
+              "type": "color",
+              "label" : "Text Color",
+              "id" : "text_color_mb"
+            },
+            {
+              "type": "select",
+              "id": "text_align_mb",
+              "options": [
+                {
+                  "value": "left",
+                  "label": "Left"
+                },
+                {
+                  "value": "center",
+                  "label": "Center"
+                },
+                {
+                  "value": "right",
+                  "label": "Right"
+                }
+              ],
+              "default": "left",
+              "label": "Text alignment"
+            },
+
+            {
+              "type" : "checkbox",
+              "label" : "Fit Content Height",
+              "id" : "postion_mb",
+              "default": false
+            },
+            {
+              "type": "range",
+              "id": "position_top_mb",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "label": "Content Position Top",
+              "default": 50
+            },
+            {
+              "type": "range",
+              "id": "position_left_mb",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "unit": "%",
+              "label": "Content Position Left",
+              "default": 50
+            },
+            {
+              "type" : "checkbox",
+              "label" : "Side by Side Button",
+              "id" : "btn_inline",
+              "default": false
+            }    
+    ],
+    "blocks":[
+        {
+            "type" : "heading",
+            "name" : "Heading",
+            "limit" : 1,
+            "settings":[
+    
+                {
+                "type": "text",
+                "label" : "Title",
+                "id" : "heading"
+                },
+                {
+                  "type": "range",
+                  "id": "font_size",
+                  "min": 0,
+                  "max": 76,
+                  "step": 1,
+                  "unit": "%",
+                  "label": "Desktop Font Size",
+                  "default": 60
+                },
+                {
+                  "type": "range",
+                  "id": "font_size_mb",
+                  "min": 0,
+                  "max": 76,
+                  "step": 1,
+                  "unit": "px",
+                  "label": "Mobile Font Size",
+                  "default": 36
+                }  
+            ]
+        },
+        {
+            "type" : "subheading",
+            "name" : "Subheading",
+            "limit" : 1,
+            "settings":[
+                {
+                    "type": "text",
+                    "label" : "Subheading",
+                    "id" : "subheading"
+                }        
+            ]
+        },
+        {
+            "type" : "info",
+            "name" : "Description",
+            "limit" : 1,
+            "settings":[
+              
+                {
+                    "type": "textarea",
+                    "label" : "Description",
+                    "id" : "info"
+                }        
+            ]
+        },
+        {
+            "type" : "button",
+            "name" : "Button",
+            "limit" : 1,
+            "settings":[
+              {
+              "type" : "color",
+              "label":"Background Color First Button",
+              "id" : "bg_first",
+              "default" : "#0081FF"
+              },
+              {
+              "type" : "color",
+              "label":"Background Hover Color First Button",
+              "id" : "bghover_first",
+              "default" : "#006dd9"
+              },
+              {
+                "type" : "color",
+                "label":"Text Color First Button",
+                "id" : "txt_first",
+                "default" : "#fff"
+                },
+                {
+                    "type": "text",
+                    "id": "button_label",
+                    "label": "Button Label First"
+                  },
+                  {
+                    "type": "url",
+                    "id": "button_link",
+                    "label": "Button Link First"
+                  },
+                  {
+                    "type" : "color",
+                    "label":"Background Color Second Button",
+                    "id" : "bg_second",
+                    "default" : "#fff"
+                    },
+              {
+              "type" : "color",
+              "label":"Background Hover ColorSecond Button",
+              "id" : "bghover_second",
+              "default" : "#f4f4f4"
+              },
+                    {
+                      "type" : "color",
+                      "label":"Text Color Second Button",
+                      "id" : "txt_second",
+                      "default" : "#000"
+                      },
+                  {
+                    "type": "text",
+                    "id": "button_label_1",
+                    "label": "Button Label Second"
+                  },
+                  {
+                    "type": "url",
+                    "id": "button_link_1",
+                    "label": "Button Link Second"
+                  }          
+            ]
+        }
+    ],
+    "presets":[
+      {
+        "name": "Image Video Banner"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

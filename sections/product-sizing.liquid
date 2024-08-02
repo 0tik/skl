@@ -1,0 +1,402 @@
+{%- liquid
+  assign top_types = section.settings.top_types | newline_to_br | strip_newlines | split: '<br />'
+  assign bottom_types = section.settings.bottom_types | newline_to_br | strip_newlines | split: '<br />'
+  assign accessory_types = section.settings.accessory_types | newline_to_br | strip_newlines | split: '<br />'
+-%}
+{% if request.page_type == 'product' %}
+  {%- liquid
+    assign size_table = blank
+    assign clothing_section = blank
+    if top_types contains product.type
+      assign clothing_section = 'top'
+    elsif bottom_types contains product.type
+      assign clothing_section = 'bottom'
+    elsif accessory_types contains product.type
+      assign clothing_section = 'accessory'
+    endif
+    if clothing_section != blank
+      assign gender = product.metafields.custom.gender
+      assign chart = gender | handleize | append: '_chart'
+      assign gender_specific_charts = section.blocks | where: 'type', chart
+      for chart in gender_specific_charts
+        if chart.settings.section == clothing_section
+          assign size_table = chart.settings.table
+        endif
+      endfor
+    endif
+  -%}
+  <size-chart id="size-table">
+    {{ size_table }}
+  </size-chart>
+  <script>
+    let placeholder = document.getElementById('sizing-chart__placeholder');
+    let sizeTable = document.getElementById('size-table');
+    placeholder.appendChild(sizeTable);
+  </script>
+{% else %}
+  <article class="article-template" itemscope itemtype="http://schema.org/BlogPosting">
+    {%- for block in section.blocks -%}
+
+    {%- endfor -%}
+  </article>
+{% endif %}
+{% schema %}
+{
+  "name": "Sizing charts",
+  "tag": "section",
+  "class": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "top_types",
+      "label": "Top types",
+      "info": "Each new line should be a Product Type that corresponds to the Clothes section 'top'"
+    },
+    {
+      "type": "textarea",
+      "id": "bottom_types",
+      "label": "Bottom types",
+      "info": "Each new line should be a Product Type that corresponds to the Clothes section 'bottom'"
+    },
+    {
+      "type": "textarea",
+      "id": "accessory_types",
+      "label": "Accessory types",
+      "info": "Each new line should be a Product Type that corresponds to the Clothes section 'accessory'"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mens_chart",
+      "name": "Mens chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "womens_chart",
+      "name": "Womens chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "teen-boys_chart",
+      "name": "Teen Boys chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "teen-girls_chart",
+      "name": "Teen Girls chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "kid-boys_chart",
+      "name": "Kid Boys chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "kid-girls_chart",
+      "name": "Kid Girls chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "unisex_chart",
+      "name": "Unisex chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "teen-unisex_chart",
+      "name": "Teen Unisex chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    },
+    {
+      "type": "kids-unisex_chart",
+      "name": "Kids Unisex chart",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "select",
+          "id": "section",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            },
+            {
+              "value": "accessory",
+              "label": "Accessory"
+            }
+          ],
+          "default": "top",
+          "label": "Clothes section"
+        },
+        {
+          "type": "html",
+          "id": "table",
+          "label": "Sizing table HTML"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sizing charts"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

@@ -1,0 +1,286 @@
+
+<style>
+    .section-{{ section.id }}{
+        margin-top:{{ section.settings.padding_top }}px;
+        margin-bottom:{{ section.settings.padding_bottom }}px;
+        }
+   .section-{{ section.id }} .only-video-container {
+    border-radius:15px;
+    overflow:hidden;
+    position:relative;
+    }
+    .section-{{ section.id }} .full-width-section .only-video-container{
+        border-radius:0px;
+    }
+    .section-{{ section.id }} .only-video-container{
+        height:{{  section.settings.dp_height }}px;
+    }
+    .only-video-container video,  .only-video-container img{
+    width:100%;
+    max-width:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+    height:100%;
+    }
+    .only-video-container video{
+        position:absolute;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        z-index:-1;
+        opacity:0;
+        transition:all 0.6s ease;
+    }
+    .only-video-container video.active{
+        z-index:1;
+        opacity:1;
+    }
+    .only-video-btn,  .only-video-btn-full{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 0;
+    width: 70px;
+    height: 70px;
+    background: #0081FF;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1;
+    cursor:pointer;
+    }
+    .only-video-btn.status-pause{
+        top: unset;
+        left: 10px;
+        bottom:10px;
+        transform: unset;
+        width:50px;
+        height:50px;
+    }
+    button.only-video-btn-full{
+        top:unset;
+        left:unset;
+        right:10px;
+        bottom:10px;
+        width:50px;
+        height:50px;
+        display:none;
+        transform: unset;
+    }
+    button.only-video-btn-full.show-btn{
+       display:block;
+    }
+    button.only-video-btn svg, button.only-video-btn-full svg {
+        width: 35px;
+        height: 35px;
+    }
+    button.only-video-btn svg path, button.only-video-btn-full svg{
+        fill: #fff;
+    }
+    button.only-video-btn svg, button.only-video-btn-full.show-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    .icon-pause, .have-mobile-video .only-mb-video{
+        display:none;
+    }
+    @media screen and (max-width:768px){
+        .only-video-btn{
+            width: 50px;
+            height: 50px;
+        }
+        button.only-video-btn svg {
+            width: 25px;
+            height: 25px;
+        }
+        .section-{{ section.id }} .have-mobile-video .only-dk-video{
+        display:none;
+        }
+        .section-{{ section.id }} .have-mobile-video .only-mb-video{
+            display:block;
+        }
+        .section-{{ section.id }} .only-video-container{
+            height:{{  section.settings.mob_video }}px;
+        }
+    }
+</style>
+<div class="ony-video-section section-{{ section.id }}" {% if section.settings.link_id != blank %}id="{{ section.settings.link_id | handle }}"{% endif %}>
+    <div class="{% if section.settings.full-width %}full-width-section{% else %}page-width{% endif %}">
+        {% if section.settings.image_dk != blank %}
+            <div class="only-video-container {% if section.settings.image_mb != blank %}have-mobile-video{% endif %}">
+                {% render 'image', image:section.settings.image_dk, class:'only-dk-video' %}
+                {% if section.settings.image_mb != blank %}
+                    {% render 'image', image:section.settings.image_mb, class:'only-mb-video' %}
+                {% endif %}
+            </div>
+            {% else %}
+        {% if section.settings.video_dk != blank %}
+    <div class="only-video-container {% if section.settings.video_mb != blank %}have-mobile-video{% endif %}">
+          {% render 'image', image:section.settings.video_dk, class:"only-dk-video" %}
+          {{ section.settings.video_dk | media_tag: image_size: "2048x", autoplay: false, loop: true, controls: false, preload: "none", class:"only-dk-video" }}
+          {% if section.settings.video_mb != blank %}
+            {% render 'image', image:section.settings.video_mb, class:"only-mb-video" %}
+            {{ section.settings.video_mb | media_tag: image_size: "2048x", autoplay: false, loop: true, controls: false, preload: "none", class:"only-mb-video" }}
+          {% endif %}
+          <button class="only-video-btn">{% render 'icon-play' %} {% render 'icon-pause' %}</button>
+          <button class="only-video-btn-full">{% render 'fullscreen-icon' %}</button>
+        </div>
+    {% endif %}
+{% endif %}
+    </div>
+    </div>
+    {% if section.settings.video_dk != blank %}
+<script>
+function handleVideoPlayback(button) {
+    let onlycontainer = button.closest('.only-video-container');
+    let onlyvideo = onlycontainer.querySelector('video.only-dk-video');
+    let onlyvideomb = onlycontainer.querySelector('video.only-mb-video');
+    let fullscreenBtn = onlycontainer.querySelector('.only-video-btn-full');
+    function videofullscreen(video){
+      fullscreenBtn.addEventListener('click', () => {
+        if (video.webkitSupportsFullscreen) {
+            video.webkitEnterFullscreen();
+            return;
+          }
+        
+          video.requestFullscreen();
+      });
+    }
+    if (window.innerWidth <= 768 && onlyvideomb) {
+        if (onlyvideomb.paused) {
+            onlyvideomb.classList.add('active')
+            onlyvideomb.play();
+            button.classList.add('status-pause')
+            fullscreenBtn.classList.add('show-btn')
+            button.querySelector('.icon-play').style.display = 'none';
+            button.querySelector('.icon-pause').style.display = 'block';
+            videofullscreen(onlyvideomb)
+        } else {
+            onlyvideomb.classList.remove('active')
+            onlyvideomb.pause();
+            button.classList.remove('status-pause')
+            fullscreenBtn.classList.remove('show-btn')
+            button.querySelector('.icon-play').style.display = 'block';
+            button.querySelector('.icon-pause').style.display = 'none';
+            videofullscreen(onlyvideomb)
+        }
+    } else {
+        if (onlyvideo.paused) {
+            onlyvideo.classList.add('active')
+            onlyvideo.play();
+            button.classList.add('status-pause')
+            fullscreenBtn.classList.add('show-btn')
+            button.querySelector('.icon-play').style.display = 'none';
+            button.querySelector('.icon-pause').style.display = 'block';
+            videofullscreen(onlyvideo)
+        } else {
+            onlyvideo.pause();
+            onlyvideo.classList.remove('active')
+            button.classList.remove('status-pause')
+            fullscreenBtn.classList.remove('show-btn')
+            button.querySelector('.icon-play').style.display = 'block';
+            button.querySelector('.icon-pause').style.display = 'none';
+            videofullscreen(onlyvideo)
+        }
+    }
+}
+
+var only_video_btn = document.querySelector('.section-{{ section.id }} .only-video-btn');
+only_video_btn.addEventListener('click', function() {
+    handleVideoPlayback(this);
+});
+</script>
+{% endif %}
+{% schema %}
+  {
+    "name": "Meida Banner",
+    "settings": [
+        {
+        "type":"text",
+        "label" : "Section Id",
+        "id" : "link_id"
+        },
+        {
+        "type": "checkbox",
+        "id" : "full-width",
+        "label" : "Full Width",
+        "default": false
+        },
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_top",
+            "default": 36
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_bottom",
+            "default": 36
+          },
+            {
+            "type": "range",
+            "id": "dp_height",
+            "min": 250,
+            "max": 1000,
+            "step": 10,
+            "unit": "px",
+            "label": "Desktop Height",
+            "default": 700
+          },
+          {
+            "type": "range",
+            "id": "mob_video",
+            "min": 250,
+            "max": 600,
+            "step": 10,
+            "unit": "px",
+            "label": "Mobile Height",
+            "default":300
+          },
+          {
+           "type" : "video",
+           "label" : "Dekstop Video",
+           "id" : "video_dk"
+           },
+           {
+            "type" : "video",
+            "label" : "Mobile Video",
+            "id" : "video_mb"
+            },
+            {
+                "type" : "image_picker",
+                "label" : "Dekstop Image",
+                "id" : "image_dk"
+            },
+            {
+                 "type" : "image_picker",
+                 "label" : "Mobile Image",
+                 "id" : "image_mb"
+            }
+    ],
+    "presets":[
+      {
+        "name": "Meida Banner"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

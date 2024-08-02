@@ -1,0 +1,41 @@
+.custom-search-top{
+    position:relative;
+}
+.close-custom-search{
+  position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 22px;
+    cursor: pointer;
+}
+.custom-search-top p{
+    text-align:center;
+    text-transform: uppercase;
+  margin:0px;
+  padding-bottom:10px;
+  font-size:16px;
+  font-weight: 600;
+}
+.color_divider:before{
+  background: currentColor !important;
+}
+#custom-search-result{
+     display: block;
+}
+.search_data{
+  position:relative;
+}
+
+.card--standard>.card__content .card__information{
+  text-align:left;
+}
+.card__heading a{
+  font-size: 22px;
+    font-weight: 400;
+}
+#custom-search-result .slick-initialized .slick-slide{
+  padding:0px 10px;
+}
+.color_divider:before{
+  background:currentColor;
+}

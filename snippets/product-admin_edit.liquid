@@ -1,0 +1,310 @@
+{%- if request.design_mode or content_for_header contains 'previewBarInjector' -%}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+  {{ 'snippet-admin_edit.css' | asset_url | stylesheet_tag }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+
+  <div class="admin-tab"><div class="tab">Admin Metafields Editor ▼/▲</div></div>
+  
+<div class="admin-edit">
+  <div class="holder"  style="max-width:800px; margin: 0 auto;">
+  {%- assign data = shop.metafields.custom.options.value.options-%}
+  <h2 style="padding-bottom:0px;margin-bottom:0px;">Product Metafield Editor</h2><br/>
+
+<div class="grid grid--1-col">
+{% assign types = "fabric|cs|json,faux_fur|cs|json,palm_material|cs|json,insulator_component_fabric|cs|json,insulation|ms|list.single_line_text_field,features_design|ms|list.single_line_text_field,features_functional|ms|list.single_line_text_field,features_accessory_glove|ms|list.single_line_text_field,features_cuff_hood_powder|ms|list.single_line_text_field,features_knit_structure|ms|list.single_line_text_field,features_neck_opening|ms|list.single_line_text_field,features_pockets|ms|list.single_line_text_field,technology|blog|list.single_line_text_field,fit|ss|single_line_text_field,waterproofing|cs|json,waterproof_rating|cs|json,warmth|ss|single_line_text_field,breathability|ss|single_line_text_field,fit_style|ss|single_line_text_field,fit_rise|ss|single_line_text_field,fit_length|ss|single_line_text_field,season_code|ff|single_line_text_field,center_back_length|ff|single_line_text_field,product_status|ss|single_line_text_field,b2b_caption|ss|single_line_text_field,gender|cs|json,shell_content|ss|single_line_text_field,lining_content|ss|single_line_text_field,prop_65|ss|single_line_text_field" | split:"," %}
+  {% for ty in types %}
+  {%assign item = ty | split:"|"%}
+  {% assign type = item[0] %}
+  <div class="grid__item selectoroption" data-type="{{type}}"  data-metatype="{{item[2]}}">
+    <strong>{{type | replace:"_"," "| capitalize}}</strong><br/>
+    <div class="options">
+      {%if item[1] == "cs" %}
+        {% for i in (1..10) %}
+        {% assign md = product.metafields.custom[type].value %}
+        {%capture nums %}num-{{i}}{%endcapture%}
+          <div class="group" {% if md[nums].color %}style="display:block !important"{%endif%}>
+          {% assign md = product.metafields.custom[type].value %}
+
+          <select class="colorselect {{type}}-color-{{i}} sel-{{i}}" data-match=".{{type}}-ss-{{i}}" data-type="{{type}}" data-sub="color" data-num="{% if i %}{{i}}{%else%}1{%endif%}" placeholder="select colors" multiple>
+          	{%- liquid
+              assign found = false
+              for color in md[nums].color
+              if color == "-All Colors-"
+              assign found = true
+              break
+              endif
+              endfor
+              %}
+
+          <option{% if found %} selected{%endif%} name="all">-All Colors-</option>
+            {%- for option in product.options_with_values -%}
+            {% assign option_downcase = option.name | downcase %}
+            {% if option_downcase == "color" or option_downcase == "colour" %}
+            {%- for value in option.values -%}
+          	{%- liquid
+              assign found = false
+              for color in md[nums].color
+              if color == value
+              assign found = true
+              break
+              endif
+              endfor
+              %}
+            <option {% if found%}selected{%endif%} name="{{value}}">{{value}}</option>
+            {%endfor%}
+            {%endif%}
+            {%endfor%}
+          </select>
+            {% assign md = product.metafields.custom[type].value %}
+
+        	<select class="singleselect {{type}}-ss-{{i}} sel-{{i}}" data-type="{{type}}" data-sub="value" data-num="{% if i %}{{i}}{%else%}1{%endif%}" placeholder="select item">
+              <option>Select Item</option>
+              {% for data in data[type] %}
+          		{%- liquid
+                assign found = false
+                for val in md[nums][type]
+                if val == data
+                assign found = true
+                break
+                endif
+                endfor
+                %}
+              <option {% if found%}selected{%endif%}>{{data}}</option>
+              {%endfor%}
+            </select>
+            <a href="#" class="closeme">x</a>
+          </div>
+        {%endfor%}
+      {%elsif item[1] == "ss" %}
+          <div class="group">
+            {% assign md = product.metafields.custom[type] %}
+          	<select class="singleselect {{type}}-ss-{{i}} sel-{{i}}" data-type="{{type}}" data-sub="value" placeholder="select item">
+                <option>Select Item</option>
+                {% for data in data[type] %}
+                <option {% if md contains data%}selected{%endif%}>{{data}}</option>
+                {%endfor%}
+              </select>
+          </div>
+      {%elsif item[1] == "ms" %}
+          <div class="group">
+            {% assign md = product.metafields.custom[type].value %}
+          	<select class="colorselect {{type}}-color-{{i}} sel-{{i}}" data-type="{{type}}" data-sub="value" placeholder="select multiselect" multiple>
+                {% for data in data[type] %}
+                {%- liquid
+                	assign found = false
+                	for val in md
+                  if val == data
+                	assign found = true
+                  break
+                  endif
+                  endfor
+                -%}
+                <option {%if found %}selected{%endif%}>{{data}}</option>
+                {%endfor%}
+              </select>
+          </div>
+      {%elsif item[1] == "blog" %}
+          <div class="group">
+            {% assign md = product.metafields.custom[type].value %}
+          	<select class="colorselect {{type}}-color-{{i}} sel-{{i}}" data-type="{{type}}" placeholder="select multiselect" multiple>
+                {% for article in blogs.technology.articles %}
+                {%- liquid
+                	assign found = false
+                	for val in md
+                  if val == article.title
+                	assign found = true
+                  break
+                  endif
+                  endfor
+                -%}
+                <option {%if found %}selected{%endif%} value="{{article.handle}}">{{article.title}}</option>
+                {%endfor%}
+              </select>
+          </div>
+      {%else%}
+          <div class="group">
+            {% assign md = product.metafields.custom[type] %}
+            <input class="form-control choices__input choices-text-remove-button" name="{{type}}" data-type="{{type}}" type="text" value="{{md}}" placeholder="{% if md%}{{md}}{%else%}Free Form Text Input{%endif%}" hidden="" tabindex="-1" data-choice="active">
+          </div>
+      {%endif%}
+    </div>
+    {%if item[1] == "cs" %}
+    <a href="#" class="viewmore">Add Another Definition +</a>
+    {%endif%}
+  </div>
+  {%endfor%}
+  <div class="grid__item">
+  <button class="metasubmit button button--full-width button--secondary">Submit All Metafields</button>
+    <div class="success" style="display:none;">Your changes have all been committed!</div>
+
+    <button class="button makejson" style="margin-top:40px;display:none;">Make json</button>
+<pre class="json" style="margin-top:40px;display:none;">
+
+</pre>
+
+  </div>
+  </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    var multipleCancelButton = new Choices('.colorselect', {
+      removeItemButton: true,
+      maxItemCount:0,
+      searchResultLimit:5,
+      renderChoiceLimit:0
+    });
+    var singleNoSorting = new Choices('.singleselect', {
+      allowHTML: true,
+      shouldSort: false,
+      labelId: 'choices-single-no-sorting-label',
+      placeholder: true,
+      placeholderValue: 'Pick Item',
+      removeItemButton: true
+    });
+    var textRemove = new Choices('.choices-text-remove-button',
+      {
+        allowHTML: true,
+        delimiter: '|',
+        editItems: true,
+        maxItemCount: 5,
+        removeItemButton: true,
+      }
+    );
+  });
+
+  $('.viewmore').click(function(){
+    var currentnum = $(this).siblings('.options').find('.choices:visible').last().find('select').data('num');
+    console.log(currentnum);
+    if(currentnum == undefined){
+    $(this).siblings('.options').find('.sel-1').each(function() {
+      $(this).parents('.group').show();
+    });
+    } else {
+    $(this).siblings('.options').find('.sel-'+(currentnum+1)).each(function() {
+      $(this).parents('.group').show();
+    });
+    }
+  });
+
+  $('.closeme').click(function(){
+    $(this).parent().hide();
+  });
+
+  $('.selectoroption strong').click(function(){
+    if($(this).hasClass( "expanded")){
+      $(this).removeClass('expanded').siblings().slideUp();
+      $(this).parent().removeClass('active');
+    }else{
+     $(this).addClass('expanded').siblings().slideDown();
+      $(this).parent().addClass('active');
+    }
+  });
+
+  $('.makejson').click(function(){
+		buildjson();
+  });
+
+  function buildjson() {
+        $('.json').html('');
+    var wholeJson = "",
+        wholeGuts="";
+    $('.selectoroption').each(function(){
+      var mainType = $(this).data('type'),
+          metaType = $(this).data('metatype'),
+          dataElement = "",
+          items = "";
+ 	  if($(this).find('select').length > 0 ) {
+          $(this).find('select').each(function(){
+            var txt = "",
+                type = $(this).data('type'),
+                num = $(this).data('num'),
+                sub = $(this).data('sub');
+            	if(metaType=="single_line_text_field"){
+                  	txt = $(this).find(":selected").text()+',';
+            	}else{
+                    $(this).find(":selected").each(function(){
+                      	txt = txt+'\\"'+$(this).text()+'\\"'+ ',';
+                    });
+            	}
+                if(txt!=''&&txt!='\\"Select Item\\",'&&txt!='Select Item,'){
+                  if(num != undefined){
+                    if(sub=="color"){
+                     var fieldmatch =$(this).data('match'),
+                         type2 = $(fieldmatch).data('type'),
+                         value = $(fieldmatch).find(":selected").text(),
+                         piece = '\\"num-'+num+'\\":{\\"'+sub+'\\":['+txt.slice(0,-1)+'],\\"'+type2+'\\":\\"'+value+'\\"},';
+                        items= piece+items;
+                    }
+                  }else{
+                    if(metaType=="single_line_text_field"){
+                      	items = txt;
+                    }else{
+                		items = '['+txt.slice(0,-1)+'],';
+                    }
+                  }
+                }
+          });
+      }else{
+        var vals = $(this).find('input.choices__input--cloned').val();
+
+          items=vals+',';
+
+      }
+      if(metaType=="json"){
+        dataElement = '{"item":{"value":"{'+items.slice(0,-1)+'}","key":"'+mainType+'","type":"'+metaType+'"}},';
+      }else{
+      	dataElement = '{"item":{"value":"'+items.slice(0,-1)+'","key":"'+mainType+'","type":"'+metaType+'"}},';
+      }
+
+     // console.log(dataElement);
+        wholeGuts = dataElement+wholeGuts;
+
+      });
+    wholeJson = '{"options":[{"product":{{product.id}} },'+wholeGuts.slice(0,-1)+']}';
+    $('.json').html(wholeJson);
+  }
+
+
+
+    $('.metasubmit').click(function(e){
+    console.log('got the submit');
+    e.preventDefault();
+    $('.metasubmit').text('submitting...please wait.').prop("disabled",true);
+    $('.json').html("");
+    buildjson();
+    setTimeout(function(){
+    var integro_url = '//hook.integromat.com/fvdce1oynanisrbj5miawv2igln94e0j',
+      data = JSON.parse($('.json').text());
+      console.log(data);
+
+    $.ajax({
+      type: "POST",
+      url: integro_url,
+      data: data,
+      success: function(data) {
+        console.log('data',data);
+        $('.metasubmit').text('Submit all metafields').prop("disabled",false);;
+        $('.success').fadeIn('fast');
+        setTimeout(function(){
+          $('.success').fadeOut('fast');
+        }, 3000);
+
+      },
+      fail: function(jqXHR, textStatus) {
+        console.log(jqXHR + ' -- ' +textStatus);
+        $loadingbtn.removeClass('spinning');
+        alert('Process failed, please reload the page and try again');
+      }
+    });
+      }, 1000);
+  });
+
+    $('.tab').click(function(){
+    $('.admin-edit').slideToggle( "slow" );
+  });
+
+</script>
+{%- endif -%}

@@ -1,0 +1,97 @@
+<div class="im">
+  <details id="Details-HeaderMenu-12" class="mega-menu">
+  <summary class="header__menu-item list-menu__item link focus-inset" role="button" aria-expanded="false" aria-controls="MegaMenu-Content-12">
+  <img class="im-chg" src="{{ section.settings.logo-int | image_url: width:50 }}" width="50" height="50">                     
+  </summary>
+  <div id="MegaMenu-Content-12" class="mega-menu__content gradient motion-reduce global-settings-popup" tabindex="-1">
+  <ul class="three-column-menu mega-menu__list mega-menu__list-image mega-menu-col-3 page-width__padding internationl-menu-list" role="list">
+   <li class="childlink"> 
+  {% for link in linklists.international-menu.links %}
+  {%  if forloop.index == 1 or forloop.index == 2 %}
+  <span class=" mega-menu__link mega-menu__link--level-2 link" aria-label="{{ link.title }}" style="cursor:default;">
+  <span>{{ link.title }}</span>
+  </span>
+  
+  <ul class="list-unstyled grandchild-link" role="list">  
+  {%  for cl in link.links %}
+          <li>
+        <a href="{{ cl.url }}" class="mega-menu__link link" aria-label="{{ cl.title }}">
+          {{ cl.title }}
+        </a>
+        </li>
+  {% endfor %}  
+  </ul>
+  {% endif %}
+  {% endfor %}  
+  </li>
+   <li class="childlink"> 
+  {% for link in linklists.international-menu.links %}
+  {%  if forloop.index == 3 %}
+  {% assign notshowmenu = link.title | downcase | strip | replace:' ', '' %}
+  <span class=" mega-menu__link mega-menu__link--level-2 link" aria-label="{{ link.title }}" style="cursor:default;">
+  <span {% if notshowmenu contains "notshowmenu" %}style="display:none;"{% endif %}>{{ link.title }}</span>
+  </span>
+  <ul class="list-unstyled grandchild-link three-col-menu" role="list" {% if notshowmenu contains "notshowmenu" %}style="display:none;"{% endif %}>  
+  {%  for cl in link.links %}
+          <li>
+        <a href="{{ cl.url }}" class="mega-menu__link link" aria-label="{{ cl.title }}">
+          {{ cl.title }}
+        </a>
+        </li>
+  {% endfor %}  
+  </ul>
+  {% endif %}
+  {% endfor %}  
+  </li>
+   <li class="childlink"> 
+  {% for link in linklists.international-menu.links %}
+  {%  if forloop.index == 4 or forloop.index == 5 %}
+  <span class=" mega-menu__link mega-menu__link--level-2 link" aria-label="{{ link.title }}" style="cursor:default;">
+  <span>{{ link.title }}</span>
+  </span>
+  <ul class="list-unstyled grandchild-link" role="list">  
+  {%  for cl in link.links %}
+          <li>
+        <a href="{{ cl.url }}" class="mega-menu__link link" aria-label="{{ cl.title }}">
+          {{ cl.title }}
+        </a>
+        </li>
+  {% endfor %}  
+  </ul>
+  {% endif %}
+  {% endfor %}  
+  </li> 
+  </ul>
+  </div></details>
+  </div>
+  
+  <style>
+  .im a:hover{color:#f6d309;}
+    .im .mega-menu summary.list-menu__item, .im .mega-menu .header__menu-item {padding:0px;}
+    .im{    width: 25px;
+      margin-left: 12px;
+      padding-top: 0px;}
+    @media only screen and (max-width: 768px) {
+    .im {display:none;}
+  }
+  .three-col-menu{
+    display:flex;
+    flex-wrap:wrap;
+    column-gap:10px;
+    }
+    .three-col-menu li{
+    width:calc(33.333% - 10px);
+    }
+    .three-col-menu li:first-child {
+      padding-top: 0px;
+    }
+    span:has(+ .three-col-menu) {
+    padding-bottom:10px;
+    }
+      .internationl-menu-list li.childlink{
+      width:30% !important;
+      }
+      .internationl-menu-list li.childlink:nth-child(2){
+        width:40% !important;
+        }
+  </style>

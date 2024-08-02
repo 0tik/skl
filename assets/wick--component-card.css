@@ -1,0 +1,31 @@
+@keyframes opacity_show{0%{display:none;opacity:0}1%{display:block;opacity:0}100%{opacity:1}}@keyframes pulseWhite{0%{box-shadow:0 0 0 5px rgba(255,255,255,.7)}40%{box-shadow:0 0 0 25px rgba(255,255,255,0)}80%{box-shadow:0 0 0 25px rgba(255,255,255,0)}100%{box-shadow:0 0 5px rgba(255,255,255,0)}}@keyframes slideInRight{0%{right:-100%}50%{right:-100%}100%{right:20px}}@keyframes slideInRightDelay{0%{right:-100%}100%{right:0}}@keyframes slideOutRight{0%{right:20px}100%{right:-100%}}@keyframes slideOutRightDelay{0%{right:0}50%{right:0}100%{right:-100%}}@keyframes button-loading-spinner{from{transform:rotate(0turn)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:translate(-50%, -50%) rotate(0deg) scale(1)}100%{transform:translate(-50%, -50%) rotate(1079deg) scale(1)}}@keyframes success{from{transform:translate(-50%, -50%) rotate(0) scale(0)}to{transform:translate(-50%, -50%) rotate(-45deg) scale(1)}}@keyframes error{from{transform:translate(-50%, -50%) scale(0)}to{transform:translate(-50%, -50%) scale(1);background-color:#f44336}}@keyframes vibrate{0%,30%,60%,85%,100%{left:0;background-color:#f44336}10%,40%,90%,70%{left:-2px;background-color:#f44336}20%,50%,80%,95%{left:2px;background-color:#f44336}}@keyframes formshow{0%,49.99%{opacity:0;z-index:1}50%,100%{opacity:1;z-index:5}}.card+.card-information, .life-style-content{margin-top:1rem}.card+.card-information.life-style-info{margin-top:0px}.card-information__wrapper>*{padding-top:0;padding-bottom:0}.card-information__wrapper>*:not(.visually-hidden:first-child)+*:not(.rating){margin-top:0}.card-information__wrapper>.price{justify-content:center}.card-information__wrapper>.price span.price-item.price-item--regular{font-size:1.8rem;line-height:2.4rem;font-weight:800}.card-information__variants{gap:10px}.card-information__variants .card-information__variant-image{min-width:10%;width:auto;max-width:100%}.card-information__variants .card-information__variant-image .media{position:relative;aspect-ratio:2/3;padding-bottom:0;background-color:var(--neutral-cloud)}@supports not (aspect-ratio: 2/3){.card-information__variants .card-information__variant-image .media::before{float:left;padding-top:150%;content:""}.card-information__variants .card-information__variant-image .media::after{display:block;content:"";clear:both}}.information__variant-wrapper{display:flex;flex-direction:column;height:100%;justify-content:end;width:100%;min-height:6rem;}.information__variant-wrapper>span{flex:100%}.information__variant-wrapper>span.card-information__text, .life__style-title{padding-right:0;font-size:2.4rem;line-height:2.8rem;}.information__variant-wrapper>span.card-information__color{align-self:flex-start}.information__variant-main{text-align:left}.information__variant-main .card-information__text{line-height:2rem}.information__variant-price .price{font-weight:800}.information__variant-price .price span.price-item.price-item--regular{font-size:1.8rem;line-height:2rem}.card-wrapper:hover .media.media--hover-effect>img+img{opacity:0;transform:scale(1)}.card-wrapper:hover .media.media--hover-effect>img:first-child:not(:only-child){opacity:1}.card-wrapper .card.card--product:hover .media.media--hover-effect>img+img{opacity:1;transition:transform var(--duration-long) ease;transform:scale(1.03)}.card-wrapper .card.card--product:hover .media.media--hover-effect>img:first-child:not(:only-child){opacity:0}@media screen and (max-width:768px){.information__variant-wrapper>span.card-information__text{font-size: 1.8rem;line-height: 2.5rem;}.card-information {padding-top: 0px;}}/*# sourceMappingURL=wick--component-card.css.map */
+
+.information__variant-wrapper>span.card-information__text, .life__style-title {
+    padding-right: 0;
+    font-size: 2.1rem;
+    line-height: 1rem;
+    letter-spacing: -.03em;
+    text-transform: uppercase;
+}
+
+ .card-overline {
+    font-size: 1rem;
+    line-height: 1.3rem;
+    margin: 0;
+    text-transform: initial;
+    padding: 5px 0;
+    letter-spacing: normal;
+    margin-top: -7px;
+}
+
+.information__variant-price .price {
+    font-weight: 800;
+    letter-spacing: -.03em;
+    font-size: 1.6rem;
+}
+
+.information__variant-price .price, .information__variant-price .price--on-sale .price-item--regular {
+    font-size: 1.6rem;
+    letter-spacing: -.03em;
+}
+

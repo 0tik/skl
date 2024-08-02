@@ -1,0 +1,89 @@
+ .three-columns-main{
+        display: grid;
+        grid-template-columns:1fr 1fr 1fr;
+        gap: 35px;
+        margin-bottom: 5rem;
+    }
+
+ .three-columns-main .three-columns-inner .copy-main{
+    height: 30%;
+}
+
+  .three-columns-main .three-columns-inner .copy-main .copy-details{
+     font-size: 16px;
+     color: #000;
+     max-width: 400px;
+     padding: 10px 0px;
+ }
+
+  .three-columns-main .three-columns-inner .copy-main  .copy-links ul{
+     margin: 0;
+     padding: 0;
+ }
+  .three-columns-main .three-columns-inner .copy-main  .copy-links ul li{
+     display: inline-block;
+     padding-right: 20px;
+ }
+  .three-columns-main .three-columns-inner .copy-main  .copy-links ul li a{
+     font-size: 14px;
+     color: #000;
+ }
+.three-columns-main .three-columns-thumb{
+    padding: 50% 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+.three-columns-main .three-columns-thumb .image-hover{
+    position: absolute;
+    border-radius: 2px;
+    padding: 6px 20px;
+    background: #fff;
+    width: 70%;
+    margin: 0 auto;
+    font-size: 16px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%);
+    cursor: pointer;
+    opacity: 0;
+    transition: 0.45s;
+}
+.three-columns-main .three-columns-thumb .image-hover img {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.three-columns-main .three-columns-thumb:hover .image-hover{
+    opacity: 1;
+}
+.three-columns-main .three-columns-thumb .image-hover:hover{
+    width: 80%;
+    padding: 6px 15px;
+}
+
+.three-columns-main .three-columns-inner.image_with_copy .three-columns-thumb{
+    height: 70%;
+}
+.three-columns-main .three-columns-inner.fullimage .three-columns-thumb{
+    height: 100%;
+}
+.three-columns-main .three-columns-inner.fifty_fifty_image .three-columns-thumb{
+    height: 100%;
+}
+ .three-columns-inner.fifty_fifty_image .fifty-fifty-wrap:nth-child(1){
+    margin-bottom: 35px;
+}
+ .three-columns-main .fifty_fifty_image .fifty-fifty-wrap {
+    height: calc(50% - 17.5px);
+}
+@media screen and (max-width:992px){
+    .three-columns-main{
+        grid-template-columns:1fr;
+    }
+     .three-columns-main .three-columns-inner.fifty_fifty_image .fifty-fifty-wrap:nth-child(2){
+        margin-bottom: 35px;
+    }
+}

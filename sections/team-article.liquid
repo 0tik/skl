@@ -1,0 +1,252 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+}
+.article-wrapper {
+    display: flex;
+    gap: 40px;
+}
+.article-media {
+    width: 60%;
+    overflow:hidden;
+}
+.article-media img{
+    width:100%;
+    max-width:100%;
+    display:block;
+object-fit:cover;
+object-position:center;
+border-radius:15px;
+overflow:hidden;
+}
+.article-content {
+    width: 40%;
+}
+.article-tag p {
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 2rem;
+    color: #00000080;
+}
+.article-title h3 {
+    font-size: 4.8rem;
+    line-height: 5.3rem;
+    margin: 0;
+}.article-excerpt *{
+    margin: 0;
+    font-size: 2.4rem;
+    line-height: 2.8rem;
+    color: #00000094;
+}
+.article-excerpt {
+    border-bottom: 1px solid #D8D8D8;
+    padding-bottom: 15px;
+}
+.article-address{
+    padding-top:15px;
+}
+.article-address *{
+margin:0px;
+font-size:1.6rem;
+line-height:2rem;
+}
+.article-description{
+    padding:15px 0px 20px 0px;
+}
+.social-icon-title p{
+margin:0;
+font-weight:600;
+}
+
+.article-social-icon ul {
+    list-style: none;
+    display: flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    padding:0px;
+}
+.article-social-icon ul li {
+    width: 25px;
+    height: 25px;
+}
+.article-social-icon ul li svg{
+    width:23px;
+    height:23px;
+}
+.article-social-icon .list-social__link{
+    padding:0px;
+}
+@media screen and (max-width:749px){
+    .article-wrapper{
+        flex-wrap:wrap;
+        gap:25px;
+    }
+    .article-media {
+    width: 100%;
+}
+.article-content {
+    width: 100%;
+}
+.article-tag p{
+    font-size:1.2rem;
+    line-height:1.6rem;
+}
+.article-title h3{
+    font-size:3.6rem;
+    line-height:4rem;
+}
+.article-excerpt *{
+    font-size:2rem;
+    line-height:2.4rem;
+}
+.article-address *, .article-description *{
+    font-size:1.4rem;
+    line-height:1.8rem;
+}
+}
+{%- endstyle -%}
+{% assign article_meta =  article.metafields.custom.image_with_social_link.value %}
+{% assign articleImage = article_meta.image %}
+{% assign articleAddress = article_meta.short_address %}
+{% assign socialTitle = article_meta.social_icon_heading %}
+{% assign tiktok = article_meta.tik_tok_link %}
+{% assign instagram = article_meta.instagram_link %}
+{% assign youtube = article_meta.youtube_link  %}
+{% assign facebook = article_meta.facebook_link  %}
+{% assign twitter = article_meta.twitter_link  %}
+<section class="article-section section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="article-wrapper">
+        <div class="article-media">
+            {% if articleImage != blank %}
+                {% render 'image', image:articleImage %}
+                {% else %}
+            {% render 'image', image:article.image %}
+            {% endif %}
+        </div>
+        <div class="article-content">
+            {% for tag in article.tags limit:1 %}
+            <div class="article-tag">
+                <p>{{ tag | replace:'-', '' | upcase }}</p>
+            </div>
+            {% endfor %}
+            <div class="article-title">
+                <h3>{{ article.title }}</h3>
+            </div>
+            {% if article.excerpt != blank %}
+            <div class="article-excerpt">
+                <p>{{ article.excerpt }}</p>
+            </div>
+        {% endif %}
+        {% if articleAddress != blank %}
+            <div class="article-address">
+                {{ articleAddress | metafield_tag }}
+                </div>
+        {% endif %}
+        {% if article.content != blank %}
+             <div class="article-description">
+                {{ article.content }}
+                </div>
+        {% endif %}
+
+        {% if tiktok != blank or instagram != blank or youtube != blank or facebook != blank and twitter != blank %}
+        <div class="social-icon-title">
+            {% if socialTitle != blank %}
+            <p>{{ socialTitle }}</p>
+            {% else %}
+            <p>Follow {{ article.title | split:' ' | first }}</p>
+        {% endif %}
+        </div>
+        <div class="article-social-icon">
+            <ul>
+                {% if tiktok != blank %}
+       
+            <li>
+                <a target="_blank" href="{{ settings.social_tiktok_link }}" class="link list-social__link">
+                    {%- render 'icon-tiktok' -%}
+                    <span class="visually-hidden">{{ 'general.social.links.tiktok' | t }}</span>
+                  </a>
+            </li>
+        {% endif %}
+        {% if instagram != blank %}
+            <li>
+                <a target="_blank" href="{{ settings.social_instagram_link }}" class="link list-social__link">
+                    {%- render 'icon-instagram' -%}
+                    <span class="visually-hidden">{{ 'general.social.links.instagram' | t }}</span>
+                  </a>
+            </li>
+        {% endif %}
+        {% if youtube != blank %}
+            <li>
+                <a target="_blank" href="{{ settings.social_youtube_link }}" class="link list-social__link">
+                    {%- render 'icon-youtube' -%}
+                    <span class="visually-hidden">{{ 'general.social.links.youtube' | t }}</span>
+                  </a>
+            </li>
+        {% endif %}
+        {% if facebook != blank %}
+            <li>
+                <a target="_blank" href="{{ settings.social_facebook_link }}" class="link list-social__link">
+                    {%- render 'icon-facebook' -%}
+                    <span class="visually-hidden">{{ 'general.social.links.facebook' | t }}</span>
+                  </a>
+            </li>
+            {% endif %}
+            {% if twitter != blank %}
+            <li>
+                <a target="_blank" href="{{ settings.social_twitter_link }}" class="link list-social__link">
+                    {%- render 'icon-twitter' -%}
+                    <span class="visually-hidden">{{ 'general.social.links.twitter' | t }}</span>
+                  </a>
+            </li>
+        {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+        </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Team Article",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Team Article"
+    }
+  ]
+}
+{% endschema %}

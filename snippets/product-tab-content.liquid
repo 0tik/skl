@@ -1,0 +1,78 @@
+{% assign features = product.metafields.custom.feature %}
+{% assign whatInclude = product.metafields.custom.what_s_included %}
+{% if features != blank or whatInclude != blank or product.description != blank  %}
+<div class="tab-container">
+    <div class="tab-wrapper">
+      {% if product.description != blank %}
+      <div class="tab-btn" data-tab="description">
+        Description
+      </div>
+    {% endif %}
+    {% if features != blank %}
+      <div class="tab-btn active" data-tab="feature">
+        Features
+      </div>
+    {% endif %}
+    {% if whatInclude != blank %}
+      <div class="tab-btn" data-tab="whatinclude">
+        What's Included
+      </div>
+    {% endif %}
+    </div>
+    {% if product.description != blank %}
+    <div class="tab-pro-desription tab-content" data-content="description">
+      {{ product.description }}
+    </div>
+  {% endif %}
+  {% if features != blank %}
+    <div class="tab-content tab-featured active" data-content="feature">
+      <div class="tab-featured-wrapper">
+        {% for feature in features.value %}
+        <div class="tab-featured-inner">
+          <div class="tab-featured-icon">
+            <img src="{{ feature.icon_image | img_url :'' }}" alt="icon" loading= "lazy"/>
+          </div>
+          <div class="tab-featured-text">
+            {{ feature.text }}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+  {% if whatInclude != blank %}
+    <div class="tab-content tab-whatinclude" data-content="whatinclude">
+    {{ whatInclude | metafield_tag }}
+    </div>
+  {% endif %}
+
+  </div>
+  <script>
+    let tab_btns = document.querySelectorAll('.tab-btn');
+    let tab_contents = document.querySelectorAll('.tab-content');
+    
+    tab_btns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            btn.classList.remove('active');
+            tab_btns.forEach(btnclass => {
+                btnclass.classList.remove('active');
+            });
+            let tabFor = this.dataset.tab;
+            
+            tab_contents.forEach(content => {
+                let contentFor = content.dataset.content;
+    
+                if (tabFor === contentFor) {
+                    tab_contents.forEach(contentclass => {
+                        contentclass.classList.remove('active');
+                    });
+                    content.classList.add('active');
+                }
+            });
+            
+            btn.classList.add('active');
+        });
+    });
+    
+</script>
+{% endif %}

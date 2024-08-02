@@ -1,0 +1,112 @@
+
+<div class="search_data">
+    <div class="custom-search-top">
+      <p>Search Results</p>
+      <span class="close-custom-search">x</span>
+    </div>
+    <style>
+        .search_data *:focus-visible{
+            outline:0;
+            box-shadow:unset;
+        }
+      #custom-search-result{
+      visibility:hidden;
+      opacity:0;
+      transition:opacity 0.4s ease-in-out;
+      border-radius: 10px;
+  }
+          #custom-search-result[open]{
+        visibility: visible;
+      opacity: 1;
+      z-index:2;
+  }
+      .slick-track{
+        margin-left:0 !important;
+      }
+      .custom-search-slick .card-wrapper {
+    width:calc(25% - 10px);
+    margin-right:10px;
+    }
+    .custom-search-slick .flickity-prev-next-button{
+    width:25px !important;
+    height:25px !important;
+    }
+    .custom-search-slick .flickity-prev-next-button[disabled]{
+    opacity:0;
+    }
+    .search-no-result{
+    text-align:center;
+    }
+    @media (max-width:1200px){
+
+        .custom-search-slick .card-wrapper {
+            width:calc(45% - 10px);
+            margin-right:10px;
+            }
+    }
+    @media (max-width:768px){
+
+        .custom-search-slick .card-wrapper {
+            width:calc(50% - 10px);
+            margin-right:10px;
+            }
+            .custom-search-slick .card--product .card__inner {
+    padding-bottom: 0;
+      }   
+    }
+    @media (max-width:600px){
+
+        .custom-search-slick .card-wrapper {
+            width:calc(75% - 10px);
+            margin-right:10px;
+            }
+    }
+      @media (max-width:990px){
+        #mobile-header-search{
+        visibility:hidden;
+         opacity:0;
+         transition:opacity 0.4s ease-in-out;
+        }
+         #mobile-header-search[open]{
+         visibility: visible;
+         opacity: 1;
+        }
+        #mobile-header-search .slick-initialized .slick-slide{
+          padding:0px 5px;
+        }
+        #mobile-header-search .card__information h5{
+          font-size:14px;
+        }
+        #mobile-header-search .card__heading a{
+          font-size:15px;
+        }
+      }
+    </style>
+  {{ 'custom-search.css' | asset_url | stylesheet_tag }}
+  {{ 'component-card.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'wick--component-card.css' | asset_url | stylesheet_tag }}
+  {{ 'flickity.min.css' | asset_url | stylesheet_tag }}
+    {% assign total_search = 0 %}
+{% if search.results.size == 0 %}
+<p class="search-no-result">No Result Found</p>
+{% else %}
+  <div class="custom-search-slick">
+  {% for item in search.results %}
+    {% if item.object_type == 'product' %}
+      {% assign total_search = total_search | plus:1 %}
+  {% render 'product-card',
+                product_card_product: item,
+                media_size: 'square',
+                show_swatch: true
+              %}
+      {% endif %}
+    {% if total_search == 15 %}
+      {% break %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+    <script src="{{ 'flickity.min.js' | asset_url }}" ></script>
+    <script src="{{ 'custom-search.js' | asset_url }}" ></script>
+      </div>

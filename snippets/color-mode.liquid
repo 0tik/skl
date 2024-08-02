@@ -1,0 +1,94 @@
+{% for modecollection in settings.darkmode %}
+    {% if modecollection.handle == collection.handle and request.page_type 'collection' %}
+        {% assign color_txt = 'white' %}
+        {% assign color_bg = 'black' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var anchors = document.querySelectorAll('#MainContent a');
+            var paragraphs = document.querySelectorAll('#MainContent p');
+            var headings = document.querySelectorAll('#MainContent h1, #MainContent h2, #MainContent h3, #MainContent h4, #MainContent h5, #MainContent h6, #MainContent .h1, #MainContent .h2, #MainContent .h3, #MainContent .h4, #MainContent .h5');
+            var sections = document.querySelectorAll('#MainContent .shopify-section');
+            var spans = document.querySelectorAll('#MainContent span');
+            var richTexts = document.querySelectorAll('#MainContent .rich-text.color-background-1');
+            var mainDiv = document.querySelector('#MainContent');
+            mainDiv.style.backgroundColor = '{{ color_bg }}';
+            paragraphs.forEach(function(paragraph) {
+                paragraph.style.color = '{{ color_txt }}';
+            });
+
+            headings.forEach(function(heading) {
+                heading.style.color = '{{ color_txt }}';
+            });
+
+            sections.forEach(function(section) {
+                section.style.backgroundColor = '{{ color_bg }}';
+            });
+            richTexts.forEach(function(richtxt) {
+                richtxt.style.backgroundColor = '{{ color_bg }}';
+            });
+
+            spans.forEach(function(span) {
+                span.style.color = '{{ color_txt }}';
+            });
+            anchors.forEach(function(anchor) {
+                var computedStyle = window.getComputedStyle(anchor);
+                var bgColor = computedStyle.backgroundColor;
+                
+                if (bgColor === 'rgb(255, 255, 255)') { 
+                    anchor.style.backgroundColor = '{{ color_bg }}';
+                    anchor.style.color = '{{ color_txt }}';
+                } else if (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') { 
+                    anchor.style.color = '{{ color_bg }}';
+                }
+            });
+        });
+    </script>
+{% endif %}
+{% endfor %}
+{% for modecollection in settings.lightmode %}
+    {% if modecollection.handle == collection.handle and request.page_type 'collection' %}
+        {% assign color_txt = 'black' %}
+        {% assign color_bg = 'white' %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var anchors_1 = document.querySelectorAll('#MainContent a');
+            var paragraphs_1 = document.querySelectorAll('#MainContent p');
+            var headings_1 = document.querySelectorAll('#MainContent h1, #MainContent h2, #MainContent h3, #MainContent h4, #MainContent h5, #MainContent h6, #MainContent .h1, #MainContent .h2, #MainContent .h3, #MainContent .h4, #MainContent .h5');
+            var sections_1 = document.querySelectorAll('#MainContent .shopify-section');
+            var spans_1 = document.querySelectorAll('#MainContent span');
+            var richTexts_1 = document.querySelectorAll('#MainContent .rich-text.color-background-1');
+            var mainDiv_1 = document.querySelector('#MainContent');
+            mainDiv_1.style.backgroundColor = '{{ color_bg }}';
+            paragraphs_1.forEach(function(paragraph) {
+                paragraph.style.color = '{{ color_txt }}';
+            });
+
+            headings_1.forEach(function(heading) {
+                heading.style.color = '{{ color_txt }}';
+            });
+
+            sections_1.forEach(function(section) {
+                section.style.backgroundColor = '{{ color_bg }}';
+            });
+            richTexts_1.forEach(function(richtxt) {
+                richtxt.style.backgroundColor = '{{ color_bg }}';
+            });
+
+            spans_1.forEach(function(span) {
+                span.style.color = '{{ color_txt }}';
+            });
+            anchors.forEach(function(anchor) {
+                var computedStyle = window.getComputedStyle(anchor);
+                var bgColor = computedStyle.backgroundColor;
+                
+                if (bgColor === 'rgb(255, 255, 255)') { 
+                    anchor.style.backgroundColor = '{{ color_bg }}';
+                    anchor.style.color = '{{ color_txt }}';
+                } else if (bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') { 
+                    anchor.style.color = '{{color_bg}}';
+                }
+            });
+        });
+    </script>
+{% endif %}
+{% endfor %}

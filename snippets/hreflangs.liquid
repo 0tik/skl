@@ -1,0 +1,34 @@
+{% assign caurl = "https://www.skullcandy.ca/" %}
+{% assign usurl = "https://www.skullcandy.com/" %}
+{% assign euurl = "https://www.skullcandy.eu/" %}
+{% assign ukurl = "https://www.skullcandy.co.uk/" %}
+
+{%  if shop.url contains "skullcandy.ca" %}
+<link rel="alternate" hreflang="x-default" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.ca/" }}">
+<link rel="alternate" hreflang="en-us" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.ca/" }}">
+<link rel="alternate" hreflang="en-ca" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="en" href="{{ euurl }}{{ canonical_url |remove: "https://www.skullcandy.ca/" }}">
+<link rel="alternate" hreflang="en-gb" href="{{ ukurl }}{{ canonical_url |remove: "https://www.skullcandy.ca/" }}">
+  
+{% elsif shop.url contains "skullcandy.com" %}
+<link rel="alternate" hreflang="x-default" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="en-ca" href="{{ caurl }}{{ canonical_url | remove: "https://www.skullcandy.com/" }}">
+<link rel="alternate" hreflang="en-us" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="en" href="{{ euurl }}{{ canonical_url |remove: "https://www.skullcandy.com/" }}">
+<link rel="alternate" hreflang="en-gb" href="{{ ukurl }}{{ canonical_url |remove: "https://www.skullcandy.com/" }}">
+  
+{% elsif shop.url contains "skullcandy.eu" %}
+<link rel="alternate" hreflang="x-default" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.eu/" }}">
+<link rel="alternate" hreflang="en-us" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.eu/" }}">
+<link rel="alternate" hreflang="en" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="en-ca" href="{{ caurl }}{{ canonical_url |remove: "https://www.skullcandy.eu/" }}">
+<link rel="alternate" hreflang="en-gb" href="{{ ukurl }}{{ canonical_url |remove: "https://www.skullcandy.eu/" }}">
+  
+{% elsif shop.url contains "skullcandy.co.uk" %}
+<link rel="alternate" hreflang="x-default" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.co.uk/" }}">  
+<link rel="alternate" hreflang="en-us" href="{{ usurl }}{{ canonical_url |remove: "https://www.skullcandy.co.uk/" }}">
+<link rel="alternate" hreflang="en-gb" href="{{ canonical_url }}">
+<link rel="alternate" hreflang="en-ca" href="{{ caurl }}{{ canonical_url |remove: "https://www.skullcandy.co.uk/" }}">
+<link rel="alternate" hreflang="en" href="{{ euurl }}{{ canonical_url |remove: "https://www.skullcandy.co.uk/" }}">
+  
+{% endif %}

@@ -1,0 +1,586 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-full page--proprogram">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-45 section-{{ section.id }}-padding">
+        <div class="row">
+          {{ page.content }}
+        </div>
+        <div class="row">
+          {% render 'shared-customform',
+            blocks: section.blocks,
+            type: 'Pro Application',
+            destination: section.settings.submission,
+            file_upload: section.settings.file_upload,
+            file_upload_type: section.settings.file_upload_type,
+            procode_enable: section.settings.procode_enable,
+            procode_description: section.settings.procode_description,
+            procode_content: section.settings.procode,
+            thanks_content: section.settings.thanks,
+            domain_content: section.settings.domain
+          %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Pro Program Application",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "url",
+      "id": "submission",
+      "label": "Submission URL"
+    },
+    {
+      "type": "url",
+      "id": "file_upload",
+      "label": "File Upload URL"
+    },
+    {
+      "type": "select",
+      "id": "file_upload_type",
+      "label": "File Upload platform",
+      "options": [
+        {
+          "value": "dropbox",
+          "label": "Dropbox"
+        },
+        {
+          "value": "s3",
+          "label": "Amazon S3"
+        },
+        {
+          "value": "drive",
+          "label": "Google Drive"
+        },
+        {
+          "value": "sharepoint",
+          "label": "Microsoft Sharepoint"
+        }
+      ],
+      "default": "dropbox"
+    },
+    {
+      "type": "header",
+      "content": "Pro Code Form"
+    },
+    {
+      "type": "checkbox",
+      "id": "procode_enable",
+      "label": "Enable Pro Code Form?"
+    },
+    {
+      "type": "richtext",
+      "id": "procode_description",
+      "label": "Procode Description",
+      "default": "<p>If you have a Pro Code, you may enter it and we will verify it.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "procode",
+      "label": "Procode Success",
+      "default": "<p>Thanks for using a valid Procode! You are now able to log in (if you haven't already) and start taking advantage of your VIP Deals.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Pro Application Form"
+    },
+    {
+      "type": "richtext",
+      "id": "thanks",
+      "label": "Application Success",
+      "default": "<p>Thanks for applying! We will be reviewing your application and will get back to you shortly.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "domain",
+      "label": "Auto Approval Domain Success",
+      "default": "<p>You have been automatically approved for the VIP Program! You are now able to log in (if you haven't already) and start taking advantage of your VIP Deals.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Description text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "title",
+          "label": "Text",
+          "default": "<p>Info</p>"
+        }
+      ]
+    },
+    {
+      "type": "hr",
+      "name": "Horizontal line",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Will make a horizontal line"
+        }
+      ]
+    },
+    {
+      "type": "fileinput",
+      "name": "File upload field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Text label"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required"
+        },
+        {
+          "type": "select",
+          "id": "field_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "15",
+              "label": "1/4"
+            },
+            {
+              "value": "20",
+              "label": "1/3"
+            },
+            {
+              "value": "30",
+              "label": "1/2"
+            },
+            {
+              "value": "40",
+              "label": "2/3"
+            },
+            {
+              "value": "45",
+              "label": "3/4"
+            },
+            {
+              "value": "60",
+              "label": "Full Width"
+            }
+          ],
+          "default": "60"
+        },
+        {
+          "type": "text",
+          "id": "upload_spot",
+          "label": "Where to upload to",
+          "info": "The spot this is uploaded to will need to receive the file in binary and will need to return the name and file link."
+        },
+        {
+          "type": "checkbox",
+          "id": "file_type_jpg",
+          "label": "Allow .jpg",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "file_type_png",
+          "label": "Allow .png",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "file_type_pdf",
+          "label": "Allow .pdf",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "textinput",
+      "name": "Single Line field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Text label"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required"
+        },
+        {
+          "type": "select",
+          "id": "field_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "15",
+              "label": "1/4"
+            },
+            {
+              "value": "20",
+              "label": "1/3"
+            },
+            {
+              "value": "30",
+              "label": "1/2"
+            },
+            {
+              "value": "40",
+              "label": "2/3"
+            },
+            {
+              "value": "45",
+              "label": "3/4"
+            },
+            {
+              "value": "60",
+              "label": "Full Width"
+            }
+          ],
+          "default": "60"
+        },
+        {
+          "type": "radio",
+          "id": "input_type",
+          "label": "Type",
+          "options": [
+            {
+              "value": "text",
+              "label": "Text"
+            },
+            {
+              "value": "number",
+              "label": "Number"
+            },
+            {
+              "value": "date",
+              "label": "Date"
+            }
+          ],
+          "default": "text"
+        },
+        {
+          "type": "select",
+          "id": "field_autocomplete",
+          "label": "Autocomplete type",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "value": "name",
+              "label": "Full Name"
+            },
+            {
+              "value": "given-name",
+              "label": "First Name"
+            },
+            {
+              "value": "family-name",
+              "label": "Last Name"
+            },
+            {
+              "value": "email",
+              "label": "Email"
+            },
+            {
+              "value": "tel",
+              "label": "Phone Number"
+            },
+            {
+              "value": "address-line1",
+              "label": "Address Line 1"
+            },
+            {
+              "value": "address-line2",
+              "label": "Address Line 2"
+            },
+            {
+              "value": "address-level2",
+              "label": "City"
+            },
+            {
+              "value": "address-level1",
+              "label": "State"
+            },
+            {
+              "value": "postal-code",
+              "label": "ZIP"
+            },
+            {
+              "value": "country-name",
+              "label": "Country"
+            }
+          ],
+          "default": "none"
+        }
+      ]
+    },
+    {
+      "type": "textarea",
+      "name": "Textarea field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Textarea label"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required"
+        },
+        {
+          "type": "select",
+          "id": "field_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "15",
+              "label": "1/4"
+            },
+            {
+              "value": "20",
+              "label": "1/3"
+            },
+            {
+              "value": "30",
+              "label": "1/2"
+            },
+            {
+              "value": "40",
+              "label": "2/3"
+            },
+            {
+              "value": "45",
+              "label": "3/4"
+            },
+            {
+              "value": "60",
+              "label": "Full Width"
+            }
+          ],
+          "default": "60"
+        }
+      ]
+    },
+    {
+      "type": "option_picker",
+      "name": "Option Picker field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Option Picker label"
+        },
+        {
+          "type": "checkbox",
+          "id": "hide_label",
+          "label": "Hide label"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required"
+        },
+        {
+          "type": "select",
+          "id": "field_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "15",
+              "label": "1/4"
+            },
+            {
+              "value": "20",
+              "label": "1/3"
+            },
+            {
+              "value": "30",
+              "label": "1/2"
+            },
+            {
+              "value": "40",
+              "label": "2/3"
+            },
+            {
+              "value": "45",
+              "label": "3/4"
+            },
+            {
+              "value": "60",
+              "label": "Full Width"
+            }
+          ],
+          "default": "60"
+        },
+        {
+          "type": "textarea",
+          "id": "choices",
+          "label": "Choices",
+          "info": "Enter each choice on a new line. If an image is also used for the Radio type, put the URL with a double pipe next to the Choice"
+        },
+        {
+          "type": "text",
+          "id": "default_choice",
+          "label": "Default choice",
+          "info": "Not used for Checkbox group"
+        },
+        {
+          "type": "radio",
+          "id": "input_type",
+          "label": "Type",
+          "options": [
+            {
+              "value": "select",
+              "label": "Select"
+            },
+            {
+              "value": "radio",
+              "label": "Radio"
+            },
+            {
+              "value": "checkbox",
+              "label": "Checkbox"
+            }
+          ],
+          "default": "select"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "name": "Checkbox field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "Checkbox label"
+        },
+        {
+          "type": "checkbox",
+          "id": "input_required",
+          "label": "Required"
+        },
+        {
+          "type": "select",
+          "id": "field_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "15",
+              "label": "1/4"
+            },
+            {
+              "value": "20",
+              "label": "1/3"
+            },
+            {
+              "value": "30",
+              "label": "1/2"
+            },
+            {
+              "value": "40",
+              "label": "2/3"
+            },
+            {
+              "value": "45",
+              "label": "3/4"
+            },
+            {
+              "value": "60",
+              "label": "Full Width"
+            }
+          ],
+          "default": "60"
+        },
+        {
+          "type": "radio",
+          "id": "default_choice",
+          "label": "Default",
+          "options": [
+            {
+              "value": "true",
+              "label": "Checked"
+            },
+            {
+              "value": "false",
+              "label": "Unchecked"
+            }
+          ],
+          "default": "false"
+        }
+      ]
+    },
+    {
+      "type": "html",
+      "name": "HTML",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "content",
+          "label": "Custom HTML"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

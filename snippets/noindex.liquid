@@ -1,0 +1,11 @@
+<!-- START noindex script -->
+{%-  if settings.nion -%}
+{%- for i in (1..50) -%}
+{%- capture item -%}ni{{ i }}{%- endcapture -%}
+{%-  if settings.[item] -%}
+{%  capture urlnow %}https://www.skullcandy.com{{ settings.[item] }}{% endcapture %} 
+{%  if urlnow == canonical_url %}<meta name="robots" content="noindex">{% endif %} 
+{%- endif -%}   
+{%- endfor -%}
+{%- endif -%}
+<!-- END noindex script -->

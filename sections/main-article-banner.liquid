@@ -1,0 +1,68 @@
+{% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+{{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
+{{ 'wick--collection-banner.css' | asset_url | stylesheet_tag }}
+
+{%- render 'header-banner',
+    color_scheme: section.settings.color_scheme,
+    show_image: true,
+    show_description: false,
+    image_object: article.image,
+    title: article.title,
+    show_date: section.settings.blog_show_date,
+    show_author: section.settings.blog_show_author
+-%}
+
+{% schema %}
+{
+  "name": "Article banner",
+  "class": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.colors.label",
+      "info": "For non-image pages"
+    },
+    {
+      "type": "header",
+      "content": "Content options"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "default": true,
+      "label": "t:sections.main-article.blocks.title.settings.blog_show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "default": false,
+      "label": "t:sections.main-article.blocks.title.settings.blog_show_author.label"
+    }
+  ]
+}
+{% endschema %}

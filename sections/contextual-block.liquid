@@ -1,0 +1,178 @@
+   <style>
+    .padding-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+    }
+    .contextual-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .contextual-content{
+    width:55%;
+    padding-right:30px;
+    margin: auto;
+     }
+     .contextual-img{
+    width:45%;
+    }
+    .contextual-section{
+    display:none;
+    opacity:0;
+    animation:opacity_show 0.4s ease;
+     }
+    .contextual-section.active{
+    display:block;
+    opacity:1;
+    }
+    .contextual-content h1, 
+    .contextual-content h2,
+    .contextual-content h3, 
+    .contextual-content h4,
+    .contextual-content h5,
+    .contextual-content h6,
+    .contextual-content p{
+     margin:0;
+     padding-bottom:5px;
+    }
+    .contextual-content h6{
+    font-size:1rem;
+    line-height:1.5rem;
+    text-transform:uppercase;
+    }
+    .contextual-content h5{
+        font-size: 2.4rem;
+    line-height: 2.9rem;
+     }
+     .contextual-img img{
+    width:100%;
+    max-width:100%;
+    object-fit:contain;
+    height:100%;
+    }
+    @media screen and (max-width:768px){
+        .contextual-content{
+            width:100%;
+            padding-right: 0px;
+            padding-top:10px;
+        }
+        .contextual-img{
+        width:100%;
+        }
+        .contextual-wrapper {
+            flex-direction: column-reverse;
+        }
+    }
+   </style>
+    {% for variant in product.variants %}
+        {% assign contextual_block = variant.metafields.custom.contextual_block.value %}
+    {% if contextual_block.text != blank and contextual_block.image != blank %}
+        <style>
+            {% if contextual_block.background_image %}
+            .contextual-background-{{ forloop.index }}{
+                    background-image:url('{{ contextual_block.background_image | img_url:'' }}');
+                    background-repeat:no-repeat;
+                    background-size:cover;
+                    background-position:center;
+            }
+            {% else %}
+            .contextual-background-{{ forloop.index }}{
+            background-color:{{ contextual_block.background_color }};
+            }
+            {% endif %}
+            .contextual-color-{{ forloop.index }} *{
+            color:{{ contextual_block.text_color }};
+            }
+            {% if contextual_block.mobile_background_image %}
+            @media screen and (max-width:768px){
+                    .contextual-background-{{ forloop.index }}{
+                            background-image:url('{{ contextual_block.mobile_background_image | img_url:'' }}');
+                            background-repeat:no-repeat;
+                            background-size:cover;
+                            background-position:center;
+                    }
+            }
+           {% endif %}
+         </style>
+     <div {% if section.settings.anchor_id != blank %}id="{{ section.settings.anchor_id | handle }}"{% endif %} class="contextual-section padding-{{ section.id }} contextual-background-{{ forloop.index }}" data-contextual="{{ variant.id }}">
+     <div class="page-width">
+    <div class="contextual-wrapper contextual-color-{{ forloop.index }}">
+        <div class="contextual-content">
+            {{ contextual_block.text | metafield_tag }}
+        </div>
+        <div class="contextual-img">
+            {% render 'image', image: contextual_block.image.value %}
+        </div>
+    </div>
+</div>
+</div>
+{% endif %}
+{% endfor %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function selectedVariant() {
+            let variant_select = document.querySelector('.product__info-wrapper .product-form input[name=id]').value;
+            let contextualSection = document.querySelector(`.contextual-section[data-contextual="${variant_select}"]`);
+            if(contextualSection){
+            contextualSection.classList.add('active');
+            }
+        }
+    
+        selectedVariant();
+    
+        let labels = document.querySelectorAll('.product__info-wrapper .product-form__input label');
+        labels.forEach(input => {
+            input.addEventListener('click', function() {
+                setTimeout(() => {
+                let all_contextuals = document.querySelectorAll('.contextual-section');
+                all_contextuals.forEach(contextual => {
+                    if(contextual){
+                    contextual.classList.remove('active');
+                    }
+                });
+                selectedVariant();
+            },100);
+            });
+        });
+    });
+</script>   
+{% schema %}
+{
+"name" : "Contextual",
+"limit" : 1,
+"settings":[
+    {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      },
+      {
+       "type" : "text",
+       "label" : "Anchor id",
+       "id" : "anchor_id"
+      }
+],
+"presets":[
+    {
+        "name" : "Contextual"
+    }
+],
+"enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

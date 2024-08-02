@@ -1,0 +1,30 @@
+
+<div class="guide-steps-wrapper">
+  <div class="step-info-left">
+        {% if section.settings.subheading != blank %}
+       <div class="guide-step-subheading">
+        <p>{{ section.settings.subheading }}</p>
+        </div>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+        <div class="guide-step-heading">
+            <p>{{ section.settings.heading }}</p>
+        </div>
+    {% endif %}
+   </div>
+        <div class="product-guide-card-wrapper {{ class }} guide-column-{{ column }}">
+            {% for block in blocks %}
+                {% if block.settings.title and block.settings.step_img  %}
+                    {% assign connect_to = block.settings.connect_step | split:'|' %}
+            <div class="product-guide-content{% for connect in connect_to %}{% assign connect_1 = connect | handle %} {{  connect_1 }}{% endfor %}" {{  class | remove:"guide-" }}="{{ block.settings.title | handle }}" {% if class == 'guide-step-one' and forloop.index == 1%}active{% endif %}>
+                <div class="product-guide-card-img">
+                    {% render 'image', image:block.settings.step_img %}
+                    </div>
+                    <div class="product-guide-card-title">
+                       <p>{{ block.settings.title }}</p>
+                    </div>
+                </div>
+            {% endif %}
+                {% endfor %}
+        </div>
+</div>

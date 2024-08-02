@@ -1,0 +1,125 @@
+<link rel="stylesheet" href="{{ 'section-main-page.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'wick--page.css' | asset_url }}" media="print" onload="this.media='all'">
+
+<noscript>{{ 'section-main-page.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
+<noscript>{{ 'wick--page.css' | asset_url | stylesheet_tag }}</noscript>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="page-full section-{{ section.id }}-padding">
+  <div class="page-width page-width--narrow">
+    <h1 class="main-page-title page-title h0">
+      {{ page.title | escape }}
+    </h1>
+    <div class="rte">
+      {{ page.content }}
+    </div>
+  </div>
+  <div class="page-width">
+    <div class="locally">
+
+      <!-- LOCALLY.COM WIDGET EMBED CODE -->
+      <div id="lcly-button-0"
+         		data-switchlive="true"
+      	   	 data-switchlive-impression="true"
+      		 data-switchlive-impression-id-PL="1">
+
+        <a id="lcly-link-0"
+      	data-switchlive="true"
+      	data-switchlive-mode="auto"
+      	data-switchlive-id-PL="6"
+      	href="https://join.locally.com/for-brands" target="_blank">
+          Store Locator by Locally
+        </a>
+      </div>
+      <script id="lcly-script-0" async></script>
+      <script id="lcly-config-0">
+        var lcly_config_0 = {
+          "inline": "1",
+          "company_id": "172",
+          "company_name": "Obermeyer"
+        };
+        var lcly_query_0 = Object.keys(lcly_config_0)
+        .reduce(function(a,k){a.push(encodeURIComponent(k) + '='
+        + encodeURIComponent(lcly_config_0[k]));return a},[]).join('&');
+        var lcly_endpoint_0 = 'https://Obermeyer.locally.com/stores/map.js?' + lcly_query_0;
+        document.getElementById('lcly-script-0').src = lcly_endpoint_0;
+      </script>
+
+      <script id="lcly-script-switchlive-0" async></script>
+      <script id="lcly-script-switchlive-events-0" async></script>
+
+      <script id="lcly-switchlive-config-0">
+      	var lcly_switchlive_events_endpoint_0 = 'https://Obermeyer.locally.com/switchlive/switchlive-events.js?company_id=172';
+      	var lcly_switchlive_endpoint_0 = 'https://Obermeyer.locally.com/js/switchlive.js?company_id=172';
+
+      	document.getElementById('lcly-script-switchlive-0').src = lcly_switchlive_endpoint_0;
+      	document.getElementById('lcly-script-switchlive-events-0').src = lcly_switchlive_events_endpoint_0;
+      </script>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "Sidebar Menu"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Support Hub"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu"
+    }
+  ]
+}
+{% endschema %}

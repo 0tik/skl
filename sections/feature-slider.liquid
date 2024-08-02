@@ -1,0 +1,149 @@
+{% assign feature_sliders = product.metafields.custom.feature_slider.value %}
+{% if feature_sliders != blank %}
+<style>
+    .padding-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+        }
+    .feature-slider-card{
+    width:calc(40% - 20px);
+    margin-right: 20px;
+}
+.product-feature-slider .flickity-page-dots .dot{
+ background:#666565f7;
+}
+.product-feature-slider .flickity-page-dots{
+    bottom: -45px;
+}
+.feature-slider *:focus-visible{
+    outline:0;
+    box-shadow:unset;
+}
+.feature-content{
+padding-right:10px;
+}
+.feature-img {
+    position: relative;
+    padding-top: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.feature-img img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.feature-title h4{
+    margin: 15px 0px;
+}
+.feature-description p{
+margin-top:0px;
+}
+.product-feature-slider .flickity-prev-next-button {
+    width: 35px;
+    height: 35px;
+    background: #f6f4f5;
+    border-radius: 5px;
+}
+.product-feature-slider  .flickity-prev-next-button .flickity-button-icon{
+    fill:#000;
+}
+@media screen and (max-width:768px){
+    .feature-slider-card{
+        width:calc(80% - 10px);
+    }
+    .feature-img{
+    border-radius:15px;
+    padding-top: 100%;
+    }
+    .feature-slider-card{
+        margin-right:10px;
+    }
+}
+</style>
+
+<div {% if section.settings.anchor_id != blank %}id="{{ section.settings.anchor_id | handle }}"{% endif %} class="feature-slider padding-{{ section.id }}">
+<div class="page-width">
+    <div class="product-feature-slider">
+        {% for feature_slider in feature_sliders %}
+        <div class="feature-slider-card">
+            {% if feature_slider.image != blank %}
+            <div class="feature-img">
+                {% render 'image', image: feature_slider.image %}
+            </div>
+        {% endif %}
+            <div class="feature-content">
+                {% if feature_slider.title != blank %}
+                <div class="feature-title">
+                    <h3 class="h4">{{ feature_slider.title }}</h3>
+                </div>
+            {% endif %}
+            {% if feature_slider.description != blank %}
+                <div class="feature-description">
+                    <p>{{ feature_slider.description }}</p>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    let featureslider = document.querySelector('.padding-{{ section.id }} .product-feature-slider');
+    featureslider = new Flickity(featureslider, {
+        pageDots: true,
+        prevNextButtons: true,
+        freeScroll: true,
+        contain: true,
+        groupCells: true
+      });
+    });
+</script>   
+{% endif %}
+{% schema %}
+{
+    "name" : "Feature Slider",
+    "settings":[
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_top",
+            "default": 36
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_bottom",
+            "default": 36
+          },
+          {
+            "type" : "text",
+            "label" : "Anchor id",
+            "id" : "anchor_id"
+           }
+    ],
+    "presets":[
+        {
+            "name" : "Feature Slider"
+        }
+    ],
+    "enabled_on": {
+        "templates": ["product"]
+      }
+}
+
+{% endschema %}

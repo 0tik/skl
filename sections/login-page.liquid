@@ -1,0 +1,382 @@
+<div class="container{% if section.settings.fluid %}-fluid{% endif %} loginpage">
+
+  {%if section.settings.newsite %}
+      <div class="row">
+    <div class="col-md-30 offset-md-15 text-center" style="margin: 10px auto 40px;">
+      <h4>{{section.settings.newsitetitle}}</h4>
+      <p>{{section.settings.newsitetxt}}</p>
+        </div>
+  </div>
+  {%endif %}
+
+  
+  <script>
+    $('#recovery').click(function(){
+       $('#RecoverPassword').click();
+      $('.offset-md-4').hide(); 
+    });
+  </script>
+  
+{% unless section.settings.logncreate %}
+    <div class="row">
+    <div class="col-md-30 offset-md-15">
+      <div class="note form-success hide" id="ResetSuccess">
+        {{ 'customer.recover_password.success' | t }}
+      </div>
+
+      <div id="CustomerLoginForm" class="form-vertical">
+        {% form 'customer_login' %}
+
+          <h1 class="text-center">{{ 'customer.login.title' | t }}</h1>
+
+          {{ form.errors | default_errors }}
+
+          <label for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+          <input type="email" name="customer[email]" id="CustomerEmail" class="{% if form.errors contains 'email' %} input--error{% endif %}" autocorrect="off" autocapitalize="off" autofocus>
+
+          {% if form.password_needed %}
+            <label for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+            <input type="password" value="" name="customer[password]" id="CustomerPassword" class="{% if form.errors contains 'password' %} input--error{% endif %}">
+          {% endif %}
+
+          <div class="text-center">
+            {% if form.password_needed %}
+              <p><a href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
+            {% endif %}
+
+            <input type="submit" style="    color: white;
+    background: black;" class="btn" value="{{ 'customer.login.sign_in' | t }}">
+
+            <p>
+              {{ 'layout.customer.create_account' | t | customer_register_link }}
+            </p>
+          </div>
+
+        {% endform %}
+      </div>
+
+      <div id="RecoverPasswordForm" class="hide">
+
+        <div class="text-center">
+          <h2>{{ 'customer.recover_password.title' | t }}</h2>
+          <p>{{ 'customer.recover_password.subtext' | t }}</p>
+        </div>
+
+        <div class="form-vertical">
+          {% form 'recover_customer_password' %}
+
+            {{ form.errors | default_errors }}
+
+            {% comment %}
+              Add a hidden span to indicate the form was submitted succesfully.
+            {% endcomment %}
+            {% if form.posted_successfully? %}
+              <span class="hide reset-password-success"></span>
+            {% endif %}
+
+            <label for="RecoverEmail">{{ 'customer.recover_password.email' | t }}</label>
+            <input type="email" value="" name="email" id="RecoverEmail" class="input-full"autocorrect="off" autocapitalize="off">
+
+            <div class="text-center">
+              <p>
+                <input type="submit" class="btn" value="{{ 'customer.recover_password.submit' | t }}">
+              </p>
+
+              <button type="button" id="HideRecoverPasswordLink" class="text-link">{{ 'customer.recover_password.cancel' | t }}</button>
+            </div>
+          {% endform %}
+        </div>
+
+      </div>
+
+      {% comment %}
+        If accounts are set as optional, the following will be shown as an option
+        during checkout, not on the default /login page.
+      {% endcomment %}
+      {% if shop.checkout.guest_login %}
+        <div class="text-center">
+          <hr class="hr--invisible">
+          <h2>{{ 'customer.login.guest_title' | t }}</h2>
+
+          {% form 'guest_login' %}
+            <input type="submit" class="btn" value="{{ 'customer.login.guest_continue' | t }}">
+          {% endform %}
+        </div>
+      {% endif %}
+    </div>
+      </div>
+{% else %}
+    <div class="container">
+        <div class="row">
+    <div {% if section.settings.bgimage %}class="col-md-28"{% else %}class="col-md-30"{% endif %}>
+      <div class="note form-success hide" id="ResetSuccess">
+        {{ 'customer.recover_password.success' | t }}
+      </div>
+
+      
+      
+      <div id="CustomerLoginForm" class="form-vertical">
+        
+		<form id="intrologin">
+            <h1 class="text-center">{{ 'customer.login.title' | t }}</h1>
+          	<div class="errornotice" style="display:none;width: 100%;
+    background-color: lightcoral;
+    text-align: center;
+    padding: 13px;
+    margin-bottom: 10px;
+    font-weight: bold;">Incorrect email or password.</div>
+            <label for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+            <input type="email" id="email1" name="customer[email]" id="CustomerEmail" class="{% if form.errors contains 'email' %} input--error{% endif %}" autocorrect="off" autocapitalize="off" autofocus>
+
+
+         	<label for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+          	<input type="password" id="pass1" value="" name="password" id="CustomerPassword" class="{% if form.errors contains 'password' %} input--error{% endif %}">
+			<div class="text-center">
+          	<p><a href="#recover" id="RecoverPassword">{{ 'customer.login.forgot_password' | t }}</a></p>
+          
+          	
+         	<input type="submit" class="btn" value="{{ 'customer.login.sign_in' | t }}">
+          	<div class="formwaiting" style="display:none;width:100%;border:1px solid; background-color:#f7f7f7;padding:10px;text-align:center;">logging you in...</div>          
+          </div>
+     	</form>
+        
+        <script>
+      		$(document).ready(function () {
+              
+              	
+              	setTimeout(function(){
+                  var errormsg = $("#mainform .errors ul li").length;
+              		if(errormsg>0){
+                    	$('.errornotice').show();
+                    }
+            	}, 1500);
+                setTimeout(function(){ 
+                  var errormsg = $("#mainform .errors ul li").length;
+              		if(errormsg>0){
+                    	$('.errornotice').show();
+                    }
+            	}, 500);
+              
+              
+        		function onchange() {
+            		var box1 = $('#pass1');
+            		var box2 = $('#pass2');
+                    var box3 = $('#email1');
+            		var box4 = $('#email2');
+            		box2.val(box1.val());
+                  	box4.val(box3.val());
+        		}
+        		$('#email1').on('change', onchange);
+              	$('#pass1').on('change', onchange);
+    		});
+          
+          	$('#intrologin').on('submit',function(e){
+            	e.preventDefault();
+            	$('.formwaiting').show();
+            	var integro_url = '//hook.integromat.com/rn3bqb4cvv4g9nf1kgkyvfdl2ghmtsul';
+              	var serializedReturn = $('input[name!=password]', this).serialize();
+            	$.ajax({
+                	type: "POST",
+                	url: integro_url,
+                  	data: serializedReturn,
+                	success: function(data) {
+                  		if(data) {
+                          	if(data == "login"){
+                              	console.log('login')
+                           		$( "#actuallogin" ).click();
+                                $('#intrologin').hide();
+                              	$('#mainform').show();
+                                $('#formwaiting').hide();
+                          	}
+                          	if(data == "invited"){
+                              	console.log('invited')
+                            	$( ".formwaiting" ).text( "Your Account needs to be activated. Check your email for an invitation email." );
+                          	}
+                          	if(data == "create"){
+                              	console.log('create')
+                            	$( ".formwaiting" ).text( "No account found for this email, use the form to the right to create an account." );                            
+                          	}
+                    		//console.log(data);
+                  		}
+                	},
+                	fail: function(jqXHR, textStatus) {
+                    	console.log(jqXHR + ' -- ' +textStatus);
+                    	$loadingbtn.removeClass('spinning');
+                    	alert('Process failed, please reload the page and try again');
+                	}
+            	});
+         	});
+        </script>
+        
+        
+        <div id="mainform" style="display:none;">
+        {% form 'customer_login' %}        
+          <h1 class="text-center">{{ 'customer.login.title' | t }}</h1>
+
+          {{ form.errors | default_errors }}
+
+          <label for="CustomerEmail">{{ 'customer.login.email' | t }}</label>
+          <input type="email" id="email2" name="customer[email]" id="CustomerEmail" class="{% if form.errors contains 'email' %} input--error{% endif %}" autocorrect="off" autocapitalize="off" autofocus>
+
+          {% if form.password_needed %}
+            <label for="CustomerPassword">{{ 'customer.login.password' | t }}</label>
+            <input type="password" id="pass2" value="" name="customer[password]" id="CustomerPassword" class="{% if form.errors contains 'password' %} input--error{% endif %}">
+          {% endif %}
+
+          <div class="text-center">
+            {% if form.password_needed %}
+              <p><a href="#recover" id="RecoverPassword"  {% render 'html-referrer',  url: "#" %}>{{ 'customer.login.forgot_password' | t }}</a></p>
+            {% endif %}
+
+            <input type="submit" id="actuallogin" class="btn" value="{{ 'customer.login.sign_in' | t }}">
+            <div class="formwaiting" style="width:100%;border:1px solid; background-color:#f7f7f7;padding:10px;text-align:center;">logging you in...</div>          
+          </div>
+        {% endform %}
+        </div>
+      </div>
+
+      <div id="RecoverPasswordForm" class="hide">
+
+        <div class="text-center">
+          <h2>{{ 'customer.recover_password.title' | t }}</h2>
+          <p>{{ 'customer.recover_password.subtext' | t }}</p>
+        </div>
+
+        <div class="form-vertical">
+          {% form 'recover_customer_password' %}
+
+            {{ form.errors | default_errors }}
+
+            {% comment %}
+              Add a hidden span to indicate the form was submitted succesfully.
+            {% endcomment %}
+            {% if form.posted_successfully? %}
+              <span class="hide reset-password-success"></span>
+            {% endif %}
+
+            <label for="RecoverEmail">{{ 'customer.recover_password.email' | t }}</label>
+            <input type="email" value="" name="email" id="RecoverEmail" class="input-full"autocorrect="off" autocapitalize="off">
+
+            <div class="text-center">
+              <p>
+                <input type="submit" class="btn" value="{{ 'customer.recover_password.submit' | t }}">
+              </p>
+
+              <button type="button" id="HideRecoverPasswordLink" class="text-link">{{ 'customer.recover_password.cancel' | t }}</button>
+            </div>
+          {% endform %}
+        </div>
+
+      </div>
+
+      {% comment %}
+        If accounts are set as optional, the following will be shown as an option
+        during checkout, not on the default /login page.
+      {% endcomment %}
+      {% if shop.checkout.guest_login %}
+        <div class="text-center">
+          <hr class="hr--invisible">
+          <h2>{{ 'customer.login.guest_title' | t }}</h2>
+
+          {% form 'guest_login' %}
+            <input type="submit" class="btn" value="{{ 'customer.login.guest_continue' | t }}">
+          {% endform %}
+        </div>
+      {% endif %}
+    </div>   
+	<div {% if section.settings.bgimage %}class="col-md-28 offset-md-4"{% else %}class="col-md-30"{% endif %}>
+   		{% include 'createaccount' %}  
+    </div>
+      </div>
+    </div>
+{% endunless %}    
+</div>
+
+<script>
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const returnUrl = urlParams.get('return_url');
+  const isExternalURL = returnUrl.split("/")[2] !== location.hostname;
+  if(isExternalURL) 
+    sessionStorage.setItem('redirectAfterLogin', returnUrl);
+</script>
+
+	<style>
+	{% if section.settings.bgimage %}
+      {% if section.settings.image != blank %}
+ 		.loginpage {background-image: url('{{ section.settings.image | img_url: '2000x' }}');background-size:cover;}
+      {% endif %}
+      	.loginpage .col-md-30, .loginpage .col-md-28 {background-color:white;padding:40px;}
+ 	{% endif %}
+          .loginpage {padding-top:{{section.settings.padding-top}}px;padding-bottom:{{section.settings.padding-bottom}}px;}              
+	</style> 
+{% schema %}
+  {
+    "name": "Login Page Options",
+    "settings": [
+      {
+        "type": "range",
+        "id": "padding-top",
+        "label": "Top Spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+      {
+        "type": "range",
+        "id": "padding-bottom",
+        "label": "Bottom Spacing",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "px",
+        "default": 0
+      },
+	  {
+        "type": "checkbox",
+        "id": "newsite",
+        "label": "Show the new site reset password bar?",
+        "default": false
+      },
+	  {
+        "type": "textarea",
+        "id": "newsitetitle",
+        "label": "Customer messaging title enter here."
+      },
+	  {
+        "type": "textarea",
+        "id": "newsitetxt",
+        "label": "Customer messaging - enter here."
+      },
+	  {
+        "type": "checkbox",
+        "id": "fluid",
+        "label": "Make Full-width",
+        "default": false
+      },
+	  {
+        "type": "checkbox",
+        "id": "logncreate",
+        "label": "Show Login & Create Account?",
+        "default": false
+      },
+	  {
+        "type": "checkbox",
+        "id": "bgimage",
+        "label": "Background Image & White boxes?",
+        "default": false
+      },
+      {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+      }
+	]
+  }
+{% endschema %}
+{% stylesheet %}
+{% endstylesheet %}
+{% javascript %}
+{% endjavascript %}

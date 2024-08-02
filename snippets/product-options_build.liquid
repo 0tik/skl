@@ -1,0 +1,311 @@
+{%- liquid
+
+  comment
+    /**********    SET SOME DEFAULTS ↓    **********/
+    'customProductJson' is the default JSON
+    'option_*_exists' is the cross-reference for sold out
+
+    'product_available' is default behavior (will become null in the case of the parent Product)
+    'default_variant_id' is default behavior (will become null in the case of the parent Product)
+
+    'product_media' is the default media (will be overridden in the case of the parent Product)
+    'variant_images' is the default variant images
+    'image_alt_base' is the base for the Alt Tag to assign images (ignored in the case of the parent Product)
+  endcomment
+
+  assign customProductJson = product.variants | json
+
+  assign option_1_exists = blank
+  assign option_2_exists = blank
+  assign option_3_exists = blank
+
+  assign current_variant = product.selected_or_first_available_variant
+  assign product_available = current_variant.available
+  assign default_variant_id = current_variant.id
+
+  assign product_media = product.media
+  assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+  assign image_changer = product.options_with_values[0].name
+  assign image_alt_base = product.options_with_values[0].values
+  assign selected_base = current_variant.option1
+
+  if product.tags contains 'parent-product'
+
+    comment
+      /**********    IF THIS IS A PARENT PRODUCT ↑     **********/
+      /**********    CHECK FOR THE VARIANT PARAMETER IN THE URL ↓    **********/
+    endcomment
+
+    assign page_url = content_for_header | split:'"pageurl":"' | last | split:'"' | first | split: request.host | last | replace:'\/','/' | replace:'%20',' ' | replace:'\u0026','&'
+    assign selected_variant = blank
+    for i in (1..1)
+      unless page_url contains '?'
+        break
+      endunless
+      assign query_string = page_url | split:'?' | last
+      assign qry_parts= query_string | split:'&'
+      for part in qry_parts
+        assign key_and_value = part | split:'='
+        if key_and_value.size > 1
+          if key_and_value[0] == 'variant'
+            assign selected_variant = key_and_value[1] | times: 1
+            break
+          endif
+        endif
+      endfor
+    endfor
+
+    comment
+      /**********   PARENT PRODUCT EXTRA VARIABLE SETTING ↓    **********/
+       'soldOutOptions' is if an entire Parent Option is sold out based on Child
+       'missingChildren' is if a Child Product does not exist (we remove the Parent Option)
+
+       'customProductJson' replaces the Product Variant default JSON
+
+       'option*SelectedValue' replaces the product.selected_or_first_available_variant
+
+       'option_*_exists' is the cross-reference for sold out
+
+       'product_media' is reset to build on Child Products
+       'image_alt_base' is set to blank since we will be using Child Products
+    endcomment
+
+    assign modifyClass = blank
+    assign missingChildren = blank
+
+    assign customProductJson = '['
+
+    assign option1SelectedValue = blank
+    assign option2SelectedValue = blank
+    assign option3SelectedValue = blank
+    assign option4SelectedValue = blank
+    assign option5SelectedValue = blank
+    assign option6SelectedValue = blank
+
+    assign option_4_exists = blank
+    assign option_5_exists = blank
+    assign option_6_exists = blank
+
+    assign product_media = blank
+    assign image_alt_base = blank
+
+    comment
+      /**********    RUN THROUGH THE PARENT PRODUCT VARAINTS ↓    **********/
+    endcomment
+
+    for variant in product.variants
+
+      comment
+        /**********    'image_alt_base' UPDATE ↓    **********/
+      endcomment
+
+      assign image_alt_base = image_alt_base | append: '\\' | append: variant.title
+
+      comment
+        /**********    BUILD THE CHILD HANDLE BASED ON THE VARIANT OPTIONS ↓     **********/
+      endcomment
+
+      assign childHandle = product.handle
+      for option in product.options
+        assign childHandle = childHandle | append: '-' | append: variant.options[forloop.index0] | handleize
+      endfor
+
+      comment
+        /**********    CHECK IF THIS IS A REAL CHILD PRODUCT ↓    **********/
+      endcomment
+
+      assign childProduct = all_products[childHandle]
+      if childProduct != blank
+        assign customProductJson = customProductJson | append: ','
+
+        comment
+          /**********    START CREATING OUR NEW PRODUCT JSON ↑     **********/
+          /**********    ASSUME IT IS ALL SOLD OUT ↓    **********/
+        endcomment
+
+        assign allSoldOut = true
+
+        assign option4Name = childProduct.options_with_values[0].name
+        assign option5Name = childProduct.options_with_values[1].name
+        assign option6Name = childProduct.options_with_values[2].name
+
+        assign option4Values = option4Values | concat: childProduct.options_with_values[0].values | uniq
+        assign option5Values = option5Values | concat: childProduct.options_with_values[1].values | uniq
+        assign option6Values = option6Values | concat: childProduct.options_with_values[2].values | uniq
+
+        assign product_media = product_media | concat: childProduct.media
+
+        for childVariant in childProduct.variants
+          if selected_variant != blank
+            if childVariant.id == selected_variant
+              assign default_variant_id = childVariant.id
+
+              assign option1SelectedValue = variant.option1
+              assign option2SelectedValue = variant.option2
+              assign option3SelectedValue = variant.option3
+              assign option4SelectedValue = childVariant.option1
+              assign option5SelectedValue = childVariant.option2
+              assign option6SelectedValue = childVariant.option3
+
+              assign selected_base = variant.title
+              assign image_changer = product.options_with_values | map: 'name'
+
+              if childVariant.available
+                assign product_available = true
+              else
+                assign product_available = false
+              endif
+            endif
+
+            if childVariant.available
+              assign allSoldOut = false
+
+              if option4SelectedValue != blank
+                break
+              endif
+
+            endif
+          else
+            if childVariant.available and option4SelectedValue == blank
+              assign allSoldOut = false
+              assign product_available = true
+
+              assign default_variant_id = childVariant.id
+
+              assign option1SelectedValue = variant.option1
+              assign option2SelectedValue = variant.option2
+              assign option3SelectedValue = variant.option3
+              assign option4SelectedValue = childVariant.option1
+              assign option5SelectedValue = childVariant.option2
+              assign option6SelectedValue = childVariant.option3
+
+              assign selected_base = variant.title
+            endif
+
+            if childVariant.available
+              assign allSoldOut = false
+            endif
+
+            if childVariant.available and option4SelectedValue != blank
+              break
+            endif
+          endif
+        endfor
+
+        for childVariant in childProduct.variants
+          capture customProductJson
+            echo customProductJson
+            echo '{'
+            echo '"id":'
+            echo childVariant.id
+            echo ',"title":'
+            echo variant.title | append: ' / ' | append: childVariant.title | json
+            echo ',"option1":'
+            echo variant.option1 | json
+            echo ',"option2":'
+            echo variant.option2 | json
+            echo ',"option3":'
+            echo variant.option3 | json
+            echo ',"option4":'
+            echo childVariant.option1 | json
+            echo ',"option5":'
+            echo childVariant.option2 | json
+            echo ',"option6":'
+            echo childVariant.option3 | json
+            echo ',"sku":'
+            echo childVariant.sku | json
+            echo ',"available":'
+            echo childVariant.available
+            echo ',"options":['
+            if variant.option1 != blank
+              echo variant.option1 | json
+              if variant.option1 == option1SelectedValue and childVariant.available
+                assign option_2_exists = option_2_exists | join: '\\' | append: '\\' | append: variant.option2 | split: '\\' | compact | uniq
+                assign option_3_exists = option_3_exists | join: '\\' | append: '\\' | append: variant.option3 | split: '\\' | compact | uniq
+                assign option_4_exists = option_4_exists | join: '\\' | append: '\\' | append: childVariant.option1 | split: '\\' | compact | uniq
+                assign option_5_exists = option_5_exists | join: '\\' | append: '\\' | append: childVariant.option2 | split: '\\' | compact | uniq
+                assign option_6_exists = option_6_exists | join: '\\' | append: '\\' | append: childVariant.option3 | split: '\\' | compact | uniq
+              endif
+            endif
+            if variant.option2 != blank
+              echo ','
+              echo variant.option2 | json
+            endif
+            if variant.option3 != blank
+              echo ','
+              echo variant.option3 | json
+            endif
+            if childVariant.option1 != blank
+              echo ','
+              echo childVariant.option1 | json
+            endif
+            if childVariant.option2 != blank
+              echo ','
+              echo childVariant.option2 | json
+            endif
+            if childVariant.option3 != blank
+              echo ','
+              echo childVariant.option3 | json
+            endif
+            echo '],"price":'
+            echo childVariant.price | json
+            echo ',"compare_at_price":'
+            echo childVariant.compare_at_price | json
+            echo ',"inventory_management":'
+            echo childVariant.inventory_management | json
+            echo ',"inventory_quantity":'
+            echo childVariant.inventory_quantity | json
+            echo ',"barcode":'
+            echo childVariant.barcode | json
+            echo '}'
+            unless forloop.last
+              echo ','
+            endunless
+          endcapture
+
+        endfor
+
+        if allSoldOut
+          for option in product.options
+            assign soldOutOptions = soldOutOptions | append: '||' | append: variant.options[forloop.index0]
+          endfor
+        endif
+      else
+        for option in product.options
+          assign missingChildren = missingChildren | append: '||' | append: variant.options[forloop.index0]
+        endfor
+      endif
+    endfor
+
+    assign customProductJson = customProductJson | remove_first: ','
+
+    if product_available == blank
+      assign product_available = false
+    endif
+
+    assign image_alt_base = image_alt_base | remove_first: '\\' | split: '\\'
+
+    assign customProductJson = customProductJson | append: ']'
+    assign soldOutOptions = soldOutOptions | remove_first: '||' | split: '||'
+    assign missingChildren = missingChildren | remove_first: '||' | split: '||'
+
+  else
+
+comment
+/**********    THIS IS FOR NORMAL NON-PARENT/CHILD RELATIONSHIP    **********/
+endcomment
+
+    for option in product.options_with_values
+      assign option_number = 'option' | append: option.position
+      assign variants_in_selected_value = product.variants | where: option_number, option.selected_value
+      for selected_var in variants_in_selected_value
+        if option.position == 1
+          assign option_2_exists = option_2_exists | join: '\\' | append: '\\' | append: selected_var.option2 | split: '\\' | compact
+          assign option_3_exists = option_3_exists | join: '\\' | append: '\\' | append: selected_var.option3 | split: '\\' | compact
+        endif
+      endfor
+    endfor
+
+  endif
+
+-%}

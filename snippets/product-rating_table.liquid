@@ -1,0 +1,18 @@
+<h3 class="h6 rating-title">
+  {{ title }}
+  <span class="d-inline-block d-lg-none">{{ metafield }}</span>
+  {%- if tooltip != blank -%}
+    <tooltip-component title="{{ tooltip | escape }}">
+      {%- render 'icon-info' -%}
+    </tooltip-component>
+  {%- endif -%}
+</h3>
+<div class="rating-table d-flex">
+  {% for level in levels %}
+    <div class="rating-item{% if level == metafield %} rating-item__current{% endif %} flex-fill">
+      <span class="small-hide medium-hide">
+        {{ level }}
+      </span>
+    </div>
+  {% endfor %}
+</div>

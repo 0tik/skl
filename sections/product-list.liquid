@@ -1,0 +1,430 @@
+<link rel="stylesheet" href="{{ 'quick-add.css' | asset_url }}" media="print" onload="this.media='all'">
+<script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  .padding-{{ section.id }}{
+      padding-top:{{ section.settings.padding_top }}px;
+      padding-bottom:{{ section.settings.padding_bottom }}px;
+      background:{{ section.settings.bg_color }};
+      }
+      .product-list-heading{
+       text-align:center;
+       padding-bottom:15px;
+      }
+      .product-list-heading h4{
+       margin-top:0px;
+      }
+      .product-list-wrapper{
+        display:flex;
+        flex-wrap:wrap;
+        gap:15px;
+        justify-content: center;
+       }
+       .product-list-card{
+       width:calc(33.3333% - 15px);
+       padding: 15px;
+       background: #fff;
+        border-radius: 15px;
+        display: flex;
+       flex-direction: column;
+        justify-content: space-between;
+        }
+        .product-list-title h4{
+         margin:0;
+         text-transform:uppercase;
+        }
+        .product-list-title p{
+            margin:0;
+            font-size:1.2rem;
+            line-height:1.6rem;
+        }
+      .product-list-variants{
+       display:flex;
+       flex-wrap:wrap;
+       gap:7px;
+       padding-bottom:15px;
+      }
+      .product-list-price{
+        border-top:1px solid #F5F5F5;
+        padding:5px 0px;
+        margin-top:5px;
+      }
+      .product-list-variants .product-list-color-img{
+       width:65px;
+       height:65px;
+       padding: 5px;
+       border-radius: 10px;
+       background: #f5f5f5;
+       border: 2px solid transparent;
+       cursor:pointer;
+      }
+      .product-list-variants .product-list-color-img.active{
+       border-color:#0081FF;
+      }
+      .product-list-variants .product-list-color-img img, .product-list-image img{
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+        -o-object-position: center;
+        object-position: center;
+        mix-blend-mode:multiply;
+    }
+    .product-list-btn{
+      display:flex;
+      gap:10px;
+      align-items: center;
+      padding-top:15px;
+      border-top:1px solid #F5F5F5;
+     }
+     .product-list-btn modal-opener, .product-list-btn product-form, .product-list-btn a{
+    width:50%;
+    display:inline-block;
+     }
+     .product-list-btn .quick-add__submit:before, .quick-add__submit:after{
+      content:none;
+
+    }
+    .product-list-btn .quick-add__submit, .product-list-btn a{
+        font-size:1.4rem;
+        line-height:1.8rem;
+        letter-spacing: 0px;
+        text-decoration:underline;
+        background-color: transparent;
+        color:#000;
+        text-align:center;
+    }
+    .product-list-btn .quick-add__submit:hover{
+        background-color: transparent;
+        color:#000;
+    }
+    .product-list-btn product-form button, .product-list-btn product-form button:after{
+     border-radius:10px;
+     padding: 10px;
+     letter-spacing: 0px;
+    }
+    .product-list-btn product-form button span{
+     font-size:1.6rem;
+     line-height:1.9rem;
+    }
+    .product-list-wrapper *:focus-visible{
+      outline:0;
+      box-shadow:unset;
+    }
+  .product-list-image{
+    height:280px !important;
+    width:100%;
+    }
+    .product-list-img-container{
+    height:100%;
+    background: #f5f5f5;
+    border-radius:10px;
+    }
+    .product-featured-inner {
+      width: 33.3333%;
+      padding: 0px 20px 20px 0px;
+  }
+  .product-list-feature {
+    display: flex;
+    justify-content: space-between;
+  }
+  .product-featured-text{
+    font-size: 1rem;
+    line-height: 1.4rem;
+    text-align: center;
+  }
+  .product-list-feature .product-featured-inner:nth-child(n+4) {
+    display: none;
+  }
+  .product-featured-icon {
+    text-align: center;
+}
+.product-featured-icon img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+}
+.product-list-feature-heading {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.product-list-feature-heading:after {
+  content: "";
+  flex: 1;
+  border: none;
+  background-color: #F5F5F5;
+  height: 1px;
+  width: 100%;
+}
+.product-list-feature-heading span {
+  padding-right: 10px;
+  font-size: 1.2rem;
+  font-weight:600;
+}
+.product-color-heading{
+ font-size:1.2rem;
+ line-height:1.6rem;
+ padding:5px 0px;
+ font-weight:600;
+ text-transform:uppercase;
+}
+.product-color-heading span{
+ font-weight:300;
+}
+.product-list-slider .flickity-prev-next-button{
+width:32px;
+height:32px;
+background:transparent;
+}
+.product-list-image {
+ display:none;
+}
+.product-list-image:first-child{
+ display:block;
+}
+.product-list-slider.flickity-enabled .product-list-image {
+  display:block;
+ }
+    @media screen and (max-width:991px){
+      .product-list-card{
+        width:calc(50% - 15px);
+      }
+    }
+    @media screen and (max-width:600px){
+      .product-list-card{
+        width:100%;
+      }
+    }
+</style>
+<div class="padding-{{ section.id }}">
+  <div class="page-width">
+    <div class="product-list-heading">
+      <h4>{{ section.settings.title }}</h4>
+    </div>
+    <div class="product-list-wrapper">
+      {% for product in section.settings.product_list %}
+        <div class="product-list-card">
+          <div class="product-list-title">
+            <h4>{{ product.title }}</h4>
+            {% if product.metafields.custom.overline != blank %}
+              <p>{{ product.metafields.custom.overline }}</p>
+            {% endif %}
+          </div>
+          <div class="product-list-price">
+            {% render 'price', product: product %}
+          </div>
+          <div class="product-list-media">
+            <div class="product-list-slider">
+              {% for image in product.media %}
+                {%- liquid
+                  assign image_alt_connect = image.alt
+                  assign data_connects = image_alt_connect | split: ','
+                -%}
+                {% if image.media_type == 'image' %}
+                  <div class="product-list-image slide {% for dataConnect in data_connects %}{{ dataConnect | strip | replace: ' ', '-' | replace: '/' , '-' | downcase | append: ' ' }}{% endfor %}">
+                    <div class="product-list-img-container">
+                      {% render 'image', image: image %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {%- for option in product.options_with_values -%}
+            {% assign option_name = option.name | downcase %}
+            {% assign option_position = option.position %}
+            {% assign option_values = option.values %}
+            {% if option_name == 'color' -%}
+              <div class="product-list-color">
+                <div class="product-color-heading">Color: <span></span></div>
+                <div class="product-list-variants">
+                  {%- for value in option_values -%}
+                    {%- liquid
+                      assign color_image = blank
+                      assign option_number = 'option' | append: option_position
+                      if option_name == 'color'
+                        assign variant_with_color = product.variants | where: option_number, value | first
+                        if variant_with_color.featured_media != blank
+                          capture color_image
+                            render 'product-button_fieldset__image_swatch', media: variant_with_color.featured_media
+                          endcapture
+                        endif
+                      endif
+                    -%}
+                    <div
+                      class="product-list-color-img {% if forloop.index == 1 %}active{% endif %}"
+                      data-color="{{ value }}"
+                      data-id="{{ variant_with_color.id }}"
+                      data-available ="{{ variant_with_color.available }}"
+                      data-price = "{{ variant_with_color.price | money }}"
+                  {% if variant_with_color.compare_at_price %}
+                  data-compareprice ="{{ variant_with_color.compare_at_price | money }}"
+                  {% endif %}
+                    >
+                      {{ color_image }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% assign features = product.metafields.custom.feature %}
+          {% liquid
+             assign showFeature = false 
+             for feature in features.value 
+               if feature.show  and features != blank
+               assign showFeature = true
+               endif 
+                endfor
+          %}
+          {% if showFeature %}
+            <div class="product-list-feature-heading">
+              <span>FEATURES</span>
+            </div>
+          <div class="product-list-feature">
+            {% for feature in features.value %}
+              {% if feature.show %}
+              <div class="product-featured-inner">
+                <div class="product-featured-icon">
+                  <img src="{{ feature.icon_image | img_url :'' }}" alt="icon" loading= "lazy"/>
+                </div>
+                <div class="product-featured-text">
+                  {{ feature.text }}
+                </div>
+              </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+          {% render 'cart-view-product-btn', product: product, button_label:'View Product' %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let productLists = document.querySelectorAll('.padding-{{ section.id }} .product-list-slider');
+    productLists.forEach(productList=>{
+      let productListSlider = new Flickity( productList, {
+        pageDots: false,
+        prevNextButtons: true,
+        freeScroll: true,
+        contain: true
+      });
+      const labels = productList.closest('.product-list-card').querySelectorAll('.product-list-color-img');
+      labels.forEach(label => {
+          label.addEventListener('click',e=>{
+            const currentLabel = e.currentTarget;
+            const colorFor = currentLabel.dataset.color;
+            const price_original = currentLabel.dataset.price;
+            const price_sale_on = currentLabel.dataset.compareprice;
+            const filterValue = colorFor.toLowerCase().replace(/ /g, '-').replace(/\//g, '-');
+            const parentCard = currentLabel.closest('.product-list-card')
+            var slide = parentCard.querySelectorAll('.slide');
+            var active = parentCard.querySelectorAll('.' + filterValue);
+            parentCard.querySelector('.product-color-heading span').innerHTML = colorFor;
+            active.forEach(function(element) {
+                element.style.display = 'block';
+            });
+            slide.forEach(function(sld) {
+              sld.classList.add('gallery-cell');
+            })
+            parentCard.querySelectorAll('.gallery-cell:not(.' + filterValue + ')').forEach(function(element) {
+                element.classList.remove('gallery-cell');
+                element.style.display = 'none';
+            });
+
+            productListSlider.destroy()
+            productListSlider = new Flickity(productList, {
+              pageDots: false,
+              prevNextButtons: true,
+              freeScroll: true,
+              contain: true,
+              cellSelector: '.gallery-cell'
+            });
+            labels.forEach(classRemoving => {
+              classRemoving.classList.remove('active')
+            });
+            currentLabel.classList.add('active');
+            let checkingSold = currentLabel.dataset.available;
+            let variantId = currentLabel.dataset.id;
+            if(price_sale_on){
+              parentCard.querySelector('.price-item--sale.price-item--last').innerHTML = price_original;
+              parentCard.querySelector('.price__sale .price-item.price-item--regular').innerHTML = price_sale_on;
+              if (!parentCard.querySelector('.price').classList.contains('price--on-sale')) {
+                  parentCard.querySelector('.price').classList.add('price--on-sale');
+              }
+          }
+          else{
+              if (parentCard.querySelector('.price').classList.contains('price--on-sale')) {
+                  parentCard.querySelector('.price').classList.remove('price--on-sale')
+              }
+              parentCard.querySelector('.price-item.price-item--regular').innerHTML = price_original;
+          }
+            if (checkingSold !== 'true') {
+              parentCard.querySelector('.product-form__submit').disabled = true;
+              parentCard.querySelector('.product-form__submit span').innerHTML = 'Sold Out';
+            } else {
+              parentCard.querySelector('.product-form__submit').disabled = false;
+              parentCard.querySelector('.product-form__submit span').innerHTML = 'Add to cart';
+              parentCard.querySelector('product-form input[name="id"]').value = variantId;
+            }            
+          });
+      });
+      labels[0].click()
+    });
+    });
+</script>
+{% schema %}
+{
+  "name": "Product List",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "transparent"
+    },
+    {
+      "type": "text",
+      "label": "heading",
+      "id": "title"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Products",
+      "limit": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product List"
+    }
+  ]
+}
+{% endschema %}

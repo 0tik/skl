@@ -1,0 +1,576 @@
+
+{% assign testimonial_meta_title = product.metafields.custom.testimonial_title %}
+{% assign testimonial_meta_content = product.metafields.custom.featured_testimonial_content %}
+{% assign testimonial_metaobject = product.metafields.custom.featured_testimonial.value %}
+
+<style>
+   .padding-{{ section.id }}{
+       padding-top:{{ section.settings.padding_top }}px;
+       padding-bottom:{{ section.settings.padding_bottom }}px;
+       }
+       .featured-testimonial-wrapper{
+       display:flex;
+       flex-wrap:wrap;
+       }
+       .featured-testimonial-left{
+        width:25%;
+        padding-right: 30px;
+        {% if section.settings.text_position == 'bottom' %}
+        margin-top: auto;
+        {% elsif section.settings.text_position == 'center' %}
+        margin-top: auto;
+        margin-bottom:auto;
+        {% endif %}
+       }
+       {% if section.settings.direction_change %}
+       .padding-{{ section.id }} .featured-testimonial-left{
+           padding-right: 0px;
+           padding-left:30px;
+       }
+       .padding-{{ section.id }} .featured-testimonial-wrapper{
+           flex-direction: row-reverse;
+       }
+      {% endif %}
+       .featured-testimonial-right{
+           width: 75%;
+       }
+       .featured-testimonial-inner {
+           width: calc(45% - 20px);
+            margin-right: 20px;
+           position:relative;
+           min-height: 100%;
+           border-radius: 20px;
+           overflow: hidden;
+       }
+       .featured-testimonial-img {
+       
+           overflow: hidden;
+       }
+       .featured-testimonial-img img {
+           max-width:100%;
+           width: 100%;
+           height: 100%;
+           object-fit: cover;
+           object-position: center;
+           display:block;
+       }
+       .featured-testimonial-wrapper *:focus-visible{
+           outline:0;
+           box-shadow:unset;
+       }
+       .featured-testimonial-title {
+           position: absolute;
+           bottom: 0;
+           left: 0;
+           width: 100%;
+           padding: 25px;
+           background: #0000005e;
+          border-bottom-left-radius: 20px;
+          border-bottom-right-radius: 20px;
+       }
+       .featured-testimonial-title p {
+        margin:0px;
+        color:#fff;
+       }
+       .testimonial-modal {
+           display: none;
+           position: fixed;
+           left: 0;
+           top: 0;
+           width: 100%;
+           height: 100%;
+           overflow: auto;
+           background-color: rgba(0, 0, 0, 0.7);
+           z-index:9999999;
+       }
+
+       .testimonial-modal-content {
+           position: relative;
+           background-color: #ffffff;
+           margin: 10% auto;
+           padding: 20px;
+           width: 50%;
+           border-radius: 8px;
+           box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.3);
+           padding-top:50px;
+       }
+
+       .testimonial-close {
+           color: #aaaaaa;
+           float: right;
+           font-size: 28px;
+           font-weight: bold;
+           cursor: pointer;
+           transition: color 0.2s;
+           cursor:pointer;
+       }
+
+       .testimonial-close:hover,
+       .testimonial-close:focus {
+           color: #ff5b5b;
+       }
+       .featured-testimonial-slider .flickity-page-dots{
+           bottom:-45px;
+         }
+        
+        /* .testimonial-modal .featured-testimonial-content{
+         display:block !important;
+         font-size:2rem;
+         } */
+         .testimonial-data {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 20px;
+       }
+       .testimonial-data .featured-testimonial-img {
+           width: calc(50% - 10px);
+           padding-top: 50%;
+       }
+       .testimonial-data .featured-testimonial-info {
+  display: flex;
+   flex-wrap: wrap;
+   height: fit-content;
+   flex-direction: column-reverse;
+   width:calc(50% - 10px);
+       }
+       .testimonial-data .featured-testimonial-info .featured-testimonial-title {
+           position: relative;
+           padding: 0px;
+           padding-top: 10px;
+           background:transparent;
+           border-radius:0;
+       }
+       .testimonial-data .featured-testimonial-info .featured-testimonial-title p{
+        color:#000 !important;
+        font-weight:600;
+        font-size:1.5rem;
+        font-weight:2rem;
+       }
+       .testimonial-close{
+           position: absolute;
+           top: 10px;
+           right: 10px;
+       }
+       .testimonial-close svg{
+        width: 20px;
+           height: 20px;
+       }
+       .featured-testimonial-information{
+       background:#F5F5F5;
+       position:absolute;
+       top:0;
+       left:0;
+       width:100%;
+       height:100%;
+       text-align: center;
+       display: flex;
+       flex-wrap: wrap;
+       align-items: end;
+       overflow: hidden;
+      }
+      .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+        padding: 25px;
+        font-size: 2.6rem;
+        line-height: 3.1rem;
+      }
+      .featured-testimonial--noimg-title, .featured-testimonial-data-overlay .featured-testimonial-title{
+      width:100%;
+      padding: 25px;
+      }
+      .featured-testimonial--noimg-title p {
+        margin: 0px;
+        color: #fff;
+        text-align: left;
+    }
+    .featured-testimonial-info.featured-testimonial-data-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      z-index:1;
+  }
+  .featured-testimonial-data-overlay .featured-testimonial-title {
+    position: relative !important;
+    top: unset !important;
+    left: unset !important;
+    border: none !important;
+    background: transparent !important;
+}
+.featured-testimonial-container{
+position:relative;
+}
+.featured-testimonial-content{
+  font-size: 2.6rem;
+  line-height: 3.1rem;
+  color:#fff;
+  text-align:center;
+  padding:20px 0px;
+}
+.featured-testimonial-inner:after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  }
+    @media screen and (max-width:1100px){
+      .featured-testimonial-inner {
+        width: calc(65% - 10px);
+    }
+    }
+    @media screen and (max-width:991px){
+      .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+        font-size: 2rem;
+        line-height: 2.5rem;
+      }
+    }
+         @media screen and (max-width:768px){
+          .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+            padding:15px;
+          }
+        .padding-{{ section.id }} .featured-testimonial-left{
+         width:100%;
+         padding:0px;
+       }
+       .featured-testimonial-right{
+       width:100%
+        }
+        .featured-testimonial-inner {
+           width: calc(80% - 10px);
+       }
+       .featured-testimonial-inner{
+       margin-right:10px;
+       }
+       .testimonial-modal-content {
+       width:80%;
+       }
+       .testimonial-data .featured-testimonial-img {
+           width:100%;
+           padding-bottom:50%;
+       }
+       .testimonial-data .featured-testimonial-info {
+       width:100%;
+       }
+       .featured-testimonial-title, .featured-testimonial-data-overlay .featured-testimonial-title{
+        padding:15px;
+       }
+       .featured-testimonial--noimg-title{
+       padding:15px;
+       }
+       }
+       {% if section.settings.testimonail_product and testimonial_metaobject == blank %}
+   .featured-testimonial.padding-{{ section.id }}{
+  display:none;
+  }
+        {% endif %}
+</style>
+
+<div {% if section.settings.anchor_id != blank %}id="{{ section.settings.anchor_id | handle }}"{% endif %} class="featured-testimonial padding-{{ section.id }}">
+  <div class="testimonial-modal">
+    <div class="testimonial-modal-content">
+      <span class="testimonial-close">{% render 'icon-close' %}</span>
+      <div class="testimonial-data"></div>
+    </div>
+  </div>
+  <div class="page-width">
+    <div class="featured-testimonial-wrapper">
+      <div class="featured-testimonial-left">
+        {% if section.settings.testimonail_product %}
+          {% if testimonial_meta_title != blank %}
+          <div class="testimonial-heading">
+              <h4>{{ testimonial_meta_title }}</h4>
+          </div>
+        {% endif %}
+        {% if testimonial_meta_content != blank %}
+          <div class="testimonial-info">
+              <p>{{ testimonial_meta_content }}</p>
+          </div>
+        {% endif %}
+          {% else %}
+          {% if section.settings.title != blank %}
+          <div class="testimonial-heading">
+              <h4>{{ section.settings.title }}</h4>
+          </div>
+        {% endif %}
+        {% if section.settings.info != blank %}
+          <div class="testimonial-info">
+              <p>{{ section.settings.info }}</p>
+          </div>
+        {% endif %}
+        {% endif %}
+      </div>
+      <div class="featured-testimonial-right">
+        <div class="featured-testimonial-slider">
+          {% if section.settings.testimonail_product %}
+          {% for testimoniat_value in testimonial_metaobject %}
+            {% if testimoniat_value.image != blank or section.settings.title != blank or testimoniat_value.info != blank %}
+              <div class="featured-testimonial-inner forloop-{{ forloop.index }}-{{ section.id }}">
+                  {% if testimoniat_value.image != blank %}
+                <div class="featured-testimonial-img">
+                  {% render 'image', image: testimoniat_value.image.value %}
+                </div>
+          
+                <div class="featured-testimonial-info {% if testimoniat_value.content != blank %}featured-testimonial-data-overlay{% endif %}">
+                  {% if testimoniat_value.content != blank %}
+                    <style>
+                      .forloop-{{ forloop.index }}-{{ section.id }}.featured-testimonial-inner:after{
+                        background:{{testimoniat_value.overlay_color}};
+                        opacity:{{ testimoniat_value.overlay_opacity | divided_by:10.0 }};
+                        }
+                      </style>
+                      <div class="featured-testimonial-content">
+                        <q style="color:{{ testimoniat_value.text_color | default:'#000' }}">{{ testimoniat_value.content | truncatewords: 40, "....." }}</q>
+                      </div>
+                
+                    {% if testimoniat_value.title != blank %}
+                      <div class="featured-testimonial-title">
+                        <p style="color:{{ testimoniat_value.text_color | default:'#000' }}">{{ testimoniat_value.title }}</p>
+                      </div>
+                    {% endif %}
+                     
+                  {% else %}
+                  {% if testimoniat_value.title != blank %}
+                    <div class="featured-testimonial-title">
+                      <p style="color:{{ testimoniat_value.text_color | default:'#000' }}">{{ testimoniat_value.title }}</p>
+                    </div>
+                  {% endif %}
+                {% endif %}
+                </div>
+                {% else %}
+                <div class="featured-testimonial-information">
+                  {% if testimoniat_value.content != blank%}
+                    <div class="featured-testimonial--noimg-content">
+                      <q style="color:{{testimoniat_value.text_color | default:'#000' }}">{{ testimoniat_value.content | truncatewords: 40, "....."}}</q>
+                    </div>
+                {% endif %}
+                {% if testimoniat_value.title != blank %}
+                <div class="featured-testimonial--noimg-title">
+                  <p style="color:{{ testimoniat_value.text_color | default:'#000' }}">{{ testimoniat_value.title }}</p>
+                </div>
+              {% endif %}
+                </div>
+              {% endif %}
+                </div>
+            {% endif %}
+          {% endfor %}
+          {% else %}
+          {% for block in section.blocks %}
+            {% if block.settings.image != blank or section.settings.title != blank or block.settings.info != blank %}
+              <div class="featured-testimonial-inner block-{{ block.id }}">
+                  {% if block.settings.image != blank %}
+                <div class="featured-testimonial-img">
+                  {% render 'image', image: block.settings.image %}
+                </div>
+          
+                <div class="featured-testimonial-info {% if block.settings.info != blank %}featured-testimonial-data-overlay{% endif %}">
+                  {% if block.settings.info != blank %}
+                    <style>
+                      .block-{{ block.id }}.featured-testimonial-inner:after{
+                        background:{{block.settings.overlay_color}};
+                        opacity:{{ block.settings.overlay_opacity | divided_by:10.0 }};
+                        }
+                      </style>
+                      <div class="featured-testimonial-content">
+                        <q style="color:{{ block.settings.text_color }}">{{ block.settings.info | truncatewords: 40, "....." }}</q>
+                      </div>
+                    
+                    {% if block.settings.title != blank %}
+                      <div class="featured-testimonial-title">
+                        <p style="color:{{ block.settings.text_color }}">{{ block.settings.title }}</p>
+                      </div>
+                    {% endif %}
+                     
+                  {% else %}
+                  {% if block.settings.title != blank %}
+                    <div class="featured-testimonial-title">
+                      <p style="color:{{ block.settings.text_color }}">{{ block.settings.title }}</p>
+                    </div>
+                  {% endif %}
+                {% endif %}
+                </div>
+                {% else %}
+                <div class="featured-testimonial-information">
+                  {% if block.settings.info != blank%}
+                    <div class="featured-testimonial--noimg-content">
+                      <q style="color:{{ block.settings.text_color }}">{{ block.settings.info | truncatewords: 40, "....."}}</q>
+                    </div>
+                {% endif %}
+                {% if block.settings.title != blank %}
+                <div class="featured-testimonial--noimg-title">
+                  <p style="color:{{ block.settings.text_color }}">{{ block.settings.title }}</p>
+                </div>
+              {% endif %}
+                </div>
+              {% endif %}
+                </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var featuredTestimonial = document.querySelector('.padding-{{ section.id }} .featured-testimonial-slider');
+  featuredTestimonial = new Flickity(featuredTestimonial, {
+    pageDots: true,
+    prevNextButtons: false,
+    freeScroll: true,
+    contain: true,
+    groupCells:true
+  });
+
+
+ /* var testimonialDivs = document.querySelectorAll('.padding-{{ section.id }} .featured-testimonial-inner');
+  testimonialDivs.forEach((testimonialdiv) => {
+    testimonialdiv.addEventListener('click', function () {
+      var haveContent = testimonialdiv.querySelector('.featured-testimonial-content');
+      var modelDiv = testimonialdiv.closest('.featured-testimonial').querySelector('.testimonial-modal');
+      var testimonialData = modelDiv.querySelector('.testimonial-data');
+
+      if (haveContent) {
+        testimonialData.innerHTML = testimonialdiv.innerHTML;
+        modelDiv.style.display = 'block';
+      } else {
+        testimonialData.innerHTML = '';
+      }
+    });
+  });
+  var closeBtnModels = document.querySelectorAll('.testimonial-close');
+  closeBtnModels.forEach((modelbtn) => {
+    modelbtn.addEventListener('click', function () {
+      modelbtn.closest('.testimonial-modal').style.display = 'none';
+    });
+  }); */
+});
+</script>
+{% schema %}
+{
+  "name": "Featured Testimonials",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "textarea",
+      "id": "info",
+      "label": "Content"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom",
+      "label": "Content Vertical Position"
+    },
+    {
+      "type": "checkbox",
+      "label": "Text And Content Second",
+      "id": "direction_change"
+    },
+    {
+      "type": "checkbox",
+      "label": "Product Metafield Testimonail",
+      "id": "testimonail_product",
+      "info": "This is only for product page"
+    },
+    {
+      "type" : "text",
+      "label" : "Anchor id",
+      "id" : "anchor_id"
+     }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image with content",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type":"color",
+          "id" : "text_color",
+          "label" : "Text Color",
+          "default" :"#fff"
+          },
+          {
+            "type":"color",
+            "id" : "overlay_color",
+            "label" : "Overlay Color",
+            "info" : "Overlay applicable when image and content are added",
+            "default" :"transparent"
+            },
+            {
+              "type":"range",
+              "id" : "overlay_opacity",
+              "label" : "Overlay Opacity",
+              "min" : 0,
+              "max":10,
+              "step" : 1,
+              "default" : 0
+              },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "info",
+          "label": "Content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Testimonials"
+    }
+  ]
+}
+{% endschema %}

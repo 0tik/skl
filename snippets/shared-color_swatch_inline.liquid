@@ -1,0 +1,16 @@
+{%- liquid
+  if swatch_metafield
+    assign swatch_hex = swatch_metafield['hex']
+    if swatch_hex != blank
+      assign swatch_css = 'background-color:' | append: swatch_hex
+    else
+      assign swatch_url = swatch_metafield['url']
+      if swatch_url != blank
+        assign swatch_css = 'background-image:url(' | append: swatch_url | append: ')'
+      endif
+    endif
+  endif
+  if swatch_css
+    echo ' style="' | append: swatch_css | append: '"'
+  endif
+-%}

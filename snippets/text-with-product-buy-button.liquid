@@ -1,0 +1,57 @@
+<div class="text-product-card-btn">
+    {% assign product_form_id = 'product-' | append: product.id %}
+    <div class="text-product-add-to-cart">
+
+              {%- if product.available -%}
+        <product-form data-section-id="{{ product.id }}">
+          {%- form 'product',
+            product,
+            id: product_form_id,
+            class: 'form',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form'
+          -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ product.selected_or_first_available_variant.id }}"
+              class="product-variant-id"
+            >
+    
+            <div class="product-form__buttons">
+              <button
+                id="ProductSubmitButton-{{ product.id }}"
+                type="submit"
+                name="add"
+                class="product-form__submit button button--full-width button--primary"
+                {% if product.selected_or_first_available_variant.available == false %}
+                  disabled
+                {% endif %}
+              >
+                {% render 'cart-icon' %}
+                <span>
+                  {%- if product.selected_or_first_available_variant.available == false -%}
+                    {{ 'products.product.sold_out' | t }}
+                  {%- else -%}
+                    {{ 'products.product.add_to_cart' | t }}
+                  {%- endif -%}
+                </span>
+                <div class="loading-overlay__spinner hidden">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    role="presentation"
+                    class="spinner"
+                    viewBox="0 0 66 66"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          {%- endform -%}
+        </product-form>
+      {% endif %}
+    </div>
+  </div>

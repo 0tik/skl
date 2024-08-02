@@ -1,0 +1,398 @@
+{% assign testimonial_metaobject = collection.metafields.custom.collection_testimonial.value %}
+{% if testimonial_metaobject != blank %}
+<style>
+    .padding-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+        }
+        .collection-testimonial-wrapper .testimonial-heading{
+        text-align:center;
+        }
+
+        .collection-testimonial-inner {
+            width: calc(33.65% - 15px);
+             margin-right: 15px;
+            position:relative;
+            min-height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+        }
+       .featured-testimonial-img {
+       
+           overflow: hidden;
+       }
+       .featured-testimonial-img img {
+           max-width:100%;
+           width: 100%;
+           height: 100%;
+           object-fit: cover;
+           object-position: center;
+           display:block;
+       }
+       .collection-testimonial-wrapper *:focus-visible{
+        outline:0;
+        box-shadow:unset;
+    }
+       .featured-testimonial-title {
+           position: absolute;
+           bottom: 0;
+           left: 0;
+           width: 100%;
+           padding: 25px;
+           background: #0000005e;
+          border-bottom-left-radius: 20px;
+          border-bottom-right-radius: 20px;
+       }
+       .featured-testimonial-title p {
+        margin:0px;
+        color:#fff;
+       }
+       .testimonial-modal {
+           display: none;
+           position: fixed;
+           left: 0;
+           top: 0;
+           width: 100%;
+           height: 100%;
+           overflow: auto;
+           background-color: rgba(0, 0, 0, 0.7);
+           z-index:9999999;
+       }
+
+       .testimonial-modal-content {
+           position: relative;
+           background-color: #ffffff;
+           margin: 10% auto;
+           padding: 20px;
+           width: 50%;
+           border-radius: 8px;
+           box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.3);
+           padding-top:50px;
+       }
+
+       .testimonial-close {
+           color: #aaaaaa;
+           float: right;
+           font-size: 28px;
+           font-weight: bold;
+           cursor: pointer;
+           transition: color 0.2s;
+           cursor:pointer;
+       }
+
+       .testimonial-close:hover,
+       .testimonial-close:focus {
+           color: #ff5b5b;
+       }
+       .featured-testimonial-slider .flickity-page-dots{
+           bottom:-45px;
+         }
+        
+        /* .testimonial-modal .featured-testimonial-content{
+         display:block !important;
+         font-size:2rem;
+         } */
+         .testimonial-data {
+           display: flex;
+           flex-wrap: wrap;
+           gap: 20px;
+       }
+       .testimonial-data .featured-testimonial-img {
+           width: calc(50% - 10px);
+           padding-top: 50%;
+       }
+       .testimonial-data .featured-testimonial-info {
+  display: flex;
+   flex-wrap: wrap;
+   height: fit-content;
+   flex-direction: column-reverse;
+   width:calc(50% - 10px);
+       }
+       .testimonial-data .featured-testimonial-info .featured-testimonial-title {
+           position: relative;
+           padding: 0px;
+           padding-top: 10px;
+           background:transparent;
+           border-radius:0;
+       }
+       .testimonial-data .featured-testimonial-info .featured-testimonial-title p{
+        color:#000 !important;
+        font-weight:600;
+        font-size:1.5rem;
+        font-weight:2rem;
+       }
+       .testimonial-close{
+           position: absolute;
+           top: 10px;
+           right: 10px;
+       }
+       .testimonial-close svg{
+        width: 20px;
+           height: 20px;
+       }
+       .featured-testimonial-information{
+       position:absolute;
+       top:0;
+       left:0;
+       width:100%;
+       height:100%;
+       text-align: center;
+       display: flex;
+       flex-wrap: wrap;
+       align-items: end;
+       overflow: hidden;
+       z-index:1;
+      }
+      .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+        padding: 25px;
+        font-size: 2.6rem;
+        line-height: 3.1rem;
+      }
+      .featured-testimonial--noimg-title, .featured-testimonial-data-overlay .featured-testimonial-title{
+      width:100%;
+      padding: 25px;
+      }
+      .featured-testimonial--noimg-title p {
+        margin: 0px;
+        color: #fff;
+        text-align: left;
+    }
+    .featured-testimonial-info.featured-testimonial-data-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      z-index:1;
+  }
+  .featured-testimonial-data-overlay .featured-testimonial-title {
+    position: relative !important;
+    top: unset !important;
+    left: unset !important;
+    border: none !important;
+    background: transparent !important;
+}
+.featured-testimonial-container{
+position:relative;
+}
+.featured-testimonial-content{
+  font-size: 2.6rem;
+  line-height: 3.1rem;
+  color:#fff;
+  text-align:center;
+  padding:20px 0px;
+}
+.collection-testimonial-inner:after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  }
+  .collection-testimonial .flickity-page-dots{
+  bottom:-48px;
+  }
+    @media screen and (max-width:1100px){
+      .collection-testimonial-inner {
+        width: calc(65% - 10px);
+    }
+    }
+    @media screen and (max-width:991px){
+      .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+        font-size: 2rem;
+        line-height: 2.5rem;
+      }
+    }
+         @media screen and (max-width:768px){
+          .featured-testimonial--noimg-content, .featured-testimonial-data-overlay .featured-testimonial-content{
+            padding:15px;
+          }
+        .padding-{{ section.id }} .featured-testimonial-left{
+         width:100%;
+         padding:0px;
+       }
+       .featured-testimonial-right{
+       width:100%
+        }
+        .collection-testimonial-inner {
+           width: calc(80% - 10px);
+       }
+       ..collection-testimonial-inner{
+       margin-right:10px;
+       }
+       .testimonial-modal-content {
+       width:80%;
+       }
+       .testimonial-data .featured-testimonial-img {
+           width:100%;
+           padding-bottom:50%;
+       }
+       .testimonial-data .featured-testimonial-info {
+       width:100%;
+       }
+       .featured-testimonial-title, .featured-testimonial-data-overlay .featured-testimonial-title{
+        padding:15px;
+       }
+       .featured-testimonial--noimg-title{
+       padding:15px;
+       }
+       }
+ </style>
+
+ <div class="collection-testimonial padding-{{ section.id }}">
+   <div class="testimonial-modal">
+     <div class="testimonial-modal-content">
+       <span class="testimonial-close">{% render 'icon-close' %}</span>
+       <div class="testimonial-data"></div>
+     </div>
+   </div>
+   <div class="page-width">
+     <div class="collection-testimonial-wrapper">
+         <div class="testimonial-heading">
+           {% if section.settings.title != blank %}
+             <h4>{{ section.settings.title }}</h4>
+           {% endif %}
+         </div>
+         <div class="collection-testimonial-slider">
+           {% for testimonial_value in testimonial_metaobject %}
+            {% if testimonial_value.image != blank or section.settings.title != blank or testimonial_value.description != blank %}
+              <div class="collection-testimonial-inner forloop-{{ forloop.index }}-{{ section.id }}">
+                  {% if testimonial_value.image != blank %}
+                <div class="featured-testimonial-img">
+                  {% render 'image', image: testimonial_value.image.value %}
+                </div>
+          
+                <div class="featured-testimonial-info {% if testimonial_value.description != blank %}featured-testimonial-data-overlay{% endif %}">
+                  {% if testimonial_value.description != blank %}
+                    <style>
+                      .forloop-{{ forloop.index }}-{{ section.id }}.collection-testimonial-inner:after{
+                        background:{{testimonial_value.overlay_color}};
+                        opacity:{{ testimonial_value.overlay_opacity | divided_by:10.0 }};
+                        }
+                      </style>
+                      <div class="featured-testimonial-content">
+                        <q style="color:{{ testimonial_value.text_color | default:'#000' }}">{{ testimonial_value.description | truncatewords: 40, "....." }}</q>
+                      </div>
+                
+                    {% if testimonial_value.title != blank %}
+                      <div class="featured-testimonial-title">
+                        <p style="color:{{ testimonial_value.text_color | default:'#000' }}">{{ testimonial_value.title }}</p>
+                      </div>
+                    {% endif %}
+                     
+                  {% else %}
+                  {% if testimonial_value.title != blank %}
+                    <div class="featured-testimonial-title">
+                      <p style="color:{{ testimonial_value.text_color | default:'#000' }}">{{ testimonial_value.title }}</p>
+                    </div>
+                  {% endif %}
+                {% endif %}
+                </div>
+                {% else %}
+                <style>
+                  .forloop-{{ forloop.index }}-{{ section.id }}.collection-testimonial-inner:after{
+                    background:{{testimonial_value.overlay_color}};
+                    opacity:{{ testimonial_value.overlay_opacity | divided_by:10.0 }};
+                    }
+                  </style>
+                <div class="featured-testimonial-information">
+                  {% if testimonial_value.description != blank%}
+                    <div class="featured-testimonial--noimg-content">
+                      <q style="color:{{testimonial_value.text_color | default:'#000' }}">{{ testimonial_value.description | truncatewords: 40, "....."}}</q>
+                    </div>
+                {% endif %}
+                {% if testimonial_value.title != blank %}
+                <div class="featured-testimonial--noimg-title">
+                  <p style="color:{{ testimonial_value.text_color | default:'#000' }}">{{ testimonial_value.title }}</p>
+                </div>
+              {% endif %}
+                </div>
+              {% endif %}
+                </div>
+            {% endif %}
+           {% endfor %}
+         </div>
+       </div>
+     </div>
+   </div>
+ <script>
+   document.addEventListener('DOMContentLoaded', function() {
+   var collectionTestimonial = document.querySelector('.padding-{{ section.id }} .collection-testimonial-slider');
+   collectionTestimonial = new Flickity(collectionTestimonial, {
+     pageDots: true,
+     prevNextButtons: true,
+     freeScroll: true,
+     contain: true,
+     groupCells:true
+   });
+ 
+ 
+   {% comment %} var testimonialDivs = document.querySelectorAll('.padding-{{ section.id }} .collection-testimonial-inner');
+   testimonialDivs.forEach((testimonialdiv) => {
+     testimonialdiv.addEventListener('click', function () {
+       var haveContent = testimonialdiv.querySelector('.collection-testimonial-content');
+       var modelDiv = testimonialdiv.closest('.collection-testimonial').querySelector('.testimonial-modal');
+       var testimonialData = modelDiv.querySelector('.testimonial-data');
+ 
+       if (haveContent) {
+         testimonialData.innerHTML = testimonialdiv.innerHTML;
+         modelDiv.style.display = 'block';
+       } else {
+         testimonialData.innerHTML = '';
+       }
+     });
+   }); {% endcomment %}
+   {% comment %} var closeBtnModels = document.querySelectorAll('.testimonial-close');
+   closeBtnModels.forEach((modelbtn) => {
+     modelbtn.addEventListener('click', function () {
+       modelbtn.closest('.testimonial-modal').style.display = 'none';
+     });
+   }); {% endcomment %}
+ });
+ </script>
+{% endif %}
+ {% schema %}
+ {
+   "name": "Collection Testimonials",
+   "settings": [
+     {
+       "type": "range",
+       "id": "padding_top",
+       "min": 0,
+       "max": 100,
+       "step": 4,
+       "unit": "px",
+       "label": "t:sections.all.padding.padding_top",
+       "default": 36
+     },
+     {
+       "type": "range",
+       "id": "padding_bottom",
+       "min": 0,
+       "max": 100,
+       "step": 4,
+       "unit": "px",
+       "label": "t:sections.all.padding.padding_bottom",
+       "default": 36
+     },
+     {
+       "type": "text",
+       "id": "title",
+       "label": "Title"
+     }
+   ],
+   "presets": [
+     {
+       "name": "Collection Testimonials"
+     }
+   ],
+   "enabled_on": {
+    "templates": ["collection"]
+  }
+ }
+ {% endschema %}
+ 

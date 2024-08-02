@@ -1,0 +1,270 @@
+{%- liquid
+  assign shop_the_look_products = product.metafields.shop_the_look.products
+  assign shop_the_look_variants = product.metafields.shop_the_look.variants
+  assign current_product_referenced = false
+  assign current_variants = null
+  for shop_product in shop_the_look_products.value
+    if shop_product.handle contains product.handle
+      assign current_product_referenced = true
+      break
+    endif
+  endfor
+-%}
+{% if shop_the_look_products != blank and shop_the_look_variants != blank and current_product_referenced != blank %}
+  <link rel="stylesheet" href="{{ 'wick--product-shop_the_look.css' | asset_url }}" media="print" onload="this.media='all'">
+
+  <noscript>{{ 'wick--product-shop_the_look.css' | asset_url | stylesheet_tag }}</noscript>
+
+  {%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+
+    .section-{{ section.id }}-padding .color-heading {
+      background-color: {{ section.settings.heading_background }};
+      color: {{ section.settings.heading_color }}
+    }
+
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+  {%- endstyle -%}
+
+  {% for shop_variant in shop_the_look_variants.value %}
+    {%- liquid
+      assign current_variants = current_variants | append: ',' | append: shop_variant.id
+      assign current_image = shop_variant.image
+      assign shop_variant_option1 = shop_variant.option1
+      for image in shop_variant.product.images
+        assign alt_color_find = image.alt | split: '|' | first | strip
+        if shop_variant.product.id == product.id and image.alt contains 'MODMERCH' and shop_variant_option1 == alt_color_find
+          assign shop_the_look_image = image
+        endif
+        if image.alt contains 'MQNSDE' and shop_variant_option1 == alt_color_find
+          assign current_image = image
+        endif
+      endfor
+      if current_image == blank
+        assign current_image = shop_variant.product.featured_media
+      endif
+    -%}
+    {% capture shop_the_look_columns %}
+      {{ shop_the_look_columns }}
+      <div class="col-md-20 shop-the-look__products-media">
+        <div class="card__media shop_the_look__media">
+          <div class="media media--transparent">
+            {%- render 'image',
+              image: current_image
+            -%}
+          </div>
+        </div>
+        <div class="card__text">
+          <p class="h6">
+            {{ shop_variant.product.title | split: '|' | first | strip }}
+          </p>
+          {%- render 'price', product: shop_variant.product, use_variant: true, specific_variant: shop_variant, show_badges: true, price_class: 'price--large', product_available: shop_variant.product.available -%}
+        </div>
+      </div>
+    {% endcapture %}
+  {% endfor %}
+
+  <div id="{{ section.settings.heading | handleize }}" class="product-shop_the_look section-{{ section.id }}-padding isolate">
+    <h2 class="product-technology__heading color-heading">{{ section.settings.heading | escape }}</h2>
+    <div class="page-width__padding page-height__padding">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-15 shop-the-look__image">
+            {%- render 'image',
+              image: shop_the_look_image
+            -%}
+          </div>
+          <div class="col-md-45 shop-the-look__products">
+            <div class="row justify-content-center">
+              {{ shop_the_look_columns }}
+              {%- assign current_variants = current_variants | remove_first: ',' | split: ',' -%}
+              <div class="col-60">
+                <modal-opener class="product-popup-modal__opener no-js-hidden quick-add-hidden" data-modal="#PopupModal-{{ section.id }}">
+                  <button id="ProductPopup-{{ section.id }}" class="product-popup-modal__button button button-primary" type="button" aria-haspopup="dialog">
+                    {{ section.settings.btn }}
+                  </button>
+                </modal-opener>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <modal-dialog id="PopupModal-{{ section.id }}" class="product-popup-modal product-popup-modal__shopthelook">
+    <div role="dialog" aria-label="{{ section.settings.btn }}" aria-modal="true" class="product-popup-modal__content" tabindex="-1">
+      <button id="ModalClose-{{ section.id }}" type="button" class="product-popup-modal__toggle" aria-label="{{ 'accessibility.close' | t }}">{% render 'icon-close' %}</button>
+      <div class="product-popup-modal__content-info">
+        <div class="container-fluid shop-the-look__popup-content">
+          {%- assign shop_product_base = product.title -%}
+          {% for shop_product in shop_the_look_products.value %}
+            {%- liquid
+              if shop_product.title contains shop_product_base
+                assign new_product = false
+              else
+                assign new_product = true
+              endif
+            -%}
+            {%- unless forloop.first -%}
+              {%- if new_product -%}
+                {% render 'product-shop_the_look_row',
+                  section_id: section.id,
+                  product: shop_variant_object.product,
+                  product_ids: shop_variant_product,
+                  variant: shop_variant_object,
+                  image: shop_variant_image,
+                  option1: option_1,
+                  option2: option_2,
+                  option3: option_3,
+                  option4: option_4,
+                  option1_selected: option_1_selected,
+                  option2_selected: option_2_selected,
+                  option3_selected: option_3_selected,
+                  option4_selected: option_4_selected
+                %}
+              {%- endif -%}
+            {%- endunless -%}
+            {%- liquid
+              if new_product
+                assign shop_product_base = shop_product.title | split: '|' | first | strip
+                assign option_1 = blank
+                assign option_1_selected = blank
+                assign option_2 = blank
+                assign option_2_selected = blank
+                assign option_3 = blank
+                assign option_3_selected = blank
+                assign option_4 = blank
+                assign option_4_selected = blank
+                assign shop_variant_object = blank
+                assign shop_variant_image = blank
+                assign shop_variant_product = blank
+              endif
+              assign shop_variant_product = shop_variant_product | append: ',' | append: shop_product.id | append: '??' | append: shop_product.url
+              if shop_product.tags contains 'child-product'
+                assign option_1_find = shop_product.title | split: '|' | last | strip
+                assign option_1 = option_1 | append: '//' | append: option_1_find
+              endif
+              for shop_variant in shop_product.variants
+                assign option_2 = option_2 | append: '//' | append: shop_variant.option1
+                assign option_3 = option_3 | append: '//' | append: shop_variant.option2
+                assign option_4 = option_4 | append: '//' | append: shop_variant.option3
+                assign current_variant_string = shop_variant.id | downcase
+                if current_variants contains current_variant_string
+                  assign shop_variant_object = shop_variant
+                  assign shop_variant_image = shop_variant.image
+                  if shop_product.tags contains 'child-product'
+                    assign option_1_selected = option_1_find
+                    if shop_variant_image == blank
+                      assign shop_variant_image = shop_product.featured_media
+                    endif
+                  endif
+                  assign option_2_selected = shop_variant.option1
+                  assign option_3_selected = shop_variant.option2
+                  assign option_4_selected = shop_variant.option3
+                endif
+              endfor
+            -%}
+            {% if forloop.last %}
+              {% render 'product-shop_the_look_row',
+                section_id: section.id,
+                product: shop_variant_object.product,
+                product_ids: shop_variant_product,
+                variant: shop_variant_object,
+                image: shop_variant_image,
+                option1: option_1,
+                option2: option_2,
+                option3: option_3,
+                option4: option_4,
+                option1_selected: option_1_selected,
+                option2_selected: option_2_selected,
+                option3_selected: option_3_selected,
+                option4_selected: option_4_selected
+              %}
+            {% endif %}
+            <script type="application/json" data-productId="{{ shop_product.id }}">
+              {{ shop_product.variants | json }}
+            </script>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </modal-dialog>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Shop the look",
+  "tag": "section",
+  "class": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Shop the Look",
+      "label": "Heading"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_background",
+      "label": "Heading background",
+      "default": "#C53734"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "btn",
+      "default": "Build My Kit",
+      "label": "Button text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop the look"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

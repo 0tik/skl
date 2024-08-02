@@ -1,0 +1,322 @@
+<style>
+  .section-{{ section.id }} {
+      {% if section.settings.bg_img != blank %}
+      background-image:url({{ section.settings.bg_img | img_url:'' }});
+      {% endif %}
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      margin-top:{{section.settings.margin-top}}px;
+      margin-bottom:{{section.settings.margin-bottom}}px;
+      padding-top:{{section.settings.padding-top}}px;
+      padding-bottom:{{section.settings.padding-bottom}}px;
+    }
+    .image-icon-container{
+      width:100%;
+      max-width:768px;
+      margin:auto;
+      display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+     }
+     .section-{{ section.id }} .image-icon-container *{
+      color:{{ section.settings.txt_color }};
+      text-align:Center;
+      margin:0px;
+     }
+     .image-icons-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+  }
+  .icons-banner{
+  width:calc(25% - 20px);
+  }
+  .icons-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+  }
+  .image-icon-text * {
+      font-size: 1.6rem;
+      line-height: 2.4rem;
+  } 
+  .image-icon-text{
+  padding-top:15px;
+  }
+  .image-icon-heading, .image-icons-wrapper{
+   width:100%;
+   max-width:500px;
+  }
+  .image-icon-heading h1{
+      word-break: auto-phrase;
+  }
+    @media screen and (max-width:768px){
+      .section-{{ section.id }} {
+          {% if section.settings.bg_img_mb != blank %}
+          background-image:url({{ section.settings.bg_img_mb | img_url:'' }});
+          {% endif %}
+          margin-top:{{section.settings.margin-top-mobile}}px;
+          margin-bottom:{{section.settings.margin-bottom-mobile}}px;
+          padding-top:{{section.settings.padding-top-mobile}}px;
+          padding-bottom:{{section.settings.padding-bottom-mobile}}px;
+        }
+  }
+</style>
+
+<div class="image-icon-section section-{{ section.id }}">
+  <div class="page-width">
+    <div class="image-icon-container">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'heading' %}
+            {% if block.settings.heading != blank %}
+              <style>
+                .section-{{ section.id }} .image-icon-heading h1{
+                font-size:{{ block.settings.heading_size | divided_by:10.0 }}rem;
+                line-height:{{ block.settings.heading_size | divided_by:10.0 | plus:0.4 }}rem;
+                }
+                .section-{{ section.id }} .image-icons-wrapper{
+                margin-top:10px;
+                padding-top:10px;
+                }
+                @media screen and (max-width:768px){
+                    .section-{{ section.id }} .image-icon-heading h1{
+                        font-size:{{ block.settings.heading_size_mb | divided_by:10.0 }}rem;
+                        line-height:{{ block.settings.heading_size_mb | divided_by:10.0 | plus:0.4 }}rem;
+                        }
+                        .section-{{ section.id }} .image-icons-wrapper{
+                          border-top:2px solid {{ section.settings.txt_color }};
+                          margin-top:10px;
+                          padding-top:10px;
+                          }
+                }
+              </style>
+              <div class="image-icon-heading">
+                <h1>{{ block.settings.heading }}</h1>
+              </div>
+            {% endif %}
+          {% when 'image' %}
+            {% if block.settings.icon_image_1 != blank %}
+              <div class="image-icons-wrapper">
+                    <div class="icons-banner">
+                      {% render 'image', image: block.settings.icon_image_1 != blank %}
+                    </div>
+              </div>
+              <style>
+                .section-{{ section.id }} .icons-banner{
+                  width:{{ block.settings.icon_width }}%;
+                 }
+                </style>
+            {% endif %}
+          {% when 'text' %}
+            {% if block.settings.text != blank %}
+              <div class="image-icon-text">
+                {{ block.settings.text }}
+              </div>
+            {% endif %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Overlay Image And Text",
+  "class": "spaced-section--full-width",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "image_picker",
+      "label": "Background Image",
+      "id": "bg_img"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "image_picker",
+      "label": "Background Image",
+      "id": "bg_img_mb"
+    },
+
+    {
+      "type": "color",
+      "label": "Text Color",
+      "id": "txt_color",
+      "default": "#000"
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+
+    {
+      "type": "range",
+      "id": "margin-top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin-top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin-bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin-bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-top",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding-top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-bottom",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding-bottom",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "margin-top-mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin-top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin-bottom-mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Margin-bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-top-mobile",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding-top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-bottom-mobile",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding-bottom",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "t:sections.image-with-text.blocks.heading.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "t:sections.image-with-text.blocks.heading.settings.heading.label"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "min": 20,
+          "max": 110,
+          "step": 5,
+          "unit": "px",
+          "label": "Font Size Desktop",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "heading_size_mb",
+          "min": 20,
+          "max": 50,
+          "step": 5,
+          "unit": "px",
+          "label": "Font Size Mobile",
+          "default": 30
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "name": "Image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 25,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Width",
+          "default": 25
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image_1",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "t:sections.image-with-text.blocks.text.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "t:sections.image-with-text.blocks.text.settings.text.label"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Overlay Image And Text"
+    }
+  ]
+}
+{% endschema %}

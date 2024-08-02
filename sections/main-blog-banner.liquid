@@ -1,0 +1,62 @@
+{% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+{{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
+{{ 'wick--collection-banner.css' | asset_url | stylesheet_tag }}
+
+{%- render 'header-banner',
+    color_scheme: section.settings.color_scheme,
+    show_image: true,
+    show_description: false,
+    image_object: blog.metafields.banner.image.value,
+    title: blog.title,
+    subtitle: blog.metafields.banner.subtitle
+    categories: section.settings.tags
+-%}
+
+{% schema %}
+{
+  "name": "Blog banner",
+  "class": "section section--main_blog_banner",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Image will pull from the Banner Image metafield"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.colors.label",
+      "info": "For non-image pages"
+    },
+    {
+      "type": "textarea",
+      "id": "tags",
+      "label": "Category tags",
+      "info": "Each new line should be a tag"
+    }
+  ]
+}
+{% endschema %}

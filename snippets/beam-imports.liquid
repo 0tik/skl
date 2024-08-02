@@ -1,0 +1,58 @@
+{% render 'beam-config' %}
+{% render 'beam-cart-setup' %}
+
+
+<script
+  type="module"
+  async
+  crossorigin
+  data-em-disable
+  data-categories="analytics"
+  src="https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/components/select-nonprofit.js"
+></script>
+
+{% comment %}
+<script>
+  // Default behavior is to not show the Beam Select Nonprofit widget if it is empty
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<style>[data-beam-widget="select-nonprofit"][data-cart-empty="true"]{display:none;}</style>`
+  );
+</script>
+{% endcomment %}
+
+{% comment %}
+<!-- -->
+<!-- Show the Select Nonprofit widget only when the cart has items in it -->
+<!--  -->
+<script type="module" async crossorigin>
+  import { getCurrentCart } from "https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/integrations/shopify.js";
+  import { events } from "https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/integrations/utils.js";
+
+  async function showBeamCartWidgetIfNeeded(event) {
+    let itemCount = 0;
+    if (event) {
+      itemCount = event?.detail?.itemCount;
+    } else {
+        const currentCart = await getCurrentCart({
+		      apiKey: "{{ settings.beam_api_key }}",
+		      chainId: {{ settings.beam_chain_id }},
+		      storeId: {{ settings.beam_store_id }},
+		    });
+        itemCount = currentCart?.cart?.itemCount;
+    }
+
+    [...document.querySelectorAll('[data-beam-widget="select-nonprofit"]')].forEach((widgetElement) => {
+      widgetElement?.setAttribute("data-cart-empty", itemCount <= 0);
+    });
+  }
+  //setTimeout(()=>{
+  await showBeamCartWidgetIfNeeded();
+  //}, 1000);
+  window.addEventListener(events.BeamCartChangeEvent.eventName, ()=>{
+    //setTimeout(()=>{
+      showBeamCartWidgetIfNeeded();
+    //}, 1000);
+  });
+</script>
+{% endcomment %}

@@ -1,0 +1,86 @@
+{% assign opsmall = option_name | downcase %}
+
+<fieldset class="js product-form__input product-form__input-{{ option_name | handleize }}">
+  <legend class="form__label">
+    {{ option_name }}: <span>{{ option_selected }}</span>
+    {% if opsmall == 'color' -%}
+      <em style="display:none">&#8211; {{ section.settings.stock_msg }}</em>
+    {%- endif %}
+  </legend>
+  {%- for value in option_values -%}
+    {%- liquid
+      if missing_children and missing_children contains value
+        continue
+      endif
+      assign color_image = blank
+      assign option_downcase = option_name | downcase
+      assign option_number = 'option' | append: option_position
+      if button_type == 'image' and option_downcase == 'color'
+        assign variant_with_color = product.variants | where: option_number, value | first
+        if variant_with_color.featured_media != blank
+          capture color_image
+            render 'product-button_fieldset__image_swatch', media: variant_with_color.featured_media
+          endcapture
+        endif
+      elsif button_type == 'pattern'
+        assign swatch_metafield = shop.metafields.common.swatches.value[value]
+      endif
+    -%}
+    <input
+      type="radio"
+      id="{{ section_id }}-{{ option_position }}-{{ forloop.index }}"
+      name="{{ option_name }}"
+      value="{{ value | escape }}"
+      form="{{ product_form_id }}"
+      {% if option_selected == value %}
+        checked
+      {% endif %}
+      {% if multiple_options %}
+        {%- unless unavailable_check contains value or option_position == 1 %}class="disabled"{% endunless -%}
+      {% endif %}
+    >
+    <label
+      for="{{ section_id }}-{{ option_position }}-{{ forloop.index }}"
+      class="variant_label variant_label--{{ button_type }}{% if color_image != blank %} variant_label--color__image{% elsif swatch_metafield %} variant_label--color__pattern{% endif %}{% comment %}{% if soldout_values contains value %} hide{% endif %}{% endcomment %}"
+      {%- render 'shared-color_swatch_inline', swatch_metafield: swatch_metafield -%}
+      {% if limited_colors contains value %}style="display:none"{% endif %}>
+      {{ color_image }}
+      <span>
+        {{ value }}
+      </span>
+    </label>
+  {%- endfor -%}
+</fieldset>
+{% if opsmall == 'color' and limited_colors != blank -%}
+  <div class="limit-heading">
+    Limited Editions
+  </div>
+  <div class="limited-edition-variants">
+    {%- for value in option_values -%}
+      {% if limited_colors contains value %}
+      {%- liquid
+        if missing_children and missing_children contains value
+          continue
+        endif
+        assign color_image = blank
+        assign option_downcase = option_name | downcase
+        assign option_number = 'option' | append: option_position
+        if button_type == 'image' and option_downcase == 'color'
+          assign variant_with_color = product.variants | where: option_number, value | first
+          if variant_with_color.featured_media != blank
+            capture color_image
+              render 'product-button_fieldset__image_swatch', media: variant_with_color.featured_media
+            endcapture
+          endif
+        elsif button_type == 'pattern'
+          assign swatch_metafield = shop.metafields.common.swatches.value[value]
+        endif
+      -%}
+      <div class="limit-variant" data-limit="{{ value }}">
+         {%- render 'shared-color_swatch_inline', swatch_metafield: swatch_metafield -%}
+        {{ color_image }}
+      </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+{% endif %}

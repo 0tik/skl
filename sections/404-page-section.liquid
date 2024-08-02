@@ -1,0 +1,337 @@
+{%- style -%}
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+    .section-404-wrapper {
+      display: flex;
+      gap: 60px;
+  }
+  .section-{{ section.id }}-padding .section-404-left{
+      {% if section.settings.text_align == 'center' %}
+        text-align: center;
+        {% elsif section.settings.text_align == 'right'  %}
+        text-align: right;
+     {% endif %}
+  }
+  .section-404-left {
+      width: 50%;
+      margin:auto;
+  }
+
+  .section-404-right {
+      width: 50%;
+  }
+  .section-404-right img {
+      width: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      height: 100%;
+      display:block;
+  }
+  .section-404-btn{
+      padding-top:30px;
+      display: flex;
+      align-items: center;
+      {% if section.settings.text_align == 'center' %}
+        justify-content: center;
+        {% elsif section.settings.text_align == 'right'  %}
+        justify-content: right;
+     {% endif %}
+      gap: 15px;
+      width: 100%;
+      }
+    .section-404-btn a{
+      text-decoration:none;
+      padding:14px 10px;
+      font-size:1.4rem;
+      line-height:1.9rem;
+      width:50%;
+      display:inline-block;
+      border-radius:8px;
+      text-align:center;
+      font-weight:600;
+      border:2px solid transparent;
+      text-transform:uppercase;
+      }
+      .section-404-heading h2{
+        margin:0;
+        font-size: 9rem;
+    line-height: 9.5rem;
+      }
+      .section-404-des p {
+        margin:0;
+        padding-top:8px;
+        font-size:3.6rem;
+        line-height:4.0rem;
+        font-weight:500;
+      }
+      @media screen and (max-width:1200px){
+        .section-404-btn{
+              flex-wrap:wrap;
+        }
+        .section-404-btn a{
+                  width:80%;
+              }
+      }
+      @media screen and (max-width:768px){
+          .section-404-wrapper{
+              flex-wrap:wrap;
+              gap: 30px;
+          }
+          .section-404-right, .section-404-left {
+           width: 100%;
+            }
+          .section-404-btn{
+              flex-wrap:wrap;
+              {% if section.settings.text_align_mb == 'center' %}
+                justify-content: center;
+                {% elsif section.settings.text_align_mb == 'right'  %}
+                justify-content: right;
+             {% endif %}
+              }
+              .section-404-btn a{
+                  width:100%;
+              }
+              .section-404-des p{
+                font-size:2.4rem;
+                line-height:2.8rem;
+              }
+              .section-404-heading h2{
+              font-size: 6rem;
+             line-height: 6.5rem;
+            }
+      }
+{%- endstyle -%}
+
+<div class="section-404 section-{{ section.id }}-padding">
+  <div class="page-width">
+    <div class="section-404-wrapper">
+      <div class="section-404-left">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'heading' %}
+              {% if block.settings.heading != blank %}
+                <div class="section-404-heading">
+                  <h2>{{ block.settings.heading }}</h2>
+                </div>
+              {% endif %}
+            {% when 'text' %}
+              {% if block.settings.des != blank %}
+                <div class="section-404-des">
+                  <p>{{ block.settings.des }}</p>
+                </div>
+              {% endif %}
+            {% when 'button' %}
+              {% if block.settings.button_label != blank or block.settings.button_label_1 != blank %}
+                <div class="section-404-btn">
+                  {% if block.settings.button_label != blank %}
+                    <a
+                      href="{{ block.settings.button_link }}"
+                      class="section-404-btn-first"
+                      style="background:{{ block.settings.bg_first }};color:{{ block.settings.txt_first }};border-color:{{ block.settings.txt_first_br }}"
+                    >
+                      {{- block.settings.button_label -}}
+                    </a>
+                  {% endif %}
+                  {% if block.settings.button_label_1 != blank %}
+                    <a
+                      href="{{ block.settings.button_link_1 }}"
+                      class="section-404-btn-second"
+                      style="background:{{ block.settings.bg_second }};color:{{ block.settings.txt_second }};border-color:{{ block.settings.txt_second_br }}"
+                    >
+                      {{- block.settings.button_label_1 -}}
+                    </a>
+                  {% endif %}
+                </div>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+      <div class="section-404-right">
+        {% if section.settings.image != blank %}
+          {% render 'image', image: section.settings.image %}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "404 Section",
+  "tag": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "image_picker",
+      "label": "Image",
+      "id": "image"
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Text alignment"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "select",
+      "id": "text_align_mb",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Text alignment"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "label": "title",
+          "id": "heading"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "textarea",
+          "label": "Info",
+          "id": "des"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "color",
+          "label": "Background Color First Button",
+          "id": "bg_first",
+          "default": "#0081FF"
+        },
+        {
+          "type": "color",
+          "label": "Text Color First Button",
+          "id": "txt_first",
+          "default": "#fff"
+        },
+        {
+            "type": "color",
+            "label": "Border Color First Button",
+            "id": "txt_first_br",
+            "default": "transparent"
+          },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button Label First"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link First"
+        },
+        {
+          "type": "color",
+          "label": "Background Color Second Button",
+          "id": "bg_second",
+          "default": "#fff"
+        },
+        {
+          "type": "color",
+          "label": "Text Color Second Button",
+          "id": "txt_second",
+          "default": "#000"
+        },
+        {
+            "type": "color",
+            "label": "Border Color Second Button",
+            "id": "txt_second_br",
+            "default": "transparent"
+          },
+        {
+          "type": "text",
+          "id": "button_label_1",
+          "label": "Button Label Second"
+        },
+        {
+          "type": "url",
+          "id": "button_link_1",
+          "label": "Button Link Second"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "404 Section"
+    }
+  ]
+}
+{% endschema %}

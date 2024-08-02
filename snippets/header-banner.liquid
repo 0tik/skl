@@ -1,0 +1,77 @@
+<div class="collection-hero banner banner-type--{{ request.page_type }} banner--content-align-mobile-center{% if show_image and image_object %} banner--medium{% endif %} banner--desktop-transparent{% if show_image and image_object %} collection-hero--with-image{% endif %}">
+
+  {%- if show_image and image_object -%}
+    <link rel="stylesheet" href="{{ 'section-image-banner.css' | asset_url }}" media="print" onload="this.media='all'">
+    <div class="banner__media media{% if collection.image == blank %} placeholder{% endif %}">
+      {%- render 'image',
+        image: image_object,
+        class: 'jarallax-img'
+      -%}
+    </div>
+  {%- endif -%}
+
+  <div class="banner__content banner__content--bottom-left">
+    <div class="banner__box content-container content-container--full-width-mobile color-{{ color_scheme }} gradient">
+      <h1 class="collection-hero__title">
+        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
+        {{- title | escape -}}
+      </h1>
+
+      {%- if subtitle != blank -%}
+        <h2 class="h6 collection-hero__subtitle">
+          {{- subtitle | escape -}}
+        </h2>
+      {%- endif -%}
+
+      {%- if show_description and description != blank -%}
+        <div class="collection-hero__description rte">{{ description }}</div>
+      {%- endif -%}
+
+      {%- if show_date -%}
+        <span class="circle-divider caption-with-letter-spacing" itemprop="dateCreated pubdate datePublished">{{ article.published_at | time_tag: format: 'date' }}</span>
+      {%- endif -%}
+      {%- if show_author -%}
+        <span class="caption-with-letter-spacing" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <span itemprop="name">{{ article.author }}</span>
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- if categories != blank -%}
+      {%- assign categories_split = categories | newline_to_br | strip_newlines | split: '<br />' -%}
+      <div class="banner_links color-{{ color_scheme }} gradient">
+        <nav class="blog-filter">
+          <label for="{{ 'blogs.blog.all' | t | handleize }}" class="blog-filter__trigger">
+            <div class="blog-filter__icon">
+              {%- render 'icon-caret' -%}
+            </div>
+            {% if current_tags != blank and categories_split contains current_tags[0] %}
+              {{ current_tags[0] }}
+            {% else %}
+              {{ 'blogs.blog.all' | t }}
+            {% endif %}
+          </label>
+          <input type="checkbox" id="{{ 'blogs.blog.all' | t | handleize }}">
+          <ul class="list-unstyled" role="navigation">
+            <li class="large-up-hide">
+              <a href="{{ blog.url }}">
+                {{ 'blogs.blog.all' | t }}
+              </a>
+            </li>
+            {%- for tag in blog.all_tags -%}
+              {%- unless categories_split contains tag -%}
+                {%- continue -%}
+              {%- endunless -%}
+              <li{% if current_tags contains 'tag' %} class="current"{% endif %}>
+                <a href="{{ blog.url }}/tagged/{{ tag | handleized }}">
+                  {{ tag }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </div>
+    {%- endif -%}
+  </div>
+
+</div>

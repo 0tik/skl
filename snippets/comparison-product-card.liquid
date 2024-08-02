@@ -1,0 +1,75 @@
+    <div class="product-list-card" data-id="{{ product.id }}">
+      <div class="product-list-media">
+        <div class="product-list-slider">
+          {% for image in product.media %}
+            {%- liquid
+              assign image_alt_connect = image.alt
+              assign data_connects = image_alt_connect | split: ','
+            -%}
+            {% if image.media_type == 'image' %}
+              <div class="product-list-image slide {% for dataConnect in data_connects %}{{ dataConnect | strip | replace: ' ', '-' | replace: '/' , '-' | downcase | append: ' ' }}{% endfor %}">
+                <div class="product-list-img-container">
+                  {% render 'image', image: image %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="product-list-content">
+      <div class="product-list-title">
+        <h4>{{ product.title }}</h4>
+        {% if product.metafields.custom.overline != blank %}
+            <p>{{ product.metafields.custom.overline }}</p>
+          {% endif %}
+      </div>
+      <div class="product-list-price">
+        {% render 'price', product: product %}
+      </div>
+        <div
+          class="yotpo-widget-instance"
+          data-yotpo-instance-id="646855"
+          data-yotpo-product-id="{{product.id}}"
+          data-yotpo-section-id="{{template.name}}"
+        ></div>
+        {%- for option in product.options_with_values -%}
+          {% assign option_name = option.name | downcase %}
+          {% assign option_position = option.position %}
+          {% assign option_values = option.values %}
+          {% if option_name == 'color' -%}
+            <div class="product-list-color">
+              <div class="product-color-heading">Color: <span></span></div>
+              <div class="product-list-variants">
+                {%- for value in option_values -%}
+                  {%- liquid
+                    assign color_image = blank
+                    assign option_number = 'option' | append: option_position
+                    if option_name == 'color'
+                      assign variant_with_color = product.variants | where: option_number, value | first
+                      if variant_with_color.featured_media != blank
+                        capture color_image
+                          render 'product-button_fieldset__image_swatch', media: variant_with_color.featured_media
+                        endcapture
+                      endif
+                    endif
+                  -%}
+                  <div
+                    class="product-list-color-img {% if forloop.index == 1 %}active{% endif %}"
+                    data-color="{{ value }}"
+                    data-id="{{ variant_with_color.id }}"
+                    data-available ="{{ variant_with_color.available }}"
+                    data-price = "{{ variant_with_color.price | money }}"
+                    {% if variant_with_color.compare_at_price > 0 %}
+                    data-compareprice ="{{ variant_with_color.compare_at_price | money }}"
+                    {% endif %}
+                  >
+                    {{ color_image }}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% render 'cart-view-product-btn', product: product %}
+    </div>
+    </div>

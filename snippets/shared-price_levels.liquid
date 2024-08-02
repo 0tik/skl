@@ -1,0 +1,81 @@
+{%- liquid
+  assign pro = false
+  assign price_adjust = 100
+  assign pro_percentage = 0
+  if customer.tags contains 'pro-approved'
+    for tag in customer.tags
+      if tag contains 'prolevel-'
+        assign pro_level = tag | remove: 'prolevel-' | downcase
+      endif
+      if tag contains 'pro-' and tag contains 'off'
+        assign pro = true
+        assign pro_percentage = tag | remove: 'pro-' | remove: 'off' | times: 1
+        assign price_adjust = price_adjust | minus: pro_percentage
+      endif
+    endfor
+  endif
+
+  if product.selected_or_first_available_variant != blank or variant != blank
+    assign sale_tag = false
+    assign current_variant = product.selected_or_first_available_variant
+    if variant != blank
+      assign current_variant = variant
+    endif
+    assign price = current_variant.price
+    assign msrp_price = current_variant.price
+    if current_variant.compare_at_price != blank
+      assign msrp_price = current_variant.compare_at_price
+    endif
+    for tag in product.tags
+      if tag contains '-'
+        assign tag_split = tag | split: '-'
+        assign price_rule = tag_split | first
+        assign price_group = tag_split | last | downcase
+        assign all_levels_check = price_group | times: 1
+        case tag_split[0]
+          when 'proadd'
+            if pro and price_group == pro_level
+              assign price_adjust = price_adjust | minus: tag_split[1]
+            elsif pro and all_levels_check > 0
+              assign price_adjust = price_adjust | minus: tag_split[1]
+            endif
+          when 'prosubtract'
+            if pro and price_group == pro_level
+              assign price_adjust = price_adjust | plus: tag_split[1]
+            elsif pro and all_levels_check > 0
+              assign price_adjust = price_adjust | plus: tag_split[1]
+            endif
+          when 'nodeal'
+            if pro and price_group == pro_level
+              assign price_adjust = 100
+              break
+            elsif pro and all_levels_check > 0
+              assign price_adjust = 100
+              break
+            elsif pro_level == blank
+              assign price_adjust = 100
+              break
+            endif
+          when 'webspecial'
+            assign webspecial_discount = tag_split[1] | times: 1
+            if webspecial_discount > pro_percentage
+              assign price_adjust = 100 | minus:  webspecial_discount
+              assign sale_tag = true
+            endif
+          when 'retail'
+            assign price_adjust = price_adjust | minus: tag_split[1]
+            assign sale_tag = true
+        endcase
+      endif
+    endfor
+    if product.tags contains 'Xsaletag' or product.tags contains 'product-sale'
+      assign sale_tag = true
+    endif
+    if product.type == "Gift Card"
+      assign price_adjust = 100
+    endif
+    if price_adjust < 100
+      assign price = msrp_price | times: price_adjust | divided_by: '100'
+    endif
+  endif
+-%}

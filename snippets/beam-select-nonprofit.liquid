@@ -1,0 +1,42 @@
+{% assign beam_language = "en" %}
+
+<div data-beam-widget="select-nonprofit" data-cart-empty="true">
+  <beam-select-nonprofit
+    apiKey="{{ settings.beam_api_key }}"
+    storeId="{{ settings.beam_store_id }}"
+    lang="{{ beam_language }}"
+    baseUrl="{{ settings.beam_base_url }}"
+  ></beam-select-nonprofit>
+</div>
+
+<!-- -->
+<!-- Move the widget into an element that doesn't exist yet -->
+<!--  -->
+<script type="module" async crossorigin>
+  import { waitForElement } from "https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/integrations/utils.esm.js";
+  const insertAtTop = false; // false will insert the widget at the bottom of the parent
+  const cartRootObserverElementTarget = "cart-drawer";
+  const cartItemsContainer = "cart-drawer-items";
+
+  await waitForElement(cartRootObserverElementTarget);
+  const observerElement = document.querySelector(cartRootObserverElementTarget);
+
+  function beamObserverCallback() {
+    const targetElement = document.querySelector(cartItemsContainer);
+    const beamWidget = document.querySelector('[data-beam-widget="select-nonprofit"]');
+
+    // Add the Beam widget into the parent element
+    if (targetElement && beamWidget) {
+      insertAtTop
+        ? targetElement.prepend(beamWidget)
+        : targetElement.append(beamWidget);
+    }
+  }
+
+  const beamObserver = new MutationObserver(beamObserverCallback);
+  beamObserver.observe(observerElement, {
+    attributes: true,
+    childList: false,
+    subtree: true
+  });
+</script>

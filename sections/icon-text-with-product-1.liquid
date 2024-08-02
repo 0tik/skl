@@ -1,0 +1,347 @@
+
+{% liquid
+    assign total_product = 0
+   for block in section.blocks
+   case block.type
+   when 'product_info'
+   if block.settings.product != blank
+   assign total_product = total_product | plus:1
+   endif
+   endcase
+    endfor
+  %}
+
+  <style>
+    .padding-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+    }
+    .icon-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .icon-meta img{
+    max-width:75px;
+    height: auto;
+    }
+    .icon-with-product-info{
+        padding: 26px 0px 30px 0px;
+        max-width: 768px;
+        margin: auto;
+      }
+      .icon-with-product-title{
+        max-width: 768px;
+        margin: auto;
+        text-align:center;
+    }
+    .icon-with-product-title h4{
+    margin:0;
+    padding-top:20px;
+    }
+    .icon-with-product-info p{
+        text-align: center;
+        font-size: 2.4rem;
+        line-height: 3.2rem;
+        margin:0px;
+    }
+    .icon-product-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .icon-product-card{
+    padding-bottom:20px;
+    }
+    .icon-product-title h5{
+    text-transform:uppercase;
+    }
+    {% if total_product >= 4 %}
+        .icon-product-card {
+            width: calc(25% - 10px);
+            position:relative;
+        }
+    {% elsif total_product == 3 %}
+    .icon-product-card {
+        width: calc(33% - 10px);
+        position:relative;
+    }
+    {% elsif total_product == 2 %}
+    .icon-product-card {
+        width: calc(50% - 10px);
+        position:relative;
+    }
+    {% else %}
+    .icon-product-card {
+        width: calc(50% - 10px);
+        position:relative;
+    }
+    {% endif %}
+    .icon-product-image{
+    position:relative;
+    padding-top:100%;
+    border-radius:15px;
+    overflow:hidden;
+    }
+    .icon-product-image img{
+    max-width:100%;
+    object-fit:cover;
+    object-position:center;
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:100%;
+    }
+    .icon-product-title h5 {
+        margin: 0;
+        padding: 10px 0px;
+    }
+    .icon-product-info p {
+        margin: 0;
+        font-size: 1.4rem;
+        line-height: 1.9rem;
+        padding-bottom: 10px;
+    }
+    .icon-product-button a {
+        color: #000;
+        font-size: 1.4rem;
+        line-height: 1.8rem;
+    }
+    .icon-product-url{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:1;
+    color:transparent;
+    }
+    @media screen and (max-width:768px){
+        .padding-{{ section.id }}{
+            padding-top:{{ section.settings.padding_top_mb }}px;
+            padding-bottom:{{ section.settings.padding_bottom_mb }}px;
+           }
+        .icon-product-card {
+            width: calc(50% - 10px);
+            position:relative;
+        }
+        .icon-with-product-info p{
+            text-align: center;
+            font-size: 2rem;
+            line-height: 2.6rem;
+            margin:0px;
+        }
+        .icon-meta img{
+            max-width:60px;
+            }
+    }
+    @media screen and (max-width:600px){
+        .icon-product-card {
+            width: 100%;
+            position:relative;
+        }
+    }
+    </style>
+    <div class="icon-with-product-section padding-{{ section.id }}">
+     <div class="page-width">
+{% for block in section.blocks %}
+    {%- case block.type -%}
+        {% when 'icon_text'  %}
+            {% if block.settings.icon %}
+        <div class="icon-meta">
+            {%render 'image', image:block.settings.icon %}
+        </div>
+        {% endif %}
+        {% if block.settings.title %}
+        <div class="icon-with-product-title">
+            <h4>{{ block.settings.title }}</h4>
+        </div>
+    {% endif %}
+    {% if block.settings.info %}
+        <div class="icon-with-product-info">
+            <p>{{ block.settings.info }}</p>
+        </div>
+    {% endif %}
+{%- endcase -%}
+{%- endfor -%}
+<div class="icon-product-wrapper">
+{% for block in section.blocks %}
+
+    {%- case block.type -%}
+        {% when 'product_info' %}
+            {% assign block_product = block.settings.product %}
+            {% if block_product != blank %}
+                {% assign block_image = block.settings.image %}
+            {% assign block_info = block.settings.info %}
+            {% assign block_label = block.settings.btn_label %}
+        <div class="icon-product-card">
+            <a href="{{ block_product.url }}" class="icon-product-url">{{ block_product.title }}</a>
+            <div class="icon-product-image">
+                        {% if block_image != blank %}
+                            <img
+                                srcset="{%- if block_image.width >= 165 -%}{{block_image | img_url: '165x' }} 165w,{%- endif -%}
+                                  {%- if block_image.width >= 360 -%}{{block_image | img_url: '360x' }} 360w,{%- endif -%}
+                                  {%- if block_image.width >= 535 -%}{{block_image | img_url: '535x' }} 535w,{%- endif -%}
+                                  {%- if block_image.width >= 750 -%}{{block_image | img_url: '750x' }} 750w,{%- endif -%}
+                                  {%- if block_image.width >= 1070 -%}{{block_image | img_url: '1070x' }} 1070w,{%- endif -%}
+                                  {%- if block_image.width >= 1500 -%}{{block_image | img_url: '1500x' }} 1500w,{%- endif -%}"
+                                src="{{block_image | img_url: '1500x' }}"
+                                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                                alt="{{block_image.alt | escape }}"
+                                loading="lazy"
+                                width="{{block_image.width }}"
+                                height="{{block_image.height }}"
+                              >
+                        {% else %}
+                        <img
+                            srcset="{%- if block_product.featured_image.width >= 165 -%}{{block_product.featured_image | img_url: '165x' }} 165w,{%- endif -%}
+                              {%- if block_product.featured_image.width >= 360 -%}{{block_product.featured_image | img_url: '360x' }} 360w,{%- endif -%}
+                              {%- if block_product.featured_image.width >= 535 -%}{{block_product.featured_image | img_url: '535x' }} 535w,{%- endif -%}
+                              {%- if block_product.featured_image.width >= 750 -%}{{block_product.featured_image | img_url: '750x' }} 750w,{%- endif -%}
+                              {%- if block_product.featured_image.width >= 1070 -%}{{block_product.featured_image | img_url: '1070x' }} 1070w,{%- endif -%}
+                              {%- if block_product.featured_image.width >= 1500 -%}{{block_product.featured_image | img_url: '1500x' }} 1500w,{%- endif -%}"
+                            src="{{block_product.featured_image | img_url: '1500x' }}"
+                            sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                            alt="{{block_product.featured_image.alt | escape }}"
+                            loading="lazy"
+                            width="{{block_product.featured_image.width }}"
+                            height="{{block_product.featured_image.height }}"
+                          >
+                    
+                          {% endif %}
+           </div>
+           <div class="icon-product-title">
+           <h5>{{ block_product.title }}</h5>
+           </div>
+            {% if block_info != blank %}
+           <div class="icon-product-info">
+            <p>{{ block_info }}</p>
+           </div>
+            {% endif %}
+           <div class="icon-product-button">
+            {% if block_label != blank  %}
+            <a href="{{ block_product.url }}">{{ block_label }}</a>
+            {% else %}
+            <a href="{{ block_product.url }}">{{ block_product.title }}</a>
+            {% endif %}
+           </div>
+        </div>
+    {% endif %}
+{%- endcase -%}
+{% endfor %}
+</div>
+    </div>
+   </div>
+{% schema %}
+{
+  "name": "Text With Icon/Product",
+  "limit": 1,
+  "settings": [
+    {
+      "type" : "header",
+      "content": "Desktop"
+      },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+    "type" : "header",
+    "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mb",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+        "type":"icon_text",
+        "name" : "Icon With Info",
+        "limit" : 1,
+        "settings": [
+            {
+                "type": "image_picker",
+                "id" : "icon",
+                "label" : "Icon Image"
+            },
+            {
+            "type" : "text",
+            "label" : "Title",
+            "id" : "title"
+            },
+            {
+                "type" : "inline_richtext",
+                "label": "Description",
+                "id": "info"
+            }
+        ]
+    },
+    {
+        "type":"product_info",
+        "name" : "Content",
+        "limit" : 4,
+        "settings": [
+            {
+            "type" : "product",
+            "id" : "product",
+            "label" : "Select Product"
+            },
+            {
+                "type": "image_picker",
+                "id" : "image",
+                "label" : "Image"
+            },
+            {
+                "type" : "inline_richtext",
+                "label": "Description",
+                "id": "info"
+            },
+            {
+            "type":"text",
+            "label" : "Button  Label",
+            "id" : "btn_label"
+            }
+        ]
+    }
+],
+  "presets": [
+    {
+      "name": "Text With Icon/Product"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,322 @@
+<style>
+.app-download-{{ section.id }}{
+padding-top:{{ section.settings.padding_top }}px;
+padding-bottom:{{ section.settings.padding_bottom }}px;
+background-color:{{ section.settings.app_bg }};
+}
+.app-download-{{ section.id }} .qsg-heading *, .qsp-option-heading *, .qsp-app-img p, .no-selected-data p, .option-selected .qsp-icon p{
+color:{{  section.settings.text_color }};
+}
+.qsg-app-container{
+    width: 100%;
+    max-width: 516px;
+    margin: auto;
+    text-align: center;
+}
+.qsp-wrapper{
+display:flex;
+flex-wrap:wrap;
+justify-content: center;
+}
+.qsp-icon.no-option-selected{
+display:flex;
+gap:16px;
+opacity:0.3;
+}
+.qsp-icon.no-option-selected img{
+    filter: saturate(5%);
+}
+.qsp-app-img.option-selected{
+display:flex;
+gap:16px;
+}
+.qsp-app-content {
+    background-color: #1d1d1d;
+    padding-top: 28px;
+    padding-bottom: 36px;
+}
+.qsp-app-img.option-selected p{
+    text-align: left;
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    margin-bottom: 8px;
+}
+.qsp-app-img.option-selected{
+display:none;
+}
+.no-selected-data p, .option-selected .qsp-icon p{
+margin:0;
+margin-top:10px;
+font-size:1.4rem;
+line-height:1.8rem;
+}
+.option-selected .qsp-icon p{
+text-align:center;
+}
+.qsp-option-heading p{
+font-size:18px;
+font-weight:600;
+line-height:22px;
+}
+select.app_option {
+    width: 100%;
+    height: 50px;
+    padding: 10px;
+    margin-bottom:60px;
+    font-size: 16px;
+    color: #5d5d5d;
+}
+.qsp-wrapper img {
+    width: 96px;
+    height: 96px;
+}
+select.app_option:focus, select.app_option *:focus{
+outline:0;
+box-shadow:none;
+}
+select.app_option{
+    background-image: url(data:image/svg+xml;charset=US-ASCII,%3Csvg%20id%3D%22Layer_1%22%20data-name%3D%22Layer%201%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2016.88%209.15%22%3E%0A%20%20%3Cpolyline%20points%3D%2216.53%200.35%208.44%208.44%200.35%200.35%22%20style%3D%22fill%3A%20none%3Bstroke%3A%20%23707070%22/%3E%0A%3C/svg%3E%0A);
+    background-position: right 16px top 17px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    padding-right:35px;
+}
+select.app_option {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}
+.footer{
+margin-top:0 !important;
+}
+@media (min-width: 801px){
+    .qsp-app-content {
+        padding-top: 32px;
+        padding-bottom: 48px;
+    }
+    .qsp-wrapper img {
+        width: 144px;
+        height: 144px;
+    }
+    }
+    .qsp-wrapper .app-img img,
+.qsp-wrapper .play-img img{
+    width: 140px;
+    height: auto;
+    margin-bottom: 8px;
+   cursor:pointer;
+}
+@media screen and (max-width:768px){
+    select.app_option{
+    margin-bottom:20px;
+    }
+    .qsg-heading {
+    margin-top:0;
+    font-size:1.4rem;
+    line-height:1.8rem;
+    }
+}
+</style>
+
+<section class="app-download-{{ section.id }}">
+<div class="page-width">
+<div class="qsg-app-container">
+    {% if section.settings.heading != blank %}
+<div class="qsg-heading">
+    <p>{{ section.settings.heading }}</p>
+</div>
+{% endif %}
+<div class="qsp-option-container">
+    {% if section.settings.op_heading != blank %}
+    <div class="qsp-option-heading">
+        <p>{{ section.settings.op_heading }}</p>
+    </div>
+{% endif %}
+    <div class="option-content">
+        <select class="app_option">
+            <option value="select">Select</option>
+            {% for block in section.blocks %}
+                {% if block.settings.title != blank and block.settings.icon_img != blank and block.settings.google_link != blank and block.settings.apple_link != blank %}
+                <option value="{{ block.settings.title }}" data-logo="{{ block.settings.icon_img | image_url : width: 300 }}" data-app-link="{{ block.settings.google_link }}" data-play-store-link ="{{ block.settings.apple_link }}" data-icon-title="{{ block.settings.icon_title }}">{{ block.settings.title }}</option>
+                {% endif %}
+                {% endfor %}
+        </select>
+    </div>
+    <div class="qsp-app-content">
+        <div class="qsp-wrapper">
+            <div class="qsp-icon no-option-selected">
+                <div class="no-selected-data">
+                    <img src="{{ section.settings.no_opt | image_url: width : 300 }}" alt="Skull" />
+                    <p>Skullcandy</p>
+                </div>
+                <div class="no-selected-data">
+            <img src="{{ section.settings.no_opt_1 | image_url: width : 300 }}" alt="Skull Qi" loading="lazy" />
+            <p>Skull-iQ</p>
+            </div>
+            </div>
+            <div class="qsp-app-img option-selected">
+                <div class="qsp-icon">
+                    <img src="{{ section.settings.no_opt | image_url: width : 300 }}" alt="" />
+                    <p></p>
+                </div>
+                <div>
+                <p>Download</p>
+                <div class="app-img"><a href="" target="_blank"><img src="{{ section.settings.app_image | image_url: width : 300 }}" alt="App store icon" loading="lazy" /></a></div>
+                <div class="play-img"><a href="" target="_blank"><img src="{{ section.settings.play_image | image_url: width : 300 }}" alt="Play store icon" loading ="lazy"/></a></div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</section>
+<script>
+    let app_select = document.querySelector('select.app_option');
+let app_link = document.querySelector('.app-img a');
+let play_img = document.querySelector('.play-img a');
+let qsp_icon = document.querySelector('.option-selected .qsp-icon img');
+let noOptionSelected = document.querySelector('.no-option-selected');
+let OptionSelected = document.querySelector('.option-selected');
+let title_icon_div = document.querySelector('.option-selected .qsp-icon p');
+
+app_select.addEventListener('change', function(e) {
+    if (e.target.value == 'select') {
+        noOptionSelected.style.display = 'flex';
+        OptionSelected.style.display = 'none';
+    } else {
+        let select_logo = e.target.selectedOptions[0].getAttribute('data-logo');
+        let select_play = e.target.selectedOptions[0].getAttribute('data-app-link');
+        let select_app = e.target.selectedOptions[0].getAttribute('data-play-store-link');
+        let icon_title = e.target.selectedOptions[0].getAttribute('data-icon-title')
+        if (select_app) {
+            app_link.setAttribute('href', select_app);
+        }
+        if (select_play) {
+            play_img.setAttribute('href', select_play);
+        }
+        if (select_logo) {
+            qsp_icon.setAttribute('src', select_logo);
+        }
+        if(icon_title){
+            title_icon_div.textContent = icon_title;
+        }
+        noOptionSelected.style.display = 'none';
+        OptionSelected.style.display = 'flex';
+    }
+});
+
+    
+    
+</script>
+{% schema %}
+{
+"name": "QSG app download",
+"settings":[
+    {
+    "type": "color",
+    "id" : "app_bg",
+    "label": "Background Color",
+    "default" : "#000"
+    },
+    {
+        "type": "color",
+        "id" : "text_color",
+        "label": "Text Color",
+        "default" : "#fff"
+        },
+    {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 20
+      },
+    {
+    "type": "text",
+    "label" : "Heading",
+    "id" : "heading"
+    },
+    {
+        "type": "text",
+        "label" : "Option Heading",
+        "id" : "op_heading"
+    },
+    {
+        "type": "image_picker",
+        "label" : "App store image",
+        "id" : "app_image"
+    },
+    {
+        "type": "image_picker",
+        "label" : "Play store image",
+        "id" : "play_image"
+    },
+    {
+        "type": "image_picker",
+        "label" : "No Option selected Image First",
+        "id" : "no_opt"
+    },
+    {
+        "type": "image_picker",
+        "label" : "No Option selected Image Second",
+        "id" : "no_opt_1"
+    }
+],
+"blocks":[
+    {
+        "type": "text",
+        "name" : "Title with icon",
+        "settings":[
+            {
+                "type": "text",
+                "id" : "title",
+                "label" : "Option Name"
+            },
+            {
+                "type": "image_picker",
+                "id" : "icon_img",
+                "label" : "Icon Image"
+            },
+            {
+                "type": "text",
+                "id" : "icon_title",
+                "label" : "Icon Title"
+            },
+            {
+                "type": "url",
+                "id" : "apple_link",
+                "label" : "App store link"
+            },
+            {
+                "type": "url",
+                "id" : "google_link",
+                "label" : "Play store link"
+            }
+        ]
+    }
+],
+"presets":[
+    {
+        "name" : "QSG app download"
+    }
+]
+
+}
+
+{% endschema %}

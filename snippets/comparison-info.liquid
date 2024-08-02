@@ -1,0 +1,53 @@
+<div class="product-info-card" data-id="{{ product.id }}">
+<div class="product-com-des">
+{{ product.description }}
+</div>
+{% assign features = product.metafields.custom.feature %}
+{% assign  additional_feature = product.metafields.custom.additional_features %}
+{% assign tech_spec =  product.metafields.custom.technical_specifications %}
+<div class="comp-featured-wrapper">
+    {% for feature in features.value %}
+    <div class="comp-featured-inner">
+      <div class="comp-featured-icon">
+        <img src="{{ feature.icon_image | img_url :'' }}" alt="icon" loading= "lazy" width="200" height="200"/>
+      </div>
+      <div class="comp-featured-text">
+        {{ feature.text }}
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+  <div class="comp-additional-feature">
+    {{ additional_feature | metafield_tag }}
+  </div>
+  {% assign extended_features = product.metafields.custom.extended_features.value %}
+  <div class="extended-features">
+    <p class="extended-heading">Extended Features in App</p>
+    <p class="extended-text">{% if extended_features.extended_features_in_app != blank %}
+       {{ extended_features.extended_features_in_app }}
+      {% else %}
+         No
+      {% endif %}
+       </p>
+    <p class="extended-subheading">App Name</p>
+    <p class="extended-text">
+      {% if extended_features.app_name != blank %}
+        {{ extended_features.app_name }}
+      {% else %}
+      -
+    {% endif %}</p>
+    <p class="extended-subheading">App Features</p>
+    <div class="extended-app-feature">
+    {{ extended_features.app_features | metafield_tag }}
+    </div>
+    </div>
+  {% assign split_tech = tech_spec | metafield_tag | split:'<p>' %}
+  {% assign tech_li = split_tech[0] | split:'<ul>' %}
+  {% assign tech_list = tech_li[1] %}
+  <div class="comp-tech-spec">
+    {{ tech_list | replace:'<li>', '<span class="tech_heading">' | replace:':', '</span><span class="tech_info">' | replace:'</li>', '</span>' }}
+  </div>
+  <div class="comp-in-box">
+    {{ split_tech[1] | prepend:'<p>' | remove:'</div>' | remove:':' }}
+  </div>
+</div>

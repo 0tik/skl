@@ -1,0 +1,290 @@
+{%- assign featured_article = section.settings.featured_article -%}
+{%- if featured_article != blank -%}
+  {{ 'section-side-by-side.css' | asset_url | stylesheet_tag }}
+
+  {%- style -%}
+
+    {%- if current_tags.size > 0 -%}
+      .section--main_blog_featured {
+        display: none;
+      }
+    {%- endif -%}
+
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+
+    @media screen and (min-width: 768px) {
+      .section-{{ section.id }}-padding {
+        padding-top: {{ section.settings.padding_top }}px;
+        padding-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+
+    .section-{{ section.id }}-padding .iwc {
+      background-color:{{ section.settings.bgcolor }};
+    }
+
+    .section-{{ section.id }}-padding .iwc .button.button--primary {
+      background-color: {{ section.settings.button-bgcolor }};
+      color: {{ section.settings.button-textcolor }};
+    }
+
+    .section-{{ section.id }}-padding .iwc .button.button--primary::after {
+      box-shadow: 0 0 0 2px {{ section.settings.button-textcolor }}, 0 0 0 2px {{ section.settings.button-textcolor }};
+    }
+
+    .section-{{ section.id }}-padding .fi > a {
+      padding: {{ section.settings.height }}% 0;
+    }
+
+    @media screen and (max-width: 767px) {
+      .section-{{ section.id }}-padding .fi > a {
+        padding: {{ section.settings.height-mobile }}% 0;
+      }
+    }
+
+    .section-{{ section.id }}-padding .iwc .copy-main {
+      padding-left: {{ section.settings.padding-copy }}%;
+      padding-right: {{ section.settings.padding-copy }}%;
+      text-align: {{ section.settings.text_align }};
+    }
+
+    .section-{{ section.id }}-padding .iwc .copy-type {
+      color: {{ section.settings.typecolor }};
+    }
+
+    .section-{{ section.id }}-padding .iwc .copy-title {
+      color: {{ section.settings.headcolor }};
+    }
+
+    {% unless section.settings.buttons %}
+      .section-{{ section.id }}-padding .iwc .copy-links li a {
+        color:{{ section.settings.textcolor }};
+      }
+    {% endunless %}
+
+    .section-{{ section.id }}-padding .iwc .copy-details {
+      color: {{ section.settings.textcolor }};
+    }
+  {%- endstyle -%}
+
+  <div class="page-fullwidth section-featured_story_article section-{{ section.id }}-padding">
+    <div class="two-columns-main two-columns-main__sidebyside">
+      {%- if featured_article.image != blank -%}
+        <div class="three-columns-inner fullimage fi">
+          <a href="{{ featured_article.url }}">
+            <div class="media media--hover-effect">
+              {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+              <img
+                srcset="{%- if featured_article.image.src.width >= 165 -%}{{ featured_article.image.src | image_url: width: 165 }} 165w,{%- endif -%}
+                  {%- if featured_article.image.src.width >= 360 -%}{{ featured_article.image.src | image_url: width: 360 }} 360w,{%- endif -%}
+                  {%- if featured_article.image.src.width >= 533 -%}{{ featured_article.image.src | image_url: width: 533 }} 533w,{%- endif -%}
+                  {%- if featured_article.image.src.width >= 720 -%}{{ featured_article.image.src | image_url: width: 720 }} 720w,{%- endif -%}
+                  {%- if featured_article.image.src.width >= 1000 -%}{{ featured_article.image.src | image_url: width: 1000 }} 1000w,{%- endif -%}
+                  {%- if featured_article.image.src.width >= 1500 -%}{{ featured_article.image.src | image_url: width: 1500 }} 1500w,{%- endif -%}
+                  {{ featured_article.image.src | image_url }} {{ featured_article.image.src.width }}w"
+                src="{{ featured_article.image.src | image_url: width: 533 }}"
+                sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | divided_by: 2 }}px, (min-width: 750px) calc((100vw - 130px) / 2), calc((100vw - 50px) / 2)"
+                alt="{{ featured_article.image.src.alt | escape }}"
+                class="motion-reduce"
+                {% unless lazy_load == false %}loading="lazy"{% endunless %}
+                width="{{ featured_article.image.width }}"
+                height="{{ featured_article.image.height }}"
+              >
+              {% comment %}theme-check-enable ImgLazyLoading{% endcomment %}
+            </div>
+          </a>
+        </div>
+      {% endif %}
+      <div class="three-columns-inner copy_block iwc">
+        <div class="copy-main">
+          {%- if section.settings.title != blank -%}
+            <div class="copy-type h6">
+              {{ section.settings.title }}
+            </div>
+          {%- endif -%}
+          <div class="copy-title h2">
+            {{ featured_article.title }}
+          </div>
+          {%- if featured_article.excerpt != blank -%}
+          <div class="copy-details rte">
+            {{ featured_article.excerpt }}
+          </div>
+          {%- endif -%}
+          {%- if section.settings.cta_text != blank -%}
+            <div class="copy-links">
+              <ul class="list-unstyled list-inline">
+                <li>
+                  <a
+                    {% if section.settings.button %}class="button button--primary"{%endif%}
+                    href="{{ featured_article.url }}"
+                  >
+                    {{ section.settings.cta_text }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured article",
+  "tag": "section",
+  "class": "section section--main_blog_featured",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Featured article"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Intro title",
+      "default": "Featured Story"
+    },
+    {
+      "type": "article",
+      "id": "featured_article",
+      "label": "Article"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Height (Vertical Height %)",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "height-mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Image Height Mobile (Vertical Height %)",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Copy Settings"
+    },
+    {
+      "type": "color",
+      "id": "bgcolor",
+      "default": "#ffffff",
+      "label": "Background color"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:sections.text-banner.settings.desktop_text_box_align.options__1.label"
+        },
+        {
+          "value": "center",
+          "label": "t:sections.text-banner.settings.desktop_text_box_align.options__2.label"
+        },
+        {
+          "value": "right",
+          "label": "t:sections.text-banner.settings.desktop_text_box_align.options__3.label"
+        }
+      ],
+      "default": "left",
+      "label": "t:sections.text-banner.settings.desktop_text_box_align.label"
+    },
+    {
+      "type": "range",
+      "id": "padding-copy",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "%",
+      "label": "Copy Padding Horizontal",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "typecolor",
+      "default": "#000000",
+      "label": "Type color"
+    },
+    {
+      "type": "color",
+      "id": "headcolor",
+      "default": "#000000",
+      "label": "Heading color"
+    },
+    {
+      "type": "color",
+      "id": "textcolor",
+      "default": "#000000",
+      "label": "Copy & Text Links Color"
+    },
+    {
+      "type": "header",
+      "content": "Link Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "button",
+      "label": "Make Link into Button",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "button-bgcolor",
+      "default": "#000000",
+      "label": "Button Background Color",
+      "info": "if buttons selected"
+    },
+    {
+      "type": "color",
+      "id": "button-textcolor",
+      "default": "#ffffff",
+      "label": "Button Text Color",
+      "info": "if buttons selected"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text"
+    }
+  ]
+}
+{% endschema %}

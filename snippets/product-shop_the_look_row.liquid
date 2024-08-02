@@ -1,0 +1,97 @@
+<div class="row align-items-center">
+  <div class="col-md-10">
+    <div class="card__media shop_the_look__media">
+      <div class="media media--transparent">
+        {%- render 'image',
+          image: image
+        -%}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-15">
+    <h5>{{ product.title }}</h5>
+    {% if option1_selected != blank %}{{ option1_selected }}{% endif %}
+    {% if option2_selected != blank %}
+      {% if option1_selected != blank %}/{% endif %}
+      {{ option2_selected }}
+    {% endif %}
+    {% if option3_selected != blank %}
+      {% if option2_selected != blank %}/{% endif %}
+      {{ option3_selected }}
+    {% endif %}
+    {% if option4_selected != blank %}
+      {% if option3_selected != blank %}/{% endif %}
+      {{ option4_selected }}
+    {% endif %}
+  </div>
+  <div id="price-{{ product.id }}" class="col-md-10">
+    {%- render 'price', product: product, use_variant: true, specific_variant: variant, show_badges: true, price_class: 'price--small', product_available: product.available -%}
+  </div>
+  <shop-form class="col-md-15" data-productId="{{ product.id }}" data-section="{{ section_id }}" data-url="{{ product.url }}">
+    {%- for i in (1..4) -%}
+      {%- case i -%}
+        {%- when 1 -%}
+          {%- assign option_title_array = option1 | remove_first: '//' | split: '//' | uniq -%}
+          {%- assign option_selected = option1_selected -%}
+        {%- when 2 -%}
+          {%- assign option_title_array = option2 | remove_first: '//' | split: '//' | uniq -%}
+          {%- assign option_selected = option2_selected -%}
+        {%- when 3 -%}
+          {%- assign option_title_array = option3 | remove_first: '//' | split: '//' | uniq -%}
+          {%- assign option_selected = option3_selected -%}
+        {%- when 4 -%}
+          {%- assign option_title_array = option4 | remove_first: '//' | split: '//' | uniq -%}
+          {%- assign option_selected = option4_selected -%}
+      {%- endcase -%}
+      {%- assign shop_variant_product_array = product_ids | remove_first: ',' | split: ',' -%}
+      {% if option_title_array != blank -%}
+        <div class="product-form__input product-form__input--dropdown">
+          <div class="select">
+            <select
+                class="select__select"
+                name="{% if forloop.first %}product-change{% else %}options[option{{ i | minus: 1 }}]{% endif %}"
+              >
+              {% for option_title in option_title_array %}
+                <option value="{{ option_title | escape }}"{% if i == 1 %} data-product="{{ shop_variant_product_array[forloop.index0] | split: '??' | first }}" data-url="{{ shop_variant_product_array[forloop.index0] | split: '??' | last }}"{% endif %}{% if option_selected == blank and forloop.first %} selected{% elsif option_selected == option_title %} selected{% endif %}>
+                  {{ option_title }}
+                </option>
+              {% endfor %}
+            </select>
+            {% render 'icon-caret' %}
+          </div>
+        </div>
+      {% endif %}
+    {%- endfor -%}
+  </shop-form>
+  <div class="col-md-10">
+    {%- assign product_id_get = shop_variant_product_array[0] | split: '??' | first -%}
+    {%- assign product_form_id = 'ProductFormShopTheLook-' | append: product_id_get -%}
+    {%- assign product_available = variant.available -%}
+    <product-form class="product-form">
+      {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" value="{{ variant.id }}" disabled>
+        <div class="product-form__buttons">
+          <button
+            type="submit"
+            name="add"
+            class="product-form__submit button button--full-width button--primary"
+            {% if product_available == false %}disabled{% endif %}
+          >
+              <span>
+                {%- if product_available -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+              <div class="loading-overlay__spinner hidden">
+                <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                  <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                </svg>
+              </div>
+          </button>
+        </div>
+      {%- endform -%}
+    </product-form>
+  </div>
+</div>

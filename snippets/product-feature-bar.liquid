@@ -1,0 +1,35 @@
+{% assign num = 4 %}
+{% assign range = (1..num) %}
+
+{% for i in range %}
+    {% assign guide_bar = 'bar_' | append:i %}
+   {% if block.settings[guide_bar] != blank %}
+    {% assign guide_info = block.settings[guide_bar] | strip | split:'|' %}
+    <div class="guide-spec-info {{ product_guide_id | strip }}">
+       <div class="guide-spec-title">
+        {{ guide_info[0] }}
+       </div>
+       <div class="guide-spec-bar fill-{{ product.title | handle }}-{{ guide_info[0] | handle }}-{{ product.id }}-{{ i }}">
+        <style>
+          .fill-{{ product.title | handle }}-{{ guide_info[0] | handle }}-{{ product.id }}-{{ i }} .guide-spec-bar-content:nth-of-type(-n+{{ guide_info[1] }}){
+          {% if guide_info[1] == '5' %}
+          background:green;
+          {% else %}
+          background:#5A5A5A;
+          {% endif %}
+          }
+        </style>
+        <div class="guide-spec-bar-content">
+        </div>
+        <div class="guide-spec-bar-content">
+        </div>
+        <div class="guide-spec-bar-content">
+        </div>
+        <div class="guide-spec-bar-content">
+        </div>
+        <div class="guide-spec-bar-content">
+        </div>
+       </div>
+    </div>
+{% endif %}
+{% endfor %}

@@ -1,0 +1,101 @@
+{% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+{{ 'component-collection-hero.css' | asset_url | stylesheet_tag }}
+{{ 'wick--collection-banner.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .collection-hero.banner .banner__content .banner__box {
+    padding: {{ section.settings.padding-vertical }}px 0 {{ section.settings.padding-vertical }}px {{ section.settings.padding-horizontal }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-hero.banner .banner__content .banner__box {
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign page_title = page.title
+  if page.metafields.banner.title != blank
+    assign page_title = page.metafields.banner.title
+  endif
+-%}
+{%- render 'header-banner',
+    color_scheme: section.settings.color_scheme,
+    show_image: true,
+    show_description: true,
+    image_object: page.metafields.banner.image.value,
+    title: page_title,
+    subtitle: page.metafields.banner.subtitle,
+    description: page.content
+-%}
+
+{% schema %}
+{
+  "name": "Page Banner",
+  "class": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Image will pull from the Banner Image metafield"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.colors.label",
+      "info": "For non-image pages"
+    },
+    {
+      "type": "header",
+      "content": "Banner content adjustments [Desktop]"
+    },
+    {
+      "type": "paragraph",
+      "content": "Putting padding to 0 will revert to original padding (28px / 38px)"
+    },
+    {
+      "type": "range",
+      "id": "padding-vertical",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top/bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-horizontal",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding left/right",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

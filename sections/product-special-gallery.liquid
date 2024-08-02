@@ -1,0 +1,476 @@
+{% assign special_gallery = false %}
+<style>
+      .padding-{{ section.id }}{
+      padding-top:{{ section.settings.padding_top }}px;
+      padding-bottom:{{ section.settings.padding_bottom }}px;
+      background:{{ section.settings.background }};
+      }
+      .extra-gallery-wrapper, .gallery-one-four-wrapper, .gallery-five-wrapper{
+       display:flex;
+       flex-wrap:wrap;
+       gap:20px;
+      }
+    .extra-gallery-wrapper img,
+    .extra-gallery-wrapper video,
+    .gallery-one-four-wrapper img,
+    .gallery-one-four-wrapper video, 
+    .gallery-five-wrapper img,
+    .extra-video-video video,
+    .extra-video-image img,
+    .complete-video-container video{
+    width:100%;
+    max-width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:20px;
+    overflow:hidden;
+    object-position: center;
+    }
+    .extra-video-video,
+    .extra-video-image{
+     position:relative;
+    }
+      .extra-gallery-left{
+      width:calc(75% - 10px);
+      display:flex;
+      flex-wrap:wrap;
+      gap:20px;
+    }
+    .gallery-five-left{
+      width:calc(66.6667% - 10px);
+      display:flex;
+      flex-wrap:wrap;
+      gap:20px;
+    }
+    .extra-gallery-right{
+     width:calc(25% - 10px);
+    }
+    .gallery-five-right{
+      width:calc(33.3333% - 10px);
+     }
+    .extra-gallery-left .extra-video, .gallery-one-four-left .gallery-one-four-video{
+      width: calc(66.6667% - 10px);
+      position:relative;
+     }
+     .extra-gallery-left .extra-image, .gallery-one-four-left .gallery-one-four-vd-image{
+      width: calc(33.3333% - 10px);
+     }
+     .extra-image-right,   .gallery-five-right .gallery-five-image{
+      height:100%;
+     }
+     .extra-gallery-btn{
+     position:absolute;
+     top:20px;
+     left:20px;
+     width:50px;
+     height:50px;
+     cursor:pointer;
+     z-index:1;
+     }
+     .extra-gallery-btn svg{
+      width:50px;
+      height:50px;
+      fill: #fff;
+      }
+     .gallery-pause-btn {
+      display:none;
+     }
+     .extra-mobile, .one-four-mobile{
+      display:none;
+     }
+     .gallery-one-four-left, .gallery-one-four-right{
+      width:calc(100% - 10px);
+      display:flex;
+      gap:20px;
+    }
+     .gallery-one-four-right .gallery-one-four-image{
+      width:calc(33.3333% - 10px);
+    }
+    .gallery-five-left .gallery-five-image{
+      width:calc(50% - 10px);
+    }
+    .complete-video-container{
+      display:none;
+      opacity:0;
+      animation:opacity_show 0.3s;
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      z-index:2;
+      }
+      .complete-video-container.active{
+      display:block;
+      opacity:1;
+      }
+      .complete-video-container > div{
+        height:100%;
+      }
+      .extra-gallery .extra-gallery-wrapper{
+      position:relative;
+      }
+     @media screen and ( max-width:768px){
+      .extra-gallery-wrapper img, 
+      .extra-gallery-wrapper video, 
+      .gallery-one-four-wrapper img, 
+      .gallery-one-four-wrapper video,
+      .gallery-five-wrapper img{
+      border-radius:10px;
+      }
+     .extra-desktop, .one-four-desktop{
+    display:none
+    }
+    .extra-mobile, .one-four-mobile {
+      display:flex;
+      gap:10px;
+     }
+     .extra-gallery-left{
+     width:100%;
+     gap:10px;
+    }
+    .extra-gallery-left .extra-video {
+      width: 100%;
+      position: relative;
+  }
+  .extra-gallery-right {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+  .extra-gallery-right .extra-image-mob{
+      width: 50%;
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 10px;
+  }
+  .extra-image-right {
+    width: 50%;
+  }
+  .gallery-one-four-left, .gallery-one-four-left .gallery-one-four-video {
+  width:100%;
+  }
+  .gallery-one-four-right {
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+  }
+  .gallery-one-four-right .gallery-one-four-image {
+    width: calc(50% - 5px);
+}
+.gallery-five-wrapper{
+gap:10px;
+}
+.gallery-five-left {
+  width: 100%;
+  gap: 10px;
+}
+.gallery-five-right {
+  width: 100%;
+}
+    }
+</style>
+{%- liquid
+  capture gallery_image
+    assign gly_img = ''
+    for media in product.media
+      assign mediaAlt = media.alt | strip
+      if mediaAlt == 'gallery' and media.media_type == 'image'
+        assign im_url = media | img_url: ''
+        assign gly_img = gly_img | append: im_url | append: '|'
+      endif
+    endfor
+  endcapture
+
+  capture gallery_video
+    assign gly_video_img = ''
+    assign gly_video = ''
+    for media in product.media
+      assign mediaAlt = media.alt | strip
+      if mediaAlt == 'gallery' and media.media_type == 'video'
+        assign vd_url = media.sources[0].url
+        assign vd_img = media.preview_image | img_url: ''
+        assign gly_video = gly_video | append: vd_url | append: '|'
+        assign gly_video_img = gly_video_img | append: vd_img | append: '|'
+      endif
+    endfor
+  endcapture
+  assign extra_img = gly_img | split: '|'
+  assign extra_video = gly_video | split: '|'
+  assign extra_video_img = gly_video_img | split: '|'
+  assign array_image_length = extra_img.size
+  assign array_video_length = extra_video.size
+-%}
+
+<div {% if section.settings.anchor_id != blank %}id="{{ section.settings.anchor_id | handle }}"{% endif %} class="extra-gallery padding-{{ section.id }}">
+  <div class="page-width">
+    {% if array_video_length == 1 and array_image_length == 0 %}
+      {% assign special_gallery = true %}
+      <div class="extra-video-video">
+        <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+        <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+        <video poster="{{ extra_video_img[0] }}" playsinline loop preload="metadata">
+          <source src="{{ extra_video[0] }}" type="video/mp4">
+                      <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+        </video>
+      </div>
+      {% elsif array_image_length == 1 and array_video_length == 0 %}
+      {% assign special_gallery = true %}
+        <div class="extra-singal-image">
+          <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+        </div>
+    {% elsif array_video_length >= 2 and array_image_length >= 3 %}
+    {% assign special_gallery = true %}
+      <div class="extra-gallery-wrapper extra-desktop">
+        <div class="complete-video-container">
+        </div>
+        <div class="extra-gallery-left">
+          <div class="extra-video">
+            <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+            <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+            <video poster="{{ extra_video_img[0] }}" playsinline loop preload="metadata">
+              <source src="{{ extra_video[0] }}" type="video/mp4">
+                          <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+            </video>
+          </div>
+          <div class="extra-image">
+            <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="extra-image">
+            <img src="{{ extra_img[1] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="extra-video">
+            <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+            <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+            <video poster="{{ extra_video_img[1] }}" playsinline loop preload="metadata">
+              <source src="{{ extra_video[1] }}" type="video/mp4">
+                          <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+            </video>
+          </div>
+        </div>
+        <div class="extra-gallery-right">
+          <div class="extra-image-right">
+            <img src="{{ extra_img[2] }}" alt="Gallery Image" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <div class="extra-gallery-wrapper extra-mobile">
+        <div class="extra-gallery-left">
+          <div class="extra-video">
+            <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+            <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+            <video poster="{{ extra_video_img[0] }}" muted playsinline loop preload="metadata">
+              <source src="{{ extra_video[0] }}" type="video/mp4">
+                          <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+            </video>
+          </div>
+          <div class="extra-video">
+            <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+            <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+            <video poster="{{ extra_video_img[1] }}" playsinline loop preload="metadata">
+              <source src="{{ extra_video[1] }}" type="video/mp4">
+                          <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+            </video>
+          </div>
+        </div>
+        <div class="extra-gallery-right">
+          <div class="extra-image-mob">
+            <div class="extra-image">
+              <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+            </div>
+            <div class="extra-image">
+              <img src="{{ extra_img[1] }}" alt="Gallery Image" loading="lazy">
+            </div>
+          </div>
+          <div class="extra-image-right">
+            <img src="{{ extra_img[2] }}" alt="Gallery Image" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+    {% elsif array_video_length == 1 and array_image_length >= 4 %}
+    {% assign special_gallery = true %}
+    <div class="extra-gallery-wrapper extra-desktop">
+      <div class="complete-video-container">
+      </div>
+      <div class="extra-gallery-left">
+        <div class="extra-video">
+          <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+          <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+          <video poster="{{ extra_video_img[0] }}" playsinline loop preload="metadata">
+            <source src="{{ extra_video[0] }}" type="video/mp4">
+                        <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+          </video>
+        </div>
+        <div class="extra-image">
+          <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+        </div>
+        <div class="extra-image">
+          <img src="{{ extra_img[1] }}" alt="Gallery Image" loading="lazy">
+        </div>
+        <div class="extra-video">
+          <img src="{{ extra_img[2] }}" alt="Gallery Image" loading="lazy">
+        </div>
+      </div>
+      <div class="extra-gallery-right">
+        <div class="extra-image-right">
+          <img src="{{ extra_img[3] }}" alt="Gallery Image" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="extra-gallery-wrapper extra-mobile">
+      <div class="extra-gallery-left">
+        <div class="extra-video">
+          <span class="gallery-play-btn extra-gallery-btn">{% render 'play-icon' %}</span>
+          <span class="gallery-pause-btn extra-gallery-btn">{% render 'pause-icon' %}</span>
+          <video poster="{{ extra_video_img[0] }}" playsinline loop preload="metadata">
+            <source src="{{ extra_video[0] }}" type="video/mp4">
+                        <track src="captions_en.vtt" kind="captions" srclang="en" label="English">
+          </video>
+        </div>
+        <div class="extra-video">
+          <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+        </div>
+      </div>
+      <div class="extra-gallery-right">
+        <div class="extra-image-mob">
+          <div class="extra-image">
+            <img src="{{ extra_img[1] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="extra-image">
+            <img src="{{ extra_img[2] }}" alt="Gallery Image" loading="lazy">
+          </div>
+        </div>
+        <div class="extra-image-right">
+          <img src="{{ extra_img[3] }}" alt="Gallery Image" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+
+      {% elsif array_image_length >= 5 %}
+      {% assign special_gallery = true %}
+      <div class="gallery-five-wrapper">
+        <div class="gallery-five-left">
+          <div class="gallery-five-image">
+            <img src="{{ extra_img[0] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="gallery-five-image">
+            <img src="{{ extra_img[1] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="gallery-five-image">
+            <img src="{{ extra_img[2] }}" alt="Gallery Image" loading="lazy">
+          </div>
+          <div class="gallery-five-image">
+            <img src="{{ extra_img[3] }}" alt="Gallery Image" loading="lazy">
+          </div>
+        </div>
+        <div class="gallery-five-right">
+          <div class="gallery-five-image">
+            <img src="{{ extra_img[4] }}" alt="Gallery Image" loading="lazy">
+          </div>
+      </div>
+      </div>
+
+    {% endif %}
+  </div>
+</div>
+{% if special_gallery == false %}
+<style>
+  .extra-gallery{
+  display:none;
+  }
+  </style>
+{% endif %}
+<script>
+
+  let extra_specail_btns = document.querySelectorAll('.extra-gallery-btn');
+
+  extra_specail_btns.forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      let parent_div = event.currentTarget.parentNode;
+      let main_div = event.currentTarget.closest('.extra-gallery').querySelector('.complete-video-container');
+  
+      if (window.innerWidth >= 769 && main_div) {
+        main_div.innerHTML = "";
+        let cloned_parent_div = parent_div.cloneNode(true);
+        main_div.appendChild(cloned_parent_div);
+        main_div.classList.add('active');
+        let gallery_video = main_div.querySelector('video');
+        let play_btn = main_div.querySelector('.gallery-play-btn');
+        let pause_btn = main_div.querySelector('.gallery-pause-btn');
+  
+        if (gallery_video) {
+          gallery_video.play();
+          play_btn.style.display = 'none';
+          pause_btn.style.display = 'block';
+        }
+        cloned_parent_div.querySelector('.gallery-pause-btn').addEventListener('click', (event) => {
+          main_div.innerHTML = "";
+          main_div.classList.remove('active');
+        });
+      } else {
+        let gallery_video = parent_div.querySelector('video');
+  
+        if (gallery_video) {
+          if (gallery_video.paused) {
+            gallery_video.play();
+            parent_div.querySelector('.gallery-play-btn').style.display = 'none';
+            parent_div.querySelector('.gallery-pause-btn').style.display = 'block';
+          } else {
+            gallery_video.pause();
+            parent_div.querySelector('.gallery-play-btn').style.display = 'block';
+            parent_div.querySelector('.gallery-pause-btn').style.display = 'none';
+          }
+        }
+      }
+    });
+  });    
+</script>
+{% schema %}
+{
+  "name": "Product Gallery",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "color",
+      "label": "Background Color",
+      "id": "background"
+    },
+    {
+      "type" : "text",
+      "label" : "Anchor id",
+      "id" : "anchor_id"
+     }
+  ],
+  "presets": [
+    {
+      "name": "Product Gallery"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}

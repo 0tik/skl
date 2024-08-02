@@ -1,0 +1,379 @@
+<style>
+    .section-{{ section.id }}{
+    padding-top:{{ section.settings.padding_top }}px;
+    padding-bottom:{{ section.settings.padding_bottom }}px;
+    background-color:{{ section.settings.bg_color }};
+    }
+    .video-content {
+        overflow: hidden;
+        width: 100%;
+        aspect-ratio: 16/9;
+        position:relative;
+        border-radius:30px;
+      }
+      .video-content iframe{
+       pointer-events:none;
+       }
+      .video-slider-container iframe {
+        width: 300%;
+        height: 100%;
+        margin-left: -100%;
+      }
+      .video-slider-img{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      }
+      .slider-video-btn.pause-button{
+      display:none;
+     }
+      .slider-video-btn,  .slider-video-btn-full{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 0;
+        width: 70px;
+        height: 70px;
+        background: #0081FF;
+        border-radius: 50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:1;
+        cursor:pointer;
+        }
+        .slider-video-btn.pause-button{
+          top:unset;
+          left:10px;
+          bottom:10px;
+          transform: unset;
+          width:50px;
+          height:50px;
+        }
+        button.slider-video-btn-full{
+            top:unset;
+            left:unset;
+            right:10px;
+            bottom:10px;
+            width:50px;
+            height:50px;
+            display:none;
+            transform: unset;
+        }
+        button.slider-video-btn-full.show-btn{
+           display:block;
+        }
+        button.slider-video-btn svg, button.slider-video-btn-full svg {
+            width: 20px;
+            height: 20px;
+        }
+        button.slider-video-btn svg path, button.slider-video-btn-full svg, .thumbnail-play svg, .thumbnail-play svg path{
+            fill: #fff;
+        }
+        button.slider-video-btn svg, button.slider-video-btn-full.show-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        .video-slider-container{
+        width:100%;
+        }
+        .video-slider-section *:focus-visible{
+            outline:0px;
+            box-shadow:unset;
+        }
+        .video-slider-nav{
+            padding-top: 20px;
+        }
+        .video-nav-content{
+         position:relative;
+         aspect-ratio: 16 / 9;
+        }
+        .thumbnail-play{
+         position:absolute;
+         top:50%;
+         left:50%;
+         transform:translate(-50%, -50%);
+         width:50px;
+         height:50px;
+         border-radius:50%;
+         background: #0081FF;
+         display: flex;
+        align-items: center;
+         justify-content: center;
+        }
+        .thumbnail-play svg{
+         width:30px;
+         height:30px;
+        }
+        .video-nav-container{
+        width:calc(20% - 10px);
+        margin-right:10px;
+        border-radius:15px;
+        overflow:hidden;
+        }
+        .video-slider:not(.flickity-enabled) .video-slider-container{
+         display:none;
+        }
+        .video-slider:not(.flickity-enabled) .video-slider-container:first-child{
+        display:block;
+        }
+        .video-nav-container img{
+        height:100%;
+        display:block;
+        object-fit:cover;
+        }
+        .video-slider-nav:not(.flickity-enabled){
+        display:flex;
+        gap:10px;
+        overflow:hidden;
+        justify-content:center;
+        }
+        .video-slider .flickity-page-dots{
+        display:none;
+        }
+        @media screen and (max-width:991px){
+            .video-nav-container{
+                width:calc(25% - 10px);
+            }
+        }
+        @media screen and (max-width:768px){
+            .video-slider-nav{
+                display:none;
+                padding-top: 0px;
+            }
+            .video-content{
+            border-radius:15px;
+            }
+            .video-slider-container {
+            width:calc(90% - 10px);
+            margin-right:10px;
+            }
+            .video-slider{
+            padding-bottom:22px;
+            }
+            .video-slider .flickity-page-dots{
+                display:block;
+                bottom:-8px;
+                }
+                .slider-video-btn, .slider-video-btn-full{
+                width:50px;
+                height:50px;
+                }
+                button.slider-video-btn-full, .slider-video-btn.pause-button{
+                width:40px;
+                height:40px;
+                }
+                button.slider-video-btn svg, button.slider-video-btn-full svg{
+                width:15px;
+                height:15px;
+                }
+                .video-slider .flickity-page-dots .dot {
+                    display: inline-block;
+                    width: 7px;
+                    height: 7px;
+                    margin: 0 3px;
+                }
+        }
+</style>
+<div class="video-slider-section section-{{ section.id }}">
+    <div class="page-width">
+        <div class="video-slider">
+            {% for block in section.blocks %}
+                {% if block.settings.image != blank %}
+                    <div class="video-slider-container">
+                        <div class="video-content">
+                            {% if block.settings.youtube_id %}
+                                {% render 'image', image:block.settings.image, class:'video-slider-img' %}
+                                <iframe id="video-{{ forloop.index }}" width="560" height="315" src="https://www.youtube.com/embed/{{ block.settings.youtube_id }}?enablejsapi=1&controls=0&rel=0&html5=1&loop=1&playlist={{ block.settings.youtube_id }}" frameborder="0" allow="autoplay" allowfullscreen webkitallowfullscreen='true' mozallowfullscreen='true'></iframe>
+                                <button class="slider-video-btn play-button" data-video-id="video-{{ forloop.index }}">{% render 'icon-play' %}</button>
+                                <button class="slider-video-btn pause-button" data-video-id="video-{{ forloop.index }}">{% render 'icon-pause' %}</button>
+                                <button class="slider-video-btn-full fullscreen-button" data-video-id="video-{{ forloop.index }}">{% render 'fullscreen-icon' %}</button>
+                           {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="video-slider-nav">
+            {% for block in section.blocks %}
+                {% if block.settings.image != blank %}
+                 <div class="video-nav-container" data-video-id="{{ forloop.index }}">
+                   <div class="video-nav-content">
+                    {% render 'image', image:block.settings.image %}
+                    <span class="thumbnail-play">{% render 'icon-play' %}</span>
+                    </div>
+                 </div>
+                {% endif %}
+                {% endfor %}
+        </div>
+    </div>
+</div>
+<script>
+    var players = {};
+
+    function onYouTubePlayerAPIReady() {
+        var iframes = document.querySelectorAll('iframe[id^="video-"]');
+        iframes.forEach(function(iframe) {
+            var id = iframe.id;
+            players[id] = new YT.Player(id, {
+                events: {
+                    onReady: onPlayerReady
+                }
+            });
+        });
+    }
+
+    function onPlayerReady(event) {
+        var player = event.target;
+        var videoId = player.getIframe().id;
+        
+        var playButton = document.querySelector('.play-button[data-video-id="' + videoId + '"]');
+        var pauseButton = document.querySelector('.pause-button[data-video-id="' + videoId + '"]');
+        var fullscreenButton = document.querySelector('.fullscreen-button[data-video-id="' + videoId + '"]');
+        playButton.addEventListener("click", function () {
+            var parentDiv = playButton.closest('.video-content');
+            var overlayImg = parentDiv.querySelector('img');
+            var pauseBtn = parentDiv.querySelector('.pause-button');
+            var fullscreenbtn = parentDiv.querySelector('.slider-video-btn-full');
+            overlayImg.style.display = 'none';
+            pauseBtn.style.display = 'flex';
+            playButton.style.display = 'none';
+            fullscreenbtn.style.display = 'flex';
+            player.playVideo();
+        });
+
+        pauseButton.addEventListener("click", function () {
+            var parentDiv = pauseButton.closest('.video-content');
+            var overlayImg = parentDiv.querySelector('img');
+            var plyBtn = parentDiv.querySelector('.play-button')
+            var fullscreenbtn = parentDiv.querySelector('.slider-video-btn-full')
+            overlayImg.style.display = 'block';
+            plyBtn.style.display = 'flex';
+            pauseButton.style.display = 'none';
+            fullscreenbtn.style.display = 'none';
+            player.pauseVideo();
+        });
+        fullscreenButton.addEventListener("click", function () {
+            var iframe = document.getElementById(videoId);
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.mozRequestFullScreen) { 
+                iframe.mozRequestFullScreen();
+            } else if (iframe.webkitRequestFullscreen) { 
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        });
+    }
+    var tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/player_api";
+    var firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    document.addEventListener('DOMContentLoaded', function(){
+    var videoCarousel = document.querySelector('.section-{{ section.id }} .video-slider');
+    var videonavCarousel = document.querySelector('.section-{{ section.id }} .video-slider-nav');
+    var videoNavContainers = document.querySelectorAll('.video-nav-container');
+
+    videoFlickity = new Flickity(videoCarousel, {
+        pageDots: false,
+        prevNextButtons: false,
+        pageDots: true,
+        cellAlign: "left"
+      });
+      videonavFlickity = new Flickity(videonavCarousel, {
+        asNavFor: '.section-{{ section.id }} .video-slider',
+        contain: true,
+        prevNextButtons: false,
+        pageDots: false,
+        cellAlign: "center"
+      });
+      videoFlickity.on( 'change', function(index) {
+        Object.keys(players).forEach(function(playerId) {
+            var player = players[playerId];
+            player.pauseVideo();
+            
+            var parentDiv = player.getIframe().closest('.video-content');
+            var overlayImg = parentDiv.querySelector('img');
+            var playButton = parentDiv.querySelector('.play-button');
+            var pauseButton = parentDiv.querySelector('.pause-button');
+            var fullscreenButton = parentDiv.querySelector('.slider-video-btn-full');
+            
+            overlayImg.style.display = 'block';
+            playButton.style.display = 'flex';
+            pauseButton.style.display = 'none';
+            fullscreenButton.style.display = 'none';
+        });
+      });
+
+      videoNavContainers.forEach(function(container) {
+        container.addEventListener('click', function() {
+            var videoId = container.getAttribute('data-video-id');
+            document.querySelector(`.play-button[data-video-id="video-${videoId}"]`).click();
+        });
+    });
+    })
+</script>
+{% schema %}
+{
+"name": "Video Slider",
+"settings":[
+    {
+    "type": "color",
+    "id" : "bg_color",
+    "label": "Background Color",
+    "default" : "#000"
+    },
+    {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 20
+      }
+],
+"blocks":[
+    {
+        "type": "video",
+        "name" : "video",
+        "settings":[
+            {
+            "type" : "image_picker",
+            "label" : "Thumbnail Image",
+            "id" : "image"
+            },
+            {
+            "type" : "text",
+            "label" : "Youtube Id",
+            "id" : "youtube_id"
+            }
+        ]
+    }
+],
+"presets":[
+    {
+        "name" : "Video Slider"
+    }
+]
+
+}
+
+{% endschema %}

@@ -1,0 +1,307 @@
+{%- assign block_type = product.metafields.custom.product_line | handleize | append: '-series' -%}
+{%- assign product_series_block = section.blocks | where: 'type', block_type | first -%}
+<!-- {{ block_type }} -->
+{%- if product_series_block != blank -%}
+  <link rel="stylesheet" href="{{ 'section-image-banner.css' | asset_url }}" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="{{ 'wick--product-series_banner.css' | asset_url }}" media="print" onload="this.media='all'">
+
+  <noscript>{{ 'section-image-banner.css' | asset_url | stylesheet_tag }}</noscript>
+  <noscript>{{ 'wick--product-series_banner.css' | asset_url | stylesheet_tag }}</noscript>
+
+  {%- style -%}
+    .section-{{ section.id }}-padding {
+      margin-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+      margin-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    }
+
+    @media screen and (min-width: 750px) {
+      .section-{{ section.id }}-padding {
+        margin-top: {{ section.settings.padding_top }}px;
+        margin-bottom: {{ section.settings.padding_bottom }}px;
+      }
+    }
+  {%- endstyle -%}
+
+  {%- if product_series_block.settings.overlay -%}
+    {%- style -%}
+      #Banner-{{ section.id }}::after {
+        opacity: 0.3;
+        mix-blend-mode: multiply;
+      }
+    {%- endstyle -%}
+  {%- endif -%}
+
+  <div id="Banner-{{ section.id }}" class="product-series_banner section-{{ section.id }}-padding banner banner--{{ section.settings.image_height }} banner--desktop-transparent align-items-center justify-content-center" {{ product_series_block.shopify_attributes }}>
+    <div class="banner__media media{% if product_series_block.settings.image == blank %} placeholder{% endif %}">
+      {%- render 'image',
+        image: product_series_block.settings.image
+      -%}
+    </div>
+    <div class="banner__content banner__content--center-center">
+      <div class="banner__box content-container content-container--full-width-mobile color-background-1 gradient">
+        {%- if product_series_block.settings.icon != blank -%}
+          <img src="{{ product_series_block.settings.icon }}" width="{{ product_series_block.settings.icon_width }}" alt="{{ product_series_block.settings.title }}" />
+        {%- endif -%}
+        <h3>{{ product_series_block.settings.title }}</h3>
+        {%- if product_series_block.settings.subtitle != blank -%}
+          <h5>{{ product_series_block.settings.subtitle }}</h5>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product series banner",
+  "tag": "section",
+  "class": "section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This banner will only show if the Product Metafield 'Product Line' is used"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+      "type": "header",
+      "content": "Image height"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium",
+      "label": "Image height"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "fusion-series",
+      "name": "Fusion Series banner",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Upload to [Files](https://obermeyer-klaus-test.myshopify.com/admin/settings/files) and paste the link here"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "default": 100,
+          "unit": "px",
+          "label": "Icon width"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fusion Series"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "For Those Who Make the First Tracks"
+        },
+        {
+          "type": "checkbox",
+          "id": "overlay",
+          "label": "Image overlay?",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "alpine-series",
+      "name": "Alpine Series banner",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Upload to [Files](https://obermeyer-klaus-test.myshopify.com/admin/settings/files) and paste the link here"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "default": 100,
+          "unit": "px",
+          "label": "Icon width"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Alpine Series"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "For Those Who Make the First Tracks"
+        },
+        {
+          "type": "checkbox",
+          "id": "overlay",
+          "label": "Image overlay?",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "resort-series",
+      "name": "Resort Series banner",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Upload to [Files](https://obermeyer-klaus-test.myshopify.com/admin/settings/files) and paste the link here"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "default": 100,
+          "unit": "px",
+          "label": "Icon width"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Resort Series"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "For Those Who Make the First Tracks"
+        },
+        {
+          "type": "checkbox",
+          "id": "overlay",
+          "label": "Image overlay?",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "heritage-series",
+      "name": "Heritage Line banner",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image"
+        },
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon",
+          "info": "Upload to [Files](https://obermeyer-klaus-test.myshopify.com/admin/settings/files) and paste the link here"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 50,
+          "max": 250,
+          "step": 10,
+          "default": 100,
+          "unit": "px",
+          "label": "Icon width"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Heritage Line Series"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "For Those Who Make the First Tracks"
+        },
+        {
+          "type": "checkbox",
+          "id": "overlay",
+          "label": "Image overlay?",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product series banner"
+    }
+  ],
+  "templates": ["product"]
+}
+{% endschema %}

@@ -1,0 +1,96 @@
+
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-guide.js' | asset_url }}"></script>
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background:{{ section.settings.bg_color }};
+  }
+  @media screen and (max-width:768px){
+    .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | divided_by:2 }}px;
+    padding-bottom: {{ section.settings.padding_bottom  }}px;
+  }
+  }
+    {%- endstyle -%}
+<div class="final-no-result section-{{ section.id }}-padding hidden">
+  <div class="page-width">
+  <div class="no-result-guide">
+    <h5>No Match Found</h5>
+  </div>
+  </div>
+</div>
+<div class="product-guide-final-step section-{{ section.id }}-padding hidden">
+<div class="page-width">
+  {% if section.settings.subheading != blank  %}
+  <div class="guide-step-subheading final-result-count">
+    <p>{{ section.settings.subheading }}</p>
+    </div>
+    {% endif %}
+  {% if section.settings.heading != blank  %}
+  <div class="final-step-heading">
+    <h5>{{ section.settings.heading }}</h5>
+  </div>
+{% endif %}
+<div class="product-guide-final-wrapper">
+    {% paginate collections.all.products by collections.all.all_products_count %}
+    {% for product in collections.all.products %}
+    {% render 'product-guide-card', product:product %}
+    {% endfor %}
+    {% endpaginate %}
+</div>
+</div>
+</div>
+{% schema %}
+{
+  "name": "Product Guide Final Step",
+  "tag": "section",
+  "class": "product-final-result guide-step-section",
+  "limit":1,
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    },
+    {
+    "type" : "color",
+    "id" : "bg_color",
+    "label" : "Background Color",
+    "default" : "transparent"
+    },
+    {
+      "type": "text",
+      "label" : "SubHeading",
+      "id" : "subheading",
+      "info" : "Wherever you need to show a number, please use {num}."
+    },
+    {
+    "type": "text",
+    "label" : "Heading",
+    "id" : "heading"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Guide Final Step"
+    }
+  ]
+}
+{% endschema %}

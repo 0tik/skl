@@ -1,0 +1,37 @@
+
+    <div class="comparise-section hidden">
+      <div class="page-width">
+        <div class="comparison-heading">
+          <h5>Compare Products</h5>
+          </div>
+          <div class="comparsion-close-button">
+            <button class="comparison-close"> &lt; Go Back</button>
+            </div>
+      <div class="product-comparison-final-wrapper">
+        <div class="comparison-card-wrapper">
+        {% for product in collection.products %}
+        {% render 'comparison-product-card', product:product %}
+        {% endfor %}
+        </div>
+        <div class="comparison-info-wrapper">
+        {% for product in collection.products %}
+                {% render 'comparison-info', product:product %}
+        {% endfor %}
+        </div>
+        </div>
+        </div>
+      </div>
+    <script src="{{'compare-product.js' | asset_url}}"></script>
+     {% schema %}
+{
+  "name": "Compare Product",
+  "class": "product-comp-section",
+  "settings": [],
+  "presets": [
+    {
+    "name" : "Compare Product",
+    "category": "collection"
+    }
+  ]
+}
+{% endschema %}

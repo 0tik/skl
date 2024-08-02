@@ -1,0 +1,42 @@
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<div class="cookiepolicy" style="display:none;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-60">
+        <p>{{ settings.cookiepolicytext}}<a href="{{settings.cookiepolicylink}}"> {{settings.cookiepolicytl}}</a><button id="cookieclose" class="btn">{{settings.cookiepolicybutton}}</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $( window ).on( "load", function() {
+      if(Cookies.get('eucookie') != 'true') {
+		$('.cookiepolicy').show();
+      }
+    });  
+  
+	$( "#cookieclose" ).click(function() {
+  		$( '.cookiepolicy' ).hide();
+        Cookies.set('eucookie', 'true', { expires: 7 });
+	});
+</script>
+
+<style>
+    .cookiepolicy {position:fixed; bottom:0px; width:100%; background-color:black;color:white;z-index: 999;}
+  .cookiepolicy p {margin-bottom:0px;margin-top:0px;text-align:center;}
+  .cookiepolicy .row {padding:10px;}
+  .cookiepolicy a {font-weight:bold;text-decoration:none;color:white;    font-family: 'Archivo';
+    font-weight: normal;}
+  #cookieclose{    background: black;
+    color: white;
+    border: 0px;    margin-left: 20px;
+    font-weight: bold;}
+    @media screen and (max-width:768px){
+  .cookiepolicy {
+    color: white;
+    z-index: 999;
+    font-size: 12px;
+}
+    }
+</style>

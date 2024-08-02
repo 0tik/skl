@@ -1,0 +1,295 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+{% assign iurl = "//hook.integromat.com/rn3bqb4cvv4g9nf1kgkyvfdl2ghmtsul"%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<div class="customer login">
+
+
+  <div id="mainform" style="display:block;">
+
+        <div class="recoverform" style="display:none;">
+    <h1 id="recover" tabindex="-1">
+      {{ 'customer.recover_password.title' | t }}
+    </h1>
+
+      <p>
+        {{ 'customer.recover_password.subtext' | t }}
+      </p>
+
+      {%- form 'recover_customer_password' -%}
+      {% assign recover_success = form.posted_successfully? %}
+      <div class="field">
+        <input type="email"
+               value=""
+               name="email"
+               id="RecoverEmail"
+               autocorrect="off"
+               autocapitalize="off"
+               autocomplete="email"
+               {% if form.errors %}
+               aria-invalid="true"
+               aria-describedby="RecoverEmail-email-error"
+               autofocus
+               {% endif %}
+               placeholder="{{ 'customer.login_page.email' | t }}"
+               >
+        <label for="RecoverEmail">
+          {{ 'customer.login_page.email' | t }}
+        </label>
+      </div>
+      {%- if form.errors -%}
+      <small id="RecoverEmail-email-error" class="form__message">
+        <svg aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 13 13">
+          <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+          <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+          <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+          <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7"/>
+        </svg>
+        {{ form.errors.messages['form'] }}
+      </small>
+      {%- endif -%}
+
+      <button>
+        {{ 'customer.login_page.submit' | t }}
+      </button>
+
+      <a href="#login" class="cancelrec">
+        {{ 'customer.login_page.cancel' | t }}
+      </a>
+      {%- endform -%}
+    </div>
+
+    <h1 id="login" tabindex="-1">
+      {{ 'customer.login_page.title' | t }}
+    </h1>
+    <div>
+      {%- if recover_success == true -%}
+      <h3 class="form__message" tabindex="-1" autofocus>
+        <svg aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 13 13">
+          <path d="M6.5 12.35C9.73087 12.35 12.35 9.73086 12.35 6.5C12.35 3.26913 9.73087 0.65 6.5 0.65C3.26913 0.65 0.65 3.26913 0.65 6.5C0.65 9.73086 3.26913 12.35 6.5 12.35Z" fill="#428445" stroke="white" stroke-width="0.7"/>
+          <path d="M5.53271 8.66357L9.25213 4.68197" stroke="white"/>
+          <path d="M4.10645 6.7688L6.13766 8.62553" stroke="white"/>
+        </svg>
+        {{ 'customer.recover_password.success' | t }}
+      </h3>
+      {%- endif -%}
+
+      {%- assign login_errors = false -%}
+
+      {%- form 'customer_login', novalidate: 'novalidate', class: 'hidden' -%}
+        {%- if form.errors -%}
+          {%- assign login_errors = true -%}
+          {%- capture login_error_message -%}
+            <h2 class="form__message" tabindex="-1" autofocus>
+              <span class="visually-hidden">{{ 'accessibility.error' | t }} </span>
+              <svg aria-hidden="true" focusable="false" role="presentation" viewBox="0 0 13 13">
+                <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
+                <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
+                <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
+                <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7"/>
+              </svg>
+              {{ 'templates.contact.form.error_heading' | t }}
+            </h2>
+            {{ form.errors | default_errors }}
+          {%- endcapture -%}
+          {{ login_error_message }}
+        {%- endif -%}
+
+        <div class="field">
+          <input
+                 type="email"
+                 name="customer[email]"
+                 id="email2"
+                 autocomplete="email"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 {% if form.errors contains 'form' %}
+                 aria-invalid="true"
+                 {% endif %}
+                 placeholder="{{ 'customer.login_page.email' | t }}"
+                 >
+          <label for="CustomerEmail">
+            {{ 'customer.login_page.email' | t }}
+          </label>
+        </div>
+
+
+        <div class="field">
+          <input
+                 type="password"
+                 value=""
+                 name="customer[password]"
+                 id="pass2"
+                 autocomplete="current-password"
+                 {% if form.errors contains 'form' %}
+                 aria-invalid="true"
+                 {% endif %}
+                 placeholder="{{ 'customer.login_page.password' | t }}"
+                 >
+          <label for="CustomerPassword">
+            {{ 'customer.login_page.password' | t }}
+          </label>
+        </div>
+
+        <a href="#recover" class="showrecover">
+          {{ 'customer.login_page.forgot_password' | t }}
+        </a>
+
+
+        <button id="actuallogin">
+          {{ 'customer.login_page.sign_in' | t }}
+        </button>
+
+        <a href="{{ routes.account_register_url }}">
+          {{ 'customer.login_page.create_account' | t }}
+        </a>
+
+      {%- endform -%}
+    </div>
+  </div>
+
+
+  <form id="intrologin">
+    {%- if login_errors -%}
+      <div style="width:100%;border:1px solid; background-color:lightred;padding:10px;text-align:center;">Password entered is incorrect, please try again or reset password.</div>
+    {%- endif -%}
+    <div class="field">
+      <input
+             type="email"
+             name="customer[email]"
+             id="email1"
+             autocomplete="email"
+             autocorrect="off"
+             autocapitalize="off"
+             {% if form.errors contains 'form' %}
+             aria-invalid="true"
+             {% endif %}
+             placeholder="{{ 'customer.login_page.email' | t }}"
+             >
+      <label for="CustomerEmail">
+        {{ 'customer.login_page.email' | t }}
+      </label>
+    </div>
+
+
+    <div class="field">
+      <input
+             type="password"
+             value=""
+             name="customer[password]"
+             id="pass1"
+             autocomplete="current-password"
+             {% if form.errors contains 'form' %}
+             aria-invalid="true"
+             {% endif %}
+             placeholder="{{ 'customer.login_page.password' | t }}"
+             >
+      <label for="CustomerPassword">
+        {{ 'customer.login_page.password' | t }}
+      </label>
+    </div>
+
+    <a href="#recover" class="showrecover">
+      {{ 'customer.login_page.forgot_password' | t }}
+    </a>
+
+    <button>
+      {{ 'customer.login_page.sign_in' | t }}
+    </button>
+    <div class="formwaiting" style="display:none;width:100%;border:1px solid; background-color:lightred;padding:10px;text-align:center;">logging you in...</div>
+
+    <a href="{{ routes.account_register_url }}">
+      {{ 'customer.login_page.create_account' | t }}
+    </a>
+
+  </form>
+
+
+  <script>
+    $(document).ready(function () {
+      $('.showrecover').click(function(e){
+        e.preventDefault;
+        $('.recoverform').show();
+      });
+
+      $('.cancelrec').click(function(e){
+        e.preventDefault;
+        $('.recoverform').hide();
+      });
+
+
+      function onchange() {
+        var box1 = $('#pass1');
+        var box2 = $('#pass2');
+        var box3 = $('#email1');
+        var box4 = $('#email2');
+        box2.val(box1.val());
+        box4.val(box3.val());
+      }
+      $('#email1').on('change', onchange);
+      $('#pass1').on('change', onchange);
+    });
+
+        $('#intrologin').on('submit',function(e){
+      e.preventDefault();
+      $('.formwaiting').show();
+      var integro_url = '{{iurl}}';
+      var serializedReturn = $('input[name!=password]', this).serialize();
+      $.ajax({
+        type: "POST",
+        url: integro_url,
+        data: serializedReturn,
+        success: function(data) {
+          if(data) {
+            console.log('data',data);
+            if(data == "login"){
+              console.log('login')
+              $( "#actuallogin" ).click();
+              $('#intrologin').hide();
+              $('#customer_login').show();
+              $('#formwaiting').hide();
+            }
+            if(data == "invited"){
+              console.log('invited')
+              $( ".formwaiting" ).text( "Due to a website update, your Account needs to be re-activated. Check your email for an invitation email." );
+            }
+            if(data == "create"){
+              console.log('create')
+              $( ".formwaiting" ).text( "No account found for this email, use the link below to create your account." );
+            }
+            //console.log(data);
+          }
+        },
+        fail: function(jqXHR, textStatus) {
+          console.log(jqXHR + ' -- ' +textStatus);
+          $loadingbtn.removeClass('spinning');
+          alert('Process failed, please reload the page and try again');
+        }
+      });
+    });
+
+
+  </script>
+</div>
+
+
+
+
+<style>
+  .formwaiting{
+    width: 100%;
+    border: 1px solid;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;}
+  {% if section.settings.bgimage %}
+  {% if section.settings.image != blank %}
+  .loginpage {background-image: url('{{ section.settings.image | img_url: '2000x' }}');background-size:cover;}
+    {% endif %}
+    .loginpage .col-md-30, .loginpage .col-md-28 {background-color:white;padding:40px;}
+    {% endif %}
+    .loginpage {padding-top:{{section.settings.padding-top}}px;padding-bottom:{{section.settings.padding-bottom}}px;}
+    .loginpage form{    width: 60%;
+      margin-left: 20%;}
+    .loginpage input{width:100%;margin-bottom:10px;}
+</style>

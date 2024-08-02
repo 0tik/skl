@@ -1,0 +1,196 @@
+
+<style>
+    .padding-{{ section.id }}{
+        padding-top:{{ section.settings.padding_top }}px;
+        padding-bottom:{{ section.settings.padding_bottom }}px;
+        background:{{ section.settings.benefit_bg }};
+        }
+        .feature-slider-card{
+            width:calc(40% - 20px);
+            margin-right: 20px;
+        }
+.product-feature-slider .flickity-page-dots .dot{
+ background:#666565f7;
+}
+.product-feature-slider .flickity-page-dots{
+    bottom: -30px;
+}
+.feature-slider *:focus-visible{
+    outline:0;
+    box-shadow:unset;
+}
+.feature-content{
+padding-right:10px;
+}
+.feature-img {
+    position: relative;
+    padding-top: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+}
+.feature-img img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.feature-title h4{
+    margin: 15px 0px;
+}
+.feature-description p{
+margin-top:0px;
+}
+.product-feature-slider .flickity-prev-next-button {
+    width: 35px;
+    height: 35px;
+    background: #f6f4f5;
+    border-radius: 5px;
+}
+.product-feature-slider  .flickity-prev-next-button .flickity-button-icon{
+    fill:#000;
+}
+@media screen and (max-width:768px){
+    .feature-slider-card{
+        width:calc(80% - 10px);
+    }
+    .feature-img{
+    border-radius:15px;
+    padding-top: 100%;
+    }
+    .feature-slider-card{
+        margin-right:10px;
+    }
+}
+</style>
+
+<div class="feature-slider padding-{{ section.id }}">
+<div class="page-width">
+    <div class="product-feature-slider">
+        {% for block in section.blocks %}
+        <div class="feature-slider-card">
+            {% if block.settings.image != blank %}
+            <div class="feature-img">
+                {% render 'image', image: block.settings.image %}
+            </div>
+        {% endif %}
+            <div class="feature-content">
+                {% if block.settings.title != blank %}
+                <div class="feature-title">
+                    <h3 class="{{ block.settings.heading_size }}">{{ block.settings.title }}</h3>
+                </div>
+            {% endif %}
+            {% if block.settings.description != blank %}
+                <div class="feature-description">
+                    <p>{{ block.settings.description }}</p>
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    let featureslider = document.querySelector('.padding-{{ section.id }} .product-feature-slider');
+    featureslider = new Flickity(featureslider, {
+        pageDots: true,
+        prevNextButtons: true,
+        freeScroll: true,
+        contain: true,
+        groupCells: true
+      });
+    });
+</script>   
+{% schema %}
+{
+    "name" : "Benefit Slider",
+    "settings":[
+        {
+            "type": "range",
+            "id": "padding_top",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_top",
+            "default": 36
+          },
+          {
+            "type": "range",
+            "id": "padding_bottom",
+            "min": 0,
+            "max": 100,
+            "step": 4,
+            "unit": "px",
+            "label": "t:sections.all.padding.padding_bottom",
+            "default": 36
+          },
+                    {
+          "type" : "color",
+          "id" : "benefit_bg",
+          "label" : "Background Color"
+          }
+    ],
+    "blocks": [
+        {
+        "type":"content",
+        "name" : "Image with text",
+        "settings": [
+            {
+            "type": "image_picker",
+            "id" : "image",
+            "label" : "Select Image"
+            },
+            {
+            "type": "text",
+            "id" : "title",
+            "label" : "Heading"
+            },
+            {
+                "type": "select",
+                "id": "heading_size",
+                "options": [
+                  {
+                    "value": "h6",
+                    "label": "t:sections.all.heading_size.options__1.label"
+                  },
+                  {
+                    "value": "h5",
+                    "label": "t:sections.all.heading_size.options__2.label"
+                  },
+                  {
+                    "value": "h4",
+                    "label": "t:sections.all.heading_size.options__3.label"
+                  },
+                  {
+                    "value": "h3",
+                    "label": "t:sections.all.heading_size.options__4.label"
+                  },
+                  {
+                    "value": "h1",
+                    "label": "Double Extra Large"
+                  }
+                ],
+                "default": "h4",
+                "label": "t:sections.all.heading_size.label"
+              },
+            {
+            "type": "text",
+            "id" : "description",
+            "label" : "Info"
+            }
+        ]
+        }
+    ],
+    "presets":[
+        {
+            "name" : "Benefit Slider"
+        }
+    ]
+}
+
+{% endschema %}

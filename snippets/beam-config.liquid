@@ -1,0 +1,17 @@
+<script type="module" async crossorigin>
+  import { init } from "https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/integrations/beam.js";
+  import { StatsigPlugin } from "https://sdk.beamimpact.com/web-sdk/{{ settings.beam_sdk_version }}/dist/integrations/statsig.js"
+
+  const beam = await init({
+    apiKey: "{{ settings.beam_api_key }}",
+    chainId: {{ settings.beam_chain_id }},
+    storeId: {{ settings.beam_store_id }},
+    domain: "{{ settings.beam_store_domain }}",
+    // Base URL is optional - it is used to change to a staging server
+    baseUrl: "{{ settings.beam_base_url }}",
+    plugins: [
+      new StatsigPlugin({ statsigApiKey: "{{ settings.beam_statsig_api_key }}" })
+    ]
+  });
+
+</script>
